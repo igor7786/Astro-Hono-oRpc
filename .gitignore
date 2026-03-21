@@ -19,6 +19,9 @@ pkg/
 # Gitignore template for Astro projects
 # Ignore content collection generated files
 */.astro
+.astro/
+.build/
+.dist/
 */dist/
 */src/data
 .astro/
