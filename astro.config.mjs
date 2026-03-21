@@ -7,6 +7,9 @@ import react from '@astrojs/react';
 import node from '@astrojs/node';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 export default defineConfig({
+  devToolbar: {
+    enabled: false,
+  },
   output: 'server',
   vite: {
     resolve: {
