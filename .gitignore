@@ -706,9 +706,6 @@ pip-selfcheck.json
 **/data_redis
 ### react ###
 
-#### shadcn ###
-src/components/reactcomp/ui/
-
 
 ### exclude ###
 !**/frontend/src/lib
