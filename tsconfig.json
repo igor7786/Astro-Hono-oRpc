@@ -10,7 +10,6 @@
       "@/*": ["./src/*"],
       "@db/*": ["./db/*"],
       "@rcomp/*": ["./src/components/reactcomp/*"],
-      "@layout/*": ["./src/layouts/*"],
       "@acomp/*": ["./src/components/astrocomp/*"],
       "@server/*": ["./src/lib/server/*"]
     },
