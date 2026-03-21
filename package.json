@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "ts:check": "bunx tsc --noEmit",
-    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro, html, mjs}\""
+    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\""
   },
   "dependencies": {
     "@astrojs/node": "^10.0.3",
