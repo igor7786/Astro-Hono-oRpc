@@ -14,7 +14,6 @@ export default defineConfig({
         '@': path.resolve(__dirname, './src'),
         '@db': path.resolve(__dirname, './db'),
         '@rcomp': path.resolve(__dirname, './src/components/reactcomp'),
-        '@layout': path.resolve(__dirname, './src/layouts'),
         '@acomp': path.resolve(__dirname, './src/components/astrocomp'),
         '@server': path.resolve(__dirname, './src/lib/server'),
       },
