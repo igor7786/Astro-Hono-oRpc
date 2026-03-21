@@ -1,27 +1,24 @@
 ---
+import themeScript from '@/scripts/theme-checker.js?raw';
+const { title } = Astro.props;
 import '@/styles/global.css';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>{title}</title>
+    <script set:html={themeScript} />
   </head>
   <body>
-    <slot />
-  </body>
+    <div class="bg-background min-h-screen">
+      <slot name="header" />
+      <slot name="main" />
+      <slot name="footer" />
+    </div>
+  </body><!-- Inline the theme-checker.js script -->
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

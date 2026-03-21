@@ -1,13 +1,19 @@
 ---
 import Welcome from '@acomp/Welcome.astro';
 import Layout from '@/layouts/Layout.astro';
-import { Button } from '@rcomp/ui/button.tsx';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import '@/styles/global.css';
+import { serverClient } from '@server/server.client';
+import { TestClient } from '@rcomp/TestClient';
+let data: { name: string } = { name: '' };
+try {
+  data = await serverClient.test({ name: 'from oRPC Server' });
+} catch (error: any) {
+  data = { name: error.message };
+}
 ---
 
-<Layout>
-  <Button client:load>Click me</Button>
+<Layout title="Main Page">
+  <h1 slot="main" class="text-3xl font-bold text-indigo-700 underline">{data.name}</h1>
+  <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
   <Welcome />
 </Layout>
