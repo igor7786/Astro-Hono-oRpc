@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "ts:check": "bunx tsc --noEmit",
+    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro, html, mjs}\""
   },
   "dependencies": {
     "@astrojs/node": "^10.0.3",
