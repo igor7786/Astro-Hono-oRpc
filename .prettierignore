@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+public/scripts-lib/
+**/meta/*
+*.lock
+src/assets/
+.astro
+README.md
+biome.jsonc
+bun.lock
+package.json
+**/routeTree.gen.ts
