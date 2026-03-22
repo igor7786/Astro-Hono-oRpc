@@ -708,6 +708,7 @@ pip-selfcheck.json
 
 ### qwen ###
 .qwen
+QWEN.md
 
 ### exclude ###
 !**/frontend/src/lib
