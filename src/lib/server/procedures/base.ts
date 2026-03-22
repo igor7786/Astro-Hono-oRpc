@@ -24,4 +24,4 @@ export const base = os
     TOO_MANY_REQUESTS: { message: 'Rate limit exceeded please try again later', status: 429 },
     INTERNAL_SERVER_ERROR: { message: 'Internal Server Error', status: 500 },
   })
-  .use(isValErrors) // ← middleware applied to all procedures
+  .use(isValErrors); // ← middleware applied to all procedures

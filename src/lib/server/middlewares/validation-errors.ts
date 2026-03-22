@@ -11,7 +11,7 @@ export const isValErrors = os.middleware(async ({ context, next, errors }) => {
       error.cause instanceof ValidationError
     ) {
       const zodError = new z.ZodError(error.cause.issues as z.core.$ZodIssue[]);
-      const message = zodError.issues.map((i) => i.message).join(', ');
+      const message = zodError.issues.map((i: z.core.$ZodIssue) => i.message).join(', ');
       throw new ORPCError('INPUT_VALIDATION_FAILED', {
         status: 422,
         message,

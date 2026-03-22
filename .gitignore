@@ -152,7 +152,7 @@ pkg/
 *.wim
 # XAR
 *.xar
-# Native format of the Open Source KiriKiri Visual Novel engine. Uses combination of block splitting and zlib compression. The filenames and pathes are stored in UTF-16 format. For integrity check, the Adler-32 hashsum is used. For many commercial games, the files are encrypted (and decoded on runtime) via so-called "cxdec" module, which implements xor-based encryption.
+# Native format of the Open Source KiriKiri Visual Novel engine. Uses combination of block splitting and zlib compression. The filenames and paths are stored in UTF-16 format. For integrity check, the Adler-32 hashsum is used. For many commercial games, the files are encrypted (and decoded on runtime) via so-called "cxdec" module, which implements xor-based encryption.
 *.xp3
 # Yamazaki zipper archive. Compression format used in DeepFreezer archiver utility created by Yamazaki Satoshi. Read and write support exists in TUGZip, IZArc and ZipZag
 *.yz1
@@ -714,3 +714,4 @@ pip-selfcheck.json
 !/src/lib/
 !src/components/reactcomp/lib
 !**/frontend/src/scripts
+!**/src/scripts
