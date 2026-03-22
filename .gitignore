@@ -706,6 +706,8 @@ pip-selfcheck.json
 **/data_redis
 ### react ###
 
+### qwen ###
+.qwen
 
 ### exclude ###
 !**/frontend/src/lib
