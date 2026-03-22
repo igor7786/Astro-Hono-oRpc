@@ -25,7 +25,7 @@
     "@orpc/json-schema": "^1.13.9",
     "@orpc/openapi": "^1.13.9",
     "@orpc/server": "^1.13.9",
-    "@orpc/tanstack-query": "^1.13.8",
+    "@orpc/tanstack-query": "^1.13.9",
     "@orpc/zod": "^1.13.8",
     "@scalar/hono-api-reference": "^0.10.4",
     "@tailwindcss/vite": "^4.2.2",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
+    "@tanstack/react-query-devtools": "^5.94.5",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-classnames": "^0.9.0",
