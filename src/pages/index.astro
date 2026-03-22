@@ -21,8 +21,9 @@ try {
   # oRPC Client
   <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
   # Tanstack Query with oRPC Client
-  <TanstackDevWrapper slot="main" client:load>
+  <TanstackDevWrapper slot="main" client:only="react">
     <UserProfile className="text-3xl font-bold text-green-700 underline" client:only="react" />
   </TanstackDevWrapper>
+  <UserProfile slot="main" className="text-3xl font-bold text-green-700 underline" client:load />
   <Welcome slot="main" />
 </Layout>

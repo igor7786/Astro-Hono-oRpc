@@ -8,7 +8,7 @@ interface TestClientProps {
 }
 export default function UserProfile({ className }: TestClientProps) {
   const client = getQueryClient();
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, error , isFetching} = useQuery(
     orpc.test.queryOptions({
       input: { name: 'from Tanstack Query Client' },
     }),
@@ -16,5 +16,7 @@ export default function UserProfile({ className }: TestClientProps) {
   );
 
   if (isLoading) return <div className={className}>Loading...</div>;
+  if (isFetching) return <div className={className}>Updating...</div>;
+  if (error) return <div className={className}>Error: {error.message}</div>;
   return <div className={className}>{data?.name}</div>;
 }
