@@ -8,15 +8,6 @@ import openApiHandler from '@server/handlers/openapi.handler';
 export const app = new Hono().basePath('/api');
 
 // ─── Global middleware ────────────────────────────────────────────────────────
-app.use(
-  '*',
-  cors({
-    origin: 'http://localhost:4321',
-    credentials: true, // ← required for cookies
-    allowHeaders: ['Content-Type'],
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  })
-);
 app.use('*', logger());
 
 // ─── oRPC handler ─────────────────────────────────────────────────────────────
@@ -37,7 +28,11 @@ app.use('/rpc/*', async (c, next) => {
 app.use('/openapi/*', async (c, next) => {
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
     prefix: '/api/openapi',
-    context: {},
+    context: {
+      request: c.req.raw,
+      response: c.res,
+      ctx: c,
+    },
   });
   if (matched) return c.newResponse(response.body, response);
   await next();

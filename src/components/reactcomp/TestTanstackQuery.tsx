@@ -1,22 +1,31 @@
 import { useStore } from '@nanostores/react';
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/query';
+import { getQueryClient } from '@/lib/tanstack-query/browserClient';
 import { clientOrpc as orpc } from '@server/web.client';
-interface TestClientProps {
+
+interface Props {
   className?: string;
-  // Add other props as needed
+  initialData?: { name: string } | null;
+  name?: string;
 }
-export default function UserProfile({ className }: TestClientProps) {
+
+// TestTanstackQuery.tsx
+export default function UserProfile({ className, initialData, name }: Props) {
   const client = getQueryClient();
-  const { data, isLoading, error , isFetching} = useQuery(
+  const { data, isLoading, error } = useQuery(
     orpc.test.queryOptions({
-      input: { name: 'from Tanstack Query Client' },
+      input: { name }, // ← use the prop, not hardcoded
+      queryKey: ['test', { name }],
+      initialData: initialData ?? undefined,
     }),
-    client // ← nanostores singleton client
+    client
   );
 
   if (isLoading) return <div className={className}>Loading...</div>;
-  if (isFetching) return <div className={className}>Updating...</div>;
   if (error) return <div className={className}>Error: {error.message}</div>;
-  return <div className={className}>{data?.name}</div>;
+  return (
+    <div className={className}>
+      {data?.name} — fetched on {initialData ? 'Server (SSR)' : 'Client'}
+    </div>
+  );
 }

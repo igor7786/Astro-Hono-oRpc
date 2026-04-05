@@ -1,4 +1,5 @@
 ---
+import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import themeScript from '@/scripts/theme-checker.js?raw';
 const { title } = Astro.props;
 import '@/styles/global.css';
@@ -20,5 +21,6 @@ import '@/styles/global.css';
       <slot name="main" />
       <slot name="footer" />
     </div>
+    <DevTools client:only="react" />
   </body><!-- Inline the theme-checker.js script -->
 </html>

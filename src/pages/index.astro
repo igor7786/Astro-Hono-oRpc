@@ -1,18 +1,41 @@
 ---
-import Welcome from '@acomp/Welcome.astro';
 import Layout from '@/layouts/Layout.astro';
-import '@/styles/global.css';
 import { serverClient } from '@server/server.client';
 import { TestClient } from '@rcomp/TestClient';
-import UserProfile from '@rcomp/TestTanstackQuery.tsx';
-import TanstackDevWrapper from '@/lib/tanstack-query/TanstackDevWrapper';
-
+import UserProfile from '@/components/reactcomp/TestTanstackQuery';
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.test({ name: 'from oRPC Server' });
 } catch (error: any) {
   data = { name: error.message };
 }
+
+const names = ['alice', 'bob', 'charlie'];
+const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
+
+const profiles = await Promise.all(
+  names.map(async (name, index) => {
+    try {
+      const initialData = await serverClient.test({ name });
+      return {
+        name,
+        initialData,
+        className: `text-3xl font-bold underline ${colors[index]}`,
+      };
+    } catch {
+      return {
+        name,
+        initialData: undefined,
+        className: `text-3xl font-bold underline ${colors[index]}`,
+      };
+    }
+  })
+);
+const props = {
+  name: 'tanstack query with oRPC',
+  className: 'text-3xl font-bold text-green-700 underline',
+};
+
 ---
 
 <Layout title="Main Page">
@@ -20,10 +43,20 @@ try {
   <h1 slot="main" class="text-3xl font-bold text-indigo-700 underline">{data.name}</h1>
   # oRPC Client
   <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
-  # Tanstack Query with oRPC Client
-  <TanstackDevWrapper slot="main" client:only="react">
-    <UserProfile className="text-3xl font-bold text-green-700 underline" client:only="react" />
-  </TanstackDevWrapper>
-  <UserProfile slot="main" className="text-3xl font-bold text-green-700 underline" client:load />
-  <Welcome slot="main" />
+  # Tanstack Query with oRPC
+  <UserProfile slot="main" className="text-3xl font-bold text-green-700 underline" client:only="react" />
+   {
+    profiles.map((props) => (
+      <UserProfile
+        {...props}
+        slot="main"
+        client:load
+      />
+    ))
+  }
+    <UserProfile
+    {...props}
+    slot="main"
+    client:only="react"
+  />
 </Layout>
