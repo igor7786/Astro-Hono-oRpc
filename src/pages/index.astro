@@ -36,7 +36,6 @@ const props = {
   name: 'tanstack query with oRPC',
   className: 'text-3xl font-bold text-green-700 underline',
 };
-
 ---
 
 <Layout title="Main Page">
@@ -45,20 +44,8 @@ const props = {
   # oRPC Client
   <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
   # Tanstack Query with oRPC
-   {
-    profiles.map((props) => (
-      <UserProfile
-        {...props}
-        slot="main"
-        client:load
-      />
-    ))
-  }
-    <UserProfile
-    {...props}
-    slot="main"
-    client:only="react"
-  />
+  {profiles.map((props) => <UserProfile {...props} slot="main" client:load />)}
+  <UserProfile {...props} slot="main" client:only="react" />
   # Slow Request Test
   <SlowRequest slot="main" client:load />
 </Layout>

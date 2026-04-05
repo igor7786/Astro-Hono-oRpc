@@ -1,6 +1,6 @@
 # Astro-Hono-oRPC Full-Stack Application
 
-A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development.
+A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development, featuring **TanStack Query** with SSR support and **IndexedDB persistence**.
 
 ## 🚀 Quick Start
 
@@ -55,29 +55,40 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │       │   └── utils.ts    # Utility functions (cn helper for classnames)
 │   │       ├── ui/
 │   │       │   └── button.tsx  # shadcn/ui components
-│   │       └── TestClient.tsx  # Example React island component
+│   │       ├── SlowRequest.tsx # Demo component for request cancellation
+│   │       ├── TestClient.tsx  # Example React island component
+│   │       └── TestTanstackQuery.tsx  # TanStack Query integration example
 │   ├── layouts/
 │   │   └── Layout.astro        # Main layout with theme support (dark/light)
 │   ├── lib/
-│   │   └── server/             # Server-side oRPC/Hono code
-│   │       ├── app.ts          # Hono app configuration with CORS & middleware
-│   │       ├── middlewares/
-│   │       │   └── validation-errors.ts  # oRPC validation error handler
-│   │       ├── open-api-handler/
-│   │       │   └── handler.ts  # OpenAPI schema generation
-│   │       ├── procedures/
-│   │       │   └── base.ts     # Base oRPC procedure with error definitions
-│   │       ├── routers/
-│   │       │   ├── all.routers.ts  # Router aggregator
-│   │       │   └── test.ts     # Example oRPC router
-│   │       ├── schemas/
-│   │       │   └── test.schema.ts  # Zod validation schemas
-│   │       ├── server.client.ts    # Server-side oRPC client
-│   │       └── web.client.ts       # Browser oRPC client
+│   │   ├── server/             # Server-side oRPC/Hono code
+│   │   │   ├── app.ts          # Hono app configuration with CORS & middleware
+│   │   │   ├── handlers/
+│   │   │   │   ├── openapi.handler.ts  # OpenAPI schema generation handler
+│   │   │   │   └── rpc.handler.ts      # oRPC procedure handler
+│   │   │   ├── middlewares/
+│   │   │   │   └── validation-errors.ts  # oRPC validation error handler
+│   │   │   ├── procedures/
+│   │   │   │   └── base.ts     # Base oRPC procedure with error definitions
+│   │   │   ├── routers/
+│   │   │   │   ├── all.routers.ts  # Router aggregator
+│   │   │   │   └── test.ts     # Example oRPC router
+│   │   │   ├── schemas/
+│   │   │   │   └── test.schema.ts  # Zod validation schemas
+│   │   │   ├── server.client.ts    # Server-side oRPC client
+│   │   │   └── web.client.ts       # Browser oRPC client
+│   │   ├── stores/
+│   │   │   └── ssr.ts          # Nanostores for SSR state management
+│   │   └── tanstack-query/     # TanStack Query configuration
+│   │       ├── browserClient.ts    # Browser client with IndexedDB persistence
+│   │       ├── mainQuery.ts        # Query client factory
+│   │       ├── query.ts            # Server-side query client
+│   │       ├── QueryDevTools.tsx   # TanStack Query DevTools component
+│   │       └── SsrQueryProvider.tsx  # SSR hydration provider
 │   ├── pages/
 │   │   ├── api/
 │   │   │   └── [...path].ts    # Hono API catch-all route
-│   │   └── index.astro         # Home page
+│   │   └── index.astro         # Home page with SSR data fetching
 │   ├── scripts/
 │   │   └── theme-checker.js    # Dark mode detection script
 │   └── styles/
@@ -100,6 +111,7 @@ The application follows a **hybrid architecture**:
 - **Static/SSR pages** served by Astro
 - **API routes** handled by Hono with oRPC for type-safe RPC calls
 - **Islands architecture** - React components are hydrated selectively using `client:load`
+- **SSR with TanStack Query** - Server-side data fetching with client hydration
 
 ### Technology Stack
 
@@ -111,6 +123,7 @@ The application follows a **hybrid architecture**:
 | **API** | Hono v4 | Lightweight web framework for API routes |
 | **RPC** | oRPC v1.13 | Type-safe RPC with OpenAPI support |
 | **State** | Nanostores + TanStack Query | Client-side state management |
+| **Query Cache** | IndexedDB (idb-keyval) | Persistent query cache with SuperJSON serialization |
 | **Validation** | Zod v4 | Schema validation for inputs/outputs |
 | **API Docs** | Scalar | Interactive OpenAPI documentation |
 | **Runtime** | Node.js >= 22.12.0 | Server runtime |
@@ -187,6 +200,72 @@ const result = await client.test({ name: 'World' });
 |--------|------|--------|
 | 403 | `FORBIDDEN` | If name is "admin" |
 | 422 | `INPUT_VALIDATION_FAILED` | Invalid input schema |
+
+---
+
+## 🎯 TanStack Query Integration
+
+### Features
+
+- **SSR Support** - Server-side data fetching with hydration
+- **IndexedDB Persistence** - Query cache persists across sessions (24h TTL)
+- **SuperJSON Serialization** - Preserves dates, Maps, Sets, and other complex types
+- **Request Cancellation** - AbortController integration for slow requests
+- **Query Prefetching** - Optimistic data loading on hover
+
+### Architecture
+
+The TanStack Query setup consists of:
+
+1. **Query Client Factory** (`mainQuery.ts`) - Creates configured QueryClient instances
+2. **Server Client** (`query.ts`) - Server-side query client for SSR
+3. **Browser Client** (`browserClient.ts`) - Browser client with IndexedDB persistence
+4. **SSR Provider** (`SsrQueryProvider.tsx`) - Hydration boundary component
+5. **Query DevTools** (`QueryDevTools.tsx`) - Development debugging tools
+
+### Usage Example
+
+```typescript
+// Server-side data fetching (index.astro)
+import { serverClient } from '@server/server.client';
+
+const data = await serverClient.test({ name: 'from SSR' });
+
+// Client-side with TanStack Query (TestTanstackQuery.tsx)
+import { useQuery } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { clientOrpc as orpc } from '@server/web.client';
+
+const { data, isLoading, error } = useQuery(
+  orpc.test.queryOptions({
+    input: { name: 'test' },
+    queryKey: ['test', { name: 'test' }],
+  }),
+  client
+);
+```
+
+### Request Cancellation Example
+
+The `SlowRequest.tsx` component demonstrates:
+- Query cancellation on user action
+- Query prefetching on hover
+- Automatic cleanup of cancelled queries
+
+```typescript
+const handleCancel = () => {
+  client.cancelQueries({ queryKey: ['slow-test'] });
+};
+
+const handleMouseEnter = () => {
+  client.prefetchQuery(
+    orpc.testSlow.queryOptions({
+      input: { name: 'slow operation' },
+      queryKey: ['slow-test', fetchId],
+    })
+  );
+};
+```
 
 ---
 
@@ -350,6 +429,51 @@ export const myProcedure = base
 3. Export the router in `src/lib/server/routers/all.routers.ts`
 4. Call from client using `client` from `@/lib/server/web.client`
 
+### TanStack Query Patterns
+
+**Server-Side Data Fetching (SSR):**
+
+```typescript
+// In Astro page/layout
+---
+import { serverClient } from '@server/server.client';
+
+const data = await serverClient.test({ name: 'SSR' });
+---
+```
+
+**Client-Side with Hydration:**
+
+```typescript
+import { useQuery } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { clientOrpc as orpc } from '@server/web.client';
+
+const { data, isLoading } = useQuery(
+  orpc.test.queryOptions({
+    input: { name },
+    queryKey: ['test', { name }],
+    initialData: serverData, // SSR hydration data
+  }),
+  client
+);
+```
+
+**Query Cancellation:**
+
+```typescript
+// Cancel running queries
+client.cancelQueries({ queryKey: ['my-query'] });
+
+// Prefetch on hover
+client.prefetchQuery(
+  orpc.test.queryOptions({
+    input: { name: 'test' },
+    queryKey: ['my-query'],
+  })
+);
+```
+
 ### Error Handling
 
 oRPC errors are defined in `src/lib/server/procedures/base.ts`:
@@ -382,6 +506,7 @@ No test framework is currently configured. Consider adding:
 - [Astro Documentation](https://docs.astro.build)
 - [Hono Documentation](https://hono.dev)
 - [oRPC Documentation](https://orpc.unno.io)
+- [TanStack Query Documentation](https://tanstack.com/query/latest)
 - [Tailwind CSS Documentation](https://tailwindcss.com)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Scalar Documentation](https://scalar.com)
