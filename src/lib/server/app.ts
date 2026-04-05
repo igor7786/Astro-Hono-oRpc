@@ -2,26 +2,34 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { Scalar } from '@scalar/hono-api-reference';
-import handler from '@server/open-api-handler/handler';
+import rpcHandler from '@server/handlers/rpc.handler';
+import openApiHandler from '@server/handlers/openapi.handler';
 
 export const app = new Hono().basePath('/api');
 
 // ─── Global middleware ────────────────────────────────────────────────────────
-app.use(
-  '*',
-  cors({
-    origin: 'http://localhost:4321',
-    credentials: true, // ← required for cookies
-    allowHeaders: ['Content-Type'],
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  })
-);
 app.use('*', logger());
 
 // ─── oRPC handler ─────────────────────────────────────────────────────────────
 app.use('/rpc/*', async (c, next) => {
-  const { matched, response } = await handler.handle(c.req.raw, {
+   // ✅ get signal directly from the incoming request
+  const { matched, response } = await rpcHandler.handle(c.req.raw, {
     prefix: '/api/rpc',
+    context: {
+      request: c.req.raw,
+      response: c.res,
+      ctx: c,
+      signal:c.req.raw.signal,
+    },
+  });
+  if (matched) return c.newResponse(response.body, response);
+  await next();
+});
+
+// ─── OpenAPI handler ─────────────────────────────────────────────────────────────
+app.use('/openapi/*', async (c, next) => {
+  const { matched, response } = await openApiHandler.handle(c.req.raw, {
+    prefix: '/api/openapi',
     context: {
       request: c.req.raw,
       response: c.res,
@@ -38,7 +46,7 @@ app.get(
   Scalar({
     pageTitle: 'My API Docs',
     sources: [
-      { url: '/api/rpc/generate-schema', title: 'App API' },
+      { url: '/api/openapi/generate-schema', title: 'App API' },
       { url: '/api/auth/open-api/generate-schema', title: 'Better Auth API' },
     ],
   })

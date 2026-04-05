@@ -8,6 +8,7 @@ export type AppContext = {
   request?: Request;
   response?: Response;
   ctx?: Context;
+  signal?: AbortSignal;
 };
 
 // Base public procedure — no auth required
@@ -23,5 +24,6 @@ export const base = os
     OUTPUT_VALIDATION_FAILED: { message: 'Output validation failed', status: 500 },
     TOO_MANY_REQUESTS: { message: 'Rate limit exceeded please try again later', status: 429 },
     INTERNAL_SERVER_ERROR: { message: 'Internal Server Error', status: 500 },
+    CLIENT_CLOSED_REQUEST: { message: 'Client closed the request', status: 499 },
   })
   .use(isValErrors); // ← middleware applied to all procedures

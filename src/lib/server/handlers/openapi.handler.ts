@@ -7,7 +7,7 @@ import { allRouters } from '@server/routers/all.routers';
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
 
-const handler = new OpenAPIHandler(allRouters, {
+const openApiHandler = new OpenAPIHandler(allRouters, {
   interceptors: [
     onError((err) => {
       if (err instanceof ORPCError) {
@@ -26,7 +26,7 @@ const handler = new OpenAPIHandler(allRouters, {
       specPath: '/generate-schema',
       specGenerateOptions: {
         info: { title: 'My API', version: '1.0.0' },
-        servers: [{ url: '/api/rpc' }],
+        servers: [{ url: '/api/openapi' }],
         security: [{ cookieAuth: [] }], // ← cookie auth in spec
         components: {
           securitySchemes: {
@@ -41,4 +41,4 @@ const handler = new OpenAPIHandler(allRouters, {
     }),
   ],
 });
-export default handler;
+export default openApiHandler;
