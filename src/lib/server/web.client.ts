@@ -10,12 +10,17 @@ const link = new RPCLink({
 
   fetch: (url, init) =>
     fetch(url, {
-      ...init,
+      ...(init as RequestInit), // ✅ cast to RequestInit
       credentials: 'include',
     }),
 
   interceptors: [
     onError((error) => {
+      // ✅ ignore abort errors — user intentionally cancelled
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        console.error('[oRPC client] Request aborted by user', error);
+        return;
+      }
       if (!(error instanceof ORPCError)) {
         console.error('[oRPC client] Unexpected error', error);
         return;

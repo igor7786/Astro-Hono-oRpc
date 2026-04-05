@@ -12,12 +12,14 @@ app.use('*', logger());
 
 // ─── oRPC handler ─────────────────────────────────────────────────────────────
 app.use('/rpc/*', async (c, next) => {
+   // ✅ get signal directly from the incoming request
   const { matched, response } = await rpcHandler.handle(c.req.raw, {
     prefix: '/api/rpc',
     context: {
       request: c.req.raw,
       response: c.res,
       ctx: c,
+      signal:c.req.raw.signal,
     },
   });
   if (matched) return c.newResponse(response.body, response);

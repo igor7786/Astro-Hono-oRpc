@@ -27,3 +27,33 @@ export const testRoute = base
 
     return { name: `Hello, ${input.name}!` };
   });
+
+export const slowTestRoute = base
+  .route({
+    method: 'POST',
+    path: '/slow-test',
+    description: 'Slow test route',
+    summary: 'Slow test route summary',
+    tags: ['Test'],
+    successDescription: 'Test route successful',
+    successStatus: 200,
+  })
+  .input(testSchema)
+  .output(testSchema)
+  .handler(async ({ input, context, errors }) => {
+    const signal = context.signal ?? context.request?.signal; // ← fallback
+
+    console.log('signal:', signal);
+    // Not working as expected in Bun
+    await new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => resolve(), 10000);
+
+      signal?.addEventListener('abort', () => {
+        console.log('🛑 abort fired!');
+        clearTimeout(timeout);
+        reject(errors.CLIENT_CLOSED_REQUEST());
+      });
+    });
+
+    return { name: `Hello, ${input.name}!` };
+  });

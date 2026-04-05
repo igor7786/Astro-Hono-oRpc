@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import { serverClient } from '@server/server.client';
 import { TestClient } from '@rcomp/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
+import SlowRequest from '@/components/reactcomp/SlowRequest';
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.test({ name: 'from oRPC Server' });
@@ -58,4 +59,6 @@ const props = {
     slot="main"
     client:only="react"
   />
+  # Slow Request Test
+  <SlowRequest slot="main" client:load />
 </Layout>
