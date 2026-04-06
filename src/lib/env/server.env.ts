@@ -1,4 +1,4 @@
-// src/lib/env.server.ts
+// src/lib/env/server.env.ts
 
 import { z } from 'zod';
 // Schema for validation

@@ -1,4 +1,4 @@
-// src/lib/env.client.ts
+// src/lib/env/client.env.ts
 import { z } from 'zod';
 
 // Schema for browser-exposed vars (only PUBLIC ones)
