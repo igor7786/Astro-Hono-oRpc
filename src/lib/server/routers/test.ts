@@ -22,7 +22,7 @@ export const slowTestRoute = base.testSlow.handler(async ({ input, context, erro
   console.log('signal:', signal);
   // Not working as expected in Bun
   await new Promise<void>((resolve, reject) => {
-    const timeout = setTimeout(() => resolve(), 10000);
+    const timeout = setTimeout(() => resolve(), 3000);
 
     signal?.addEventListener('abort', () => {
       console.log('🛑 abort fired!');

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@server/web.client';
 import { Button } from '@rcomp/ui/button';
 import { useState } from 'react';
@@ -41,7 +41,7 @@ export default function SlowRequest() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <h2 className="text-xl font-bold">Slow Request (10s)</h2>
+      <h2 className="text-xl font-bold">Slow Request (3s)</h2>
 
       <div className="flex gap-2">
         <Button

@@ -1,6 +1,6 @@
 import { useStore } from '@nanostores/react';
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery'; // ← use the mainQuery client, not the old query
 import { clientOrpc as orpc } from '@server/web.client';
 
 interface Props {
