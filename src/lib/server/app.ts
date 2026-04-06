@@ -44,7 +44,6 @@ app.use('/openapi/*', async (c, next) => {
 app.get(
   '/docs',
   Scalar({
-    pageTitle: 'My API Docs',
     sources: [
       { url: '/api/openapi/generate-schema', title: 'App API' },
       { url: '/api/auth/open-api/generate-schema', title: 'Better Auth API' },

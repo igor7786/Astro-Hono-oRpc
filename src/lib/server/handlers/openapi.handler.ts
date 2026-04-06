@@ -25,7 +25,7 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
       docsPath: '/orpc-docs',
       specPath: '/generate-schema',
       specGenerateOptions: {
-        info: { title: 'My API', version: '1.0.0' },
+        info: { title: 'My API Docs', version: '1.0.0' },
         servers: [{ url: '/api/openapi' }],
         security: [{ cookieAuth: [] }], // ← cookie auth in spec
         components: {
