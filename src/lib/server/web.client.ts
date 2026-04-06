@@ -1,22 +1,37 @@
 // src/lib/server/web.client.ts
 import { createORPCClient, onError, ORPCError } from '@orpc/client';
-import { RPCLink } from '@orpc/client/fetch';
+import type { ContractRouterClient } from '@orpc/contract';
+import { ResponseValidationPlugin } from '@orpc/contract/plugins';
+import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '@server/routers/all.routers';
+// import type { AppRouter } from '@server/routers/all.routers';
 
-const link = new RPCLink({
-  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/rpc`,
+// 1. You need the router/contract reference here
+// If AppRouter is just a type, you might need to import the actual router object
+// or the contract if you are using separate contracts.
+import { appContract, type AppContract } from '@server/contracts/all.contracts';
 
-  fetch: (url, init) =>
-    fetch(url, {
-      ...(init as RequestInit), // ✅ cast to RequestInit
-      credentials: 'include',
-    }),
+const link = new OpenAPILink(appContract, {
+  // <--- Added allRouters as 1st argument
+  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi`,
 
+  fetch: async (url, init) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    try {
+      return await fetch(url, {
+        ...init,
+        signal: controller.signal,
+        credentials: 'include',
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+  },
+  plugins: [new ResponseValidationPlugin(appContract)],
   interceptors: [
     onError((error) => {
-      // ✅ ignore abort errors — user intentionally cancelled
       if (error instanceof DOMException && error.name === 'AbortError') {
         console.error('[oRPC client] Request aborted by user', error);
         return;
@@ -41,5 +56,5 @@ const link = new RPCLink({
   ],
 });
 
-export const client: RouterClient<AppRouter> = createORPCClient(link);
+export const client: ContractRouterClient<AppContract> = createORPCClient(link);
 export const clientOrpc = createTanstackQueryUtils(client);
