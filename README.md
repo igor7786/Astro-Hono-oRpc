@@ -1,6 +1,6 @@
 # Astro-Hono-oRPC Full-Stack Application
 
-A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development, featuring **TanStack Query** with SSR support and **IndexedDB persistence**.
+A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development, featuring **TanStack Query** with SSR support, **IndexedDB persistence**, **contract-first API design**, **authentication with Better Auth**, and **security with Arcjet**.
 
 ## 🚀 Quick Start
 
@@ -23,7 +23,50 @@ The dev server runs at `http://localhost:4321`.
 
 ### Environment Variables
 
-This project currently has no required environment variables. When adding authentication or database features, create a `.env` file based on `.env.example` (if present).
+Copy `.example.env` to `.env` and fill in the required values:
+
+```bash
+cp .example.env .env
+```
+
+#### Required Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `DB_URL` | Database connection string (NeonDB/PostgreSQL) |
+| `BETTER_AUTH_SECRET` | Secret key for Better Auth session encryption |
+| `BETTER_AUTH_URL` | Base URL for Better Auth (e.g., `http://localhost:4321`) |
+| `PUBLIC_URL` | Public-facing application URL |
+| `PUBLIC_API_URL` | Public API base URL |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
+| `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret |
+| `RESEND_EMAIL` | Resend API key for transactional emails |
+| `UPSTASH_REDIS_URL` | Upstash Redis connection URL |
+| `ARCJET_KEY` | Arcjet security API key |
+| `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) |
+| `CLOUD_TOKEN` | Cloud service authentication token |
+| `QWEN_API_KEY` | Qwen API key for AI features |
+| `PANGOLIN_ENDPOINT` | Pangolin service endpoint |
+| `NEWT_SECRET` | Newt service secret key |
+| `NODE_ENV` | Runtime environment (`development`, `production`, `test`, `preview`). Defaults to `development` |
+
+#### Environment Validation
+
+Environment variables are validated at startup using Zod schemas:
+
+- **Server-side** (`src/lib/env/server.env.ts`) - Validates all server environment variables
+- **Client-side** (`src/lib/env/client.env.ts`) - Exposes only `PUBLIC_*` variables to the browser
+
+```typescript
+// Usage
+import { envServer } from '@/lib/env/server.env';
+import { envClient } from '@/lib/env/client.env';
+
+console.log(envServer.DB_URL);
+console.log(envClient.PUBLIC_URL);
+```
 
 ### Production Build
 
@@ -61,8 +104,15 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   ├── layouts/
 │   │   └── Layout.astro        # Main layout with theme support (dark/light)
 │   ├── lib/
+│   │   ├── env/                  # Environment variable validation
+│   │   │   ├── client.env.ts       # Client-side env (PUBLIC_* vars only)
+│   │   │   └── server.env.ts       # Server-side env (all vars with Zod validation)
 │   │   ├── server/             # Server-side oRPC/Hono code
 │   │   │   ├── app.ts          # Hono app configuration with CORS & middleware
+│   │   │   ├── contracts/
+│   │   │   │   ├── all.contracts.ts  # Contract aggregator
+│   │   │   │   ├── oc.base.ts        # Base oRPC contract with error definitions
+│   │   │   │   └── test.contract.ts  # Example contract definition
 │   │   │   ├── handlers/
 │   │   │   │   ├── openapi.handler.ts  # OpenAPI schema generation handler
 │   │   │   │   └── rpc.handler.ts      # oRPC procedure handler
@@ -118,14 +168,19 @@ The application follows a **hybrid architecture**:
 | Layer | Technology | Purpose |
 |-------|------------|---------|
 | **Frontend** | Astro v6 | Server-side rendering, static generation |
-| **UI Framework** | React v19 | Interactive islands (hydrated components) |
+| **UI Framework** | React v19 + base-ui | Interactive islands (hydrated components) |
 | **Styling** | Tailwind CSS v4 + shadcn/ui | Utility-first CSS with pre-built components |
 | **API** | Hono v4 | Lightweight web framework for API routes |
 | **RPC** | oRPC v1.13 | Type-safe RPC with OpenAPI support |
 | **State** | Nanostores + TanStack Query | Client-side state management |
 | **Query Cache** | IndexedDB (idb-keyval) | Persistent query cache with SuperJSON serialization |
-| **Validation** | Zod v4 | Schema validation for inputs/outputs |
+| **Validation** | Zod v4 | Schema validation for inputs/outputs and environment variables |
 | **API Docs** | Scalar | Interactive OpenAPI documentation |
+| **Authentication** | Better Auth | Session management with OAuth (Google, GitHub) |
+| **Security** | Arcjet | Rate limiting and bot protection |
+| **Email** | Resend | Transactional email service |
+| **Cache** | Upstash Redis | Distributed caching layer |
+| **AI** | Qwen API | AI-powered features |
 | **Runtime** | Node.js >= 22.12.0 | Server runtime |
 | **Package Manager** | Bun | Fast package manager and runtime |
 
@@ -266,6 +321,98 @@ const handleMouseEnter = () => {
   );
 };
 ```
+
+---
+
+## 📝 Contract-First API Design
+
+oRPC supports a contract-first approach where API contracts are defined separately from implementations, enabling better type safety and client generation.
+
+### Architecture
+
+Contracts are defined in `src/lib/server/contracts/`:
+
+1. **Base Contract** (`oc.base.ts`) - Defines shared error schema for all procedures
+2. **Contract Definitions** (`*.contract.ts`) - Individual contract definitions with routes, inputs, outputs
+3. **Contract Aggregator** (`all.contracts.ts`) - Exports all contracts as a single typed object
+
+### Usage Example
+
+**Define a contract:**
+
+```typescript
+// src/lib/server/contracts/my.contract.ts
+import { baseOc } from '@/lib/server/contracts/oc.base';
+import { mySchema } from '@server/schemas/my.schema';
+
+export const myContract = baseOc
+  .route({
+    method: 'GET',
+    path: '/my-endpoint',
+    description: 'Description of the endpoint',
+    summary: 'Short summary',
+    tags: ['MyTag'],
+    successDescription: 'Success response',
+    successStatus: 200,
+  })
+  .input(mySchema)
+  .output(mySchema);
+```
+
+**Export in aggregator:**
+
+```typescript
+// src/lib/server/contracts/all.contracts.ts
+import { myContract } from '@server/contracts/my.contract';
+
+export const appContract = {
+  my: myContract,
+};
+
+export type AppContract = typeof appContract;
+```
+
+### Benefits
+
+- **Type-safe clients** - Full TypeScript inference from contracts
+- **OpenAPI generation** - Contracts automatically generate OpenAPI schemas
+- **Error consistency** - Shared error definitions across all procedures
+- **Decoupled design** - Contracts separate from implementation
+
+---
+
+## 🔐 Environment Variable Management
+
+### Server-Side Validation
+
+All server environment variables are validated at startup using Zod. The app will fail fast if required variables are missing.
+
+```typescript
+// src/lib/env/server.env.ts
+import { envServer } from '@/lib/env/server.env';
+
+// Type-safe access to environment variables
+const dbUrl = envServer.DB_URL;
+const authSecret = envServer.BETTER_AUTH_SECRET;
+```
+
+### Client-Side Exposure
+
+Only `PUBLIC_*` prefixed variables are exposed to the browser for security.
+
+```typescript
+// src/lib/env/client.env.ts
+import { envClient } from '@/lib/env/client.env';
+
+// Safe for browser use
+const apiUrl = envClient.PUBLIC_API_URL;
+```
+
+### Adding New Environment Variables
+
+1. Add the variable to `.example.env`
+2. Add validation schema in `src/lib/env/server.env.ts` (for server vars)
+3. Add to `src/lib/env/client.env.ts` (for `PUBLIC_*` client vars only)
 
 ---
 
@@ -488,6 +635,7 @@ oRPC errors are defined in `src/lib/server/procedures/base.ts`:
 | `INPUT_VALIDATION_FAILED` | 422 | Input validation failed |
 | `OUTPUT_VALIDATION_FAILED` | 500 | Output validation failed |
 | `TOO_MANY_REQUESTS` | 429 | Rate limit exceeded please try again later |
+| `CLIENT_CLOSED_REQUEST` | 499 | Client closed the request |
 | `INTERNAL_SERVER_ERROR` | 500 | Internal Server Error |
 
 ---
@@ -510,6 +658,11 @@ No test framework is currently configured. Consider adding:
 - [Tailwind CSS Documentation](https://tailwindcss.com)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Scalar Documentation](https://scalar.com)
+- [Better Auth Documentation](https://www.better-auth.com)
+- [Arcjet Documentation](https://docs.arcjet.com)
+- [Resend Documentation](https://resend.com/docs)
+- [Upstash Documentation](https://upstash.com/docs)
+- [Zod Documentation](https://zod.dev)
 
 ---
 
