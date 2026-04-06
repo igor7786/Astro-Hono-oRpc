@@ -716,3 +716,5 @@ QWEN.md
 !src/components/reactcomp/lib
 !**/frontend/src/scripts
 !**/src/scripts
+!src/lib/env
+!.example.env
