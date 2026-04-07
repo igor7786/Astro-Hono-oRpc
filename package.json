@@ -10,6 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "bun:dev": "bunx --bun astro dev --host",
+    "bun:build": "bunx --bun astro build",
     "ts:check": "bunx tsc --noEmit",
     "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\""
   },

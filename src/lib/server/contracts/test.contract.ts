@@ -12,7 +12,7 @@ export const testContract = baseOc
     successStatus: 200,
   })
   .input(testSchema)
-  .output(testSchema)
+  .output(testSchema);
 
 export const slowTestContract = baseOc
   .route({
@@ -25,6 +25,4 @@ export const slowTestContract = baseOc
     successStatus: 200,
   })
   .input(testSchema)
-  .output(testSchema)
-
-
+  .output(testSchema);

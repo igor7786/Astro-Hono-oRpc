@@ -3,19 +3,19 @@
 import { z } from 'zod';
 // Schema for validation
 const EnvSchema = z.object({
-  DB_URL: z.string().min(1),
-  BETTER_AUTH_SECRET: z.string().min(1),
-  BETTER_AUTH_URL: z.string().url(),
-  PUBLIC_URL: z.string().url(),
-  PUBLIC_API_URL: z.string().url(),
-  GOOGLE_CLIENT_ID: z.string().min(1),
-  GOOGLE_CLIENT_SECRET: z.string().min(1),
-  GITHUB_CLIENT_ID: z.string().min(1),
-  GITHUB_CLIENT_SECRET: z.string().min(1),
-  RESEND_EMAIL: z.string().min(1),
-  UPSTASH_REDIS_URL: z.string().min(1),
-  ARCJET_KEY: z.string().min(1),
-  ARCJET_ENV: z.string().min(1),
+  DB_URL: z.string().min(1, 'DB_URL is required and must be a non-empty string'),
+  BETTER_AUTH_SECRET: z.string().min(1, 'BETTER_AUTH_SECRET is required and must be a non-empty string'),
+  BETTER_AUTH_URL: z.string().min(1, 'BETTER_AUTH_URL is required and must be a non-empty string'),
+  PUBLIC_URL: z.string().min(1, 'PUBLIC_URL is required and must be a non-empty string'),
+  PUBLIC_API_URL: z.string().min(1, 'PUBLIC_API_URL is required and must be a non-empty string'),
+  GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required and must be a non-empty string'),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required and must be a non-empty string'),
+  GITHUB_CLIENT_ID: z.string().min(1, 'GITHUB_CLIENT_ID is required and must be a non-empty string'),
+  GITHUB_CLIENT_SECRET: z.string().min(1, 'GITHUB_CLIENT_SECRET is required and must be a non-empty string'),
+  RESEND_EMAIL: z.string().min(1, 'RESEND_EMAIL is required and must be a non-empty string'),
+  UPSTASH_REDIS_URL: z.string().min(1, 'UPSTASH_REDIS_URL is required and must be a non-empty string'),
+  ARCJET_KEY: z.string().min(1, 'ARCJET_KEY is required and must be a non-empty string'),
+  ARCJET_ENV: z.string().min(1, 'ARCJET_ENV is required and must be a non-empty string'),
   CLOUD_TOKEN: z.string().min(1),
   NODE_ENV: z.enum(['development', 'production', 'test', 'preview']).default('development'),
   QWEN_API_KEY: z.string().min(1),
@@ -23,7 +23,6 @@ const EnvSchema = z.object({
 
 // Type inferred from schema
 export type ServerEnv = z.infer<typeof EnvSchema>;
-
 
 // Load & validate environment vars from process.env
 export function getServerEnv(): ServerEnv {
