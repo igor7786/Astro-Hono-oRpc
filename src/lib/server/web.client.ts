@@ -4,9 +4,8 @@ import type { ContractRouterClient } from '@orpc/contract';
 import { ResponseValidationPlugin } from '@orpc/contract/plugins';
 import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
-// import type { AppRouter } from '@server/routers/all.routers';
 
-// 1. You need the router/contract reference here
+// 1. You need the contract reference here
 // If AppRouter is just a type, you might need to import the actual router object
 // or the contract if you are using separate contracts.
 import { appContract, type AppContract } from '@server/contracts/all.contracts';

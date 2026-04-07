@@ -20,7 +20,9 @@ app.use('/rpc/*', async (c, next) => {
     prefix: '/api/rpc',
     context: { env: c.env },
   });
-  if (matched) return c.newResponse(response.body, response);
+  if (matched) {
+    return c.newResponse(response.body, response);
+  }
   await next();
 });
 
@@ -32,25 +34,27 @@ app.use('/openapi/*', async (c, next) => {
     ctx: c,
     signal: c.req.raw.signal,
     env: c.env,
-    responseHeaders: new Headers(),
+    // responseHeaders: new Headers(),
   };
 
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
     prefix: '/api/openapi',
     context,
   });
+  // if (matched) {
+  //   // ✅ CORRECT: merge from context
+  //   context.responseHeaders.forEach((value, key) => {
+  //     c.header(key, value);
+  //   });
+  //   const finalResponse = c.newResponse(response.body, response);
+
+  //   console.log([...finalResponse.headers.entries()]);
+
+  //   return finalResponse;
+  // }
   if (matched) {
-    // ✅ CORRECT: merge from context
-    context.responseHeaders.forEach((value, key) => {
-      c.header(key, value);
-    });
-    const finalResponse = c.newResponse(response.body, response);
-
-    console.log([...finalResponse.headers.entries()]);
-
-    return finalResponse;
+    return c.newResponse(response.body, response);
   }
-
   await next();
 });
 

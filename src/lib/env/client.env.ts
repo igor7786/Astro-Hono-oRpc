@@ -5,7 +5,7 @@ import { z } from 'zod';
 // Only include client-safe variables (prefixed with PUBLIC_)
 const EnvClientSchema = z.object({
   PUBLIC_URL: z.string().min(1, 'ENV: PUBLIC_URL is required and must be a non-empty string'),
-  PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string')
+  PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string'),
 });
 
 export type ClientEnv = z.infer<typeof EnvClientSchema>;

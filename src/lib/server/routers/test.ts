@@ -1,18 +1,21 @@
-// router.ts
+import { setCookie } from '@orpc/server/helpers';
 import { base } from '@server/procedures/base';
-import { testSchema } from '@server/schemas/test.schema';
-// Define the Planet schema with metadata for OpenAPI
 
-// GET route to list planets
 export const testRoute = base.test.handler(async ({ input, context, errors }) => {
   if (context.request) {
+    context.resHeaders?.set('x-custom-header', 'Hello from oRPC!');
+    setCookie(context.resHeaders, 'test', 'abc123', {
+      secure: true,
+      maxAge: 3600,
+      sameSite: 'lax',
+      httpOnly: true,
+      path: '/',
+    });
     console.log('Request called on Client');
-    context.responseHeaders?.set('X-Request-Received', new Date().toISOString());
   } else {
     console.log('Request called on Server');
   }
   // ✅ This now actually works
-  context?.responseHeaders?.set('X-Custom-Header', 'Hello from oRPC!');
   if (input.name === 'admin') {
     throw errors.FORBIDDEN(); // uses default message
   }
@@ -21,8 +24,6 @@ export const testRoute = base.test.handler(async ({ input, context, errors }) =>
 
 export const slowTestRoute = base.testSlow.handler(async ({ input, context, errors }) => {
   const signal = context.signal ?? context.request?.signal; // ← fallback
-
-  console.log('signal:', signal);
   // Not working as expected in Bun
   await new Promise<void>((resolve, reject) => {
     const timeout = setTimeout(() => resolve(), 3000);

@@ -5,18 +5,30 @@ import { z } from 'zod';
 const EnvSchema = z.object({
   // Database
   DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
-  UPSTASH_REDIS_URL: z.string().min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
+  UPSTASH_REDIS_URL: z
+    .string()
+    .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
   // BetterAuth
-  BETTER_AUTH_SECRET: z.string().min(1, 'ENV: BETTER_AUTH_SECRET is required and must be a non-empty string'),
+  BETTER_AUTH_SECRET: z
+    .string()
+    .min(1, 'ENV: BETTER_AUTH_SECRET is required and must be a non-empty string'),
   BETTER_AUTH_URL: z.string().min(1, 'ENV: BETTER_AUTH_URL is required and must be a non-empty string'),
   // Public
   PUBLIC_URL: z.string().min(1, 'ENV: PUBLIC_URL is required and must be a non-empty string'),
   PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string'),
   // Social Auth
-  GOOGLE_CLIENT_ID: z.string().min(1, 'ENV: GOOGLE_CLIENT_ID is required and must be a non-empty string'),
-  GOOGLE_CLIENT_SECRET: z.string().min(1, 'ENV: GOOGLE_CLIENT_SECRET is required and must be a non-empty string'),
-  GITHUB_CLIENT_ID: z.string().min(1, 'ENV: GITHUB_CLIENT_ID is required and must be a non-empty string'),
-  GITHUB_CLIENT_SECRET: z.string().min(1, 'ENV: GITHUB_CLIENT_SECRET is required and must be a non-empty string'),
+  GOOGLE_CLIENT_ID: z
+    .string()
+    .min(1, 'ENV: GOOGLE_CLIENT_ID is required and must be a non-empty string'),
+  GOOGLE_CLIENT_SECRET: z
+    .string()
+    .min(1, 'ENV: GOOGLE_CLIENT_SECRET is required and must be a non-empty string'),
+  GITHUB_CLIENT_ID: z
+    .string()
+    .min(1, 'ENV: GITHUB_CLIENT_ID is required and must be a non-empty string'),
+  GITHUB_CLIENT_SECRET: z
+    .string()
+    .min(1, 'ENV: GITHUB_CLIENT_SECRET is required and must be a non-empty string'),
   // Email
   RESEND_EMAIL: z.string().min(1, 'ENV: RESEND_EMAIL is required and must be a non-empty string'),
   // Security
