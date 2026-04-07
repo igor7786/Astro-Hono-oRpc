@@ -16,9 +16,9 @@ const EnvSchema = z.object({
   UPSTASH_REDIS_URL: z.string().min(1, 'UPSTASH_REDIS_URL is required and must be a non-empty string'),
   ARCJET_KEY: z.string().min(1, 'ARCJET_KEY is required and must be a non-empty string'),
   ARCJET_ENV: z.string().min(1, 'ARCJET_ENV is required and must be a non-empty string'),
-  CLOUD_TOKEN: z.string().min(1),
+  CLOUD_TOKEN: z.string().min(1, 'CLOUD_TOKEN is required and must be a non-empty string'),
   NODE_ENV: z.enum(['development', 'production', 'test', 'preview']).default('development'),
-  QWEN_API_KEY: z.string().min(1),
+  QWEN_API_KEY: z.string().min(1, 'QWEN_API_KEY is required and must be a non-empty string'),
 });
 
 // Type inferred from schema
