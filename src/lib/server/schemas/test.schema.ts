@@ -7,3 +7,5 @@ export const testSchema = z.object({
     .max(40, { message: 'Name must be at most 40 characters long' })
     .default('John Doe'),
 });
+
+export type TestInput = z.infer<typeof testSchema>;
