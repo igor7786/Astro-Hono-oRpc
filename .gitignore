@@ -709,6 +709,9 @@ pip-selfcheck.json
 ### qwen ###
 .qwen
 QWEN.md
+### GEMINI ###
+.gemini
+GEMINI.md
 
 ### exclude ###
 !**/frontend/src/lib

@@ -29,11 +29,15 @@ Copy `.example.env` to `.env` and fill in the required values:
 cp .example.env .env
 ```
 
+> **Note:** The `.example.env` file contains minimal defaults. The application validates a comprehensive set of environment variables at startup (see table below). Variables not in `.example.env` must still be provided in your `.env` file.
+
 #### Required Environment Variables
 
 | Variable | Description |
 |----------|-------------|
+| `BUN_FS_POLLING` | Enable Bun file system polling (set to `1`) |
 | `DB_URL` | Database connection string (NeonDB/PostgreSQL) |
+| `UPSTASH_REDIS_URL` | Upstash Redis connection URL |
 | `BETTER_AUTH_SECRET` | Secret key for Better Auth session encryption |
 | `BETTER_AUTH_URL` | Base URL for Better Auth (e.g., `http://localhost:4321`) |
 | `PUBLIC_URL` | Public-facing application URL |
@@ -43,13 +47,10 @@ cp .example.env .env
 | `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret |
 | `RESEND_EMAIL` | Resend API key for transactional emails |
-| `UPSTASH_REDIS_URL` | Upstash Redis connection URL |
 | `ARCJET_KEY` | Arcjet security API key |
 | `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) |
 | `CLOUD_TOKEN` | Cloud service authentication token |
 | `QWEN_API_KEY` | Qwen API key for AI features |
-| `PANGOLIN_ENDPOINT` | Pangolin service endpoint |
-| `NEWT_SECRET` | Newt service secret key |
 | `NODE_ENV` | Runtime environment (`development`, `production`, `test`, `preview`). Defaults to `development` |
 
 #### Environment Validation
@@ -90,6 +91,9 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   ├── favicon.ico
 │   └── favicon.svg
 ├── src/
+│   ├── assets/                   # Static image assets
+│   │   ├── astro.svg
+│   │   └── background.svg
 │   ├── components/
 │   │   ├── astrocomp/          # Astro-native UI components (SSR, no hydration)
 │   │   │   └── Welcome.astro
@@ -119,10 +123,10 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │   │   ├── middlewares/
 │   │   │   │   └── validation-errors.ts  # oRPC validation error handler
 │   │   │   ├── procedures/
-│   │   │   │   └── base.ts     # Base oRPC procedure with error definitions
+│   │   │   │   └── base.ts     # Base oRPC procedure with context & middleware
 │   │   │   ├── routers/
 │   │   │   │   ├── all.routers.ts  # Router aggregator
-│   │   │   │   └── test.ts     # Example oRPC router
+│   │   │   │   └── test.ts     # Example oRPC router (test + slowTest)
 │   │   │   ├── schemas/
 │   │   │   │   └── test.schema.ts  # Zod validation schemas
 │   │   │   ├── server.client.ts    # Server-side oRPC client
@@ -130,8 +134,7 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │   ├── stores/
 │   │   │   └── ssr.ts          # Nanostores for SSR state management
 │   │   └── tanstack-query/     # TanStack Query configuration
-│   │       ├── browserClient.ts    # Browser client with IndexedDB persistence
-│   │       ├── mainQuery.ts        # Query client factory
+│   │       ├── mainQuery.ts        # Query client factory (browser + IndexedDB)
 │   │       ├── query.ts            # Server-side query client
 │   │       ├── QueryDevTools.tsx   # TanStack Query DevTools component
 │   │       └── SsrQueryProvider.tsx  # SSR hydration provider
@@ -141,8 +144,9 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │   └── index.astro         # Home page with SSR data fetching
 │   ├── scripts/
 │   │   └── theme-checker.js    # Dark mode detection script
-│   └── styles/
-│       └── global.css          # Tailwind CSS + shadcn/ui styles
+│   ├── styles/
+│   │   └── global.css          # Tailwind CSS + shadcn/ui styles
+│   └── middleware.ts           # Astro middleware (cache control for HTML)
 ├── astro.config.mjs            # Astro configuration (SSR, Node adapter)
 ├── components.json             # shadcn/ui configuration
 ├── package.json
@@ -256,6 +260,39 @@ const result = await client.test({ name: 'World' });
 | 403 | `FORBIDDEN` | If name is "admin" |
 | 422 | `INPUT_VALIDATION_FAILED` | Invalid input schema |
 
+#### POST `/api/rpc/testSlow`
+
+Slow test procedure demonstrating request cancellation and abort signal handling.
+
+**Description:** Simulates a slow operation (3 second delay) to test request cancellation.
+
+**Input Schema:**
+```typescript
+{
+  name: string
+}
+```
+
+**Output Schema:**
+```typescript
+{
+  name: string
+}
+```
+
+**Example Request:**
+```typescript
+import { client } from '@/lib/server/web.client';
+
+const result = await client.testSlow({ name: 'World' });
+// Returns: { name: 'Hello, World!' } after ~3 seconds
+```
+
+**Features:**
+- Supports `AbortSignal` for request cancellation
+- Returns `CLIENT_CLOSED_REQUEST` (499) when client aborts
+- Sets custom headers (`x-custom-header`) and cookies on client-side requests
+
 ---
 
 ## 🎯 TanStack Query Integration
@@ -272,11 +309,10 @@ const result = await client.test({ name: 'World' });
 
 The TanStack Query setup consists of:
 
-1. **Query Client Factory** (`mainQuery.ts`) - Creates configured QueryClient instances
+1. **Query Client Factory** (`mainQuery.ts`) - Creates configured QueryClient instances with IndexedDB persistence and SuperJSON serialization
 2. **Server Client** (`query.ts`) - Server-side query client for SSR
-3. **Browser Client** (`browserClient.ts`) - Browser client with IndexedDB persistence
-4. **SSR Provider** (`SsrQueryProvider.tsx`) - Hydration boundary component
-5. **Query DevTools** (`QueryDevTools.tsx`) - Development debugging tools
+3. **SSR Provider** (`SsrQueryProvider.tsx`) - Hydration boundary component
+4. **Query DevTools** (`QueryDevTools.tsx`) - Development debugging tools
 
 ### Usage Example
 
@@ -288,7 +324,7 @@ const data = await serverClient.test({ name: 'from SSR' });
 
 // Client-side with TanStack Query (TestTanstackQuery.tsx)
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@server/web.client';
 
 const { data, isLoading, error } = useQuery(
@@ -496,6 +532,9 @@ import Layout from '@/layouts/Layout.astro';
 | `bun dev` | Start development server at `localhost:4321` |
 | `bun build` | Build production site to `./dist/` |
 | `bun preview` | Preview production build locally |
+| `bun:dev` | Start development server with Bun (host mode) |
+| `bun:build` | Build production site with Bun |
+| `bun:preview` | Preview production build with Bun |
 | `bun astro ...` | Run Astro CLI commands (e.g., `astro add`, `astro check`) |
 | `bun ts:check` | Type check with TypeScript (no emit) |
 | `bun format` | Format code with Prettier |
@@ -593,7 +632,7 @@ const data = await serverClient.test({ name: 'SSR' });
 
 ```typescript
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/browserClient';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@server/web.client';
 
 const { data, isLoading } = useQuery(
@@ -657,12 +696,14 @@ No test framework is currently configured. Consider adding:
 - [TanStack Query Documentation](https://tanstack.com/query/latest)
 - [Tailwind CSS Documentation](https://tailwindcss.com)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
+- [base-ui Documentation](https://base-ui.com)
 - [Scalar Documentation](https://scalar.com)
 - [Better Auth Documentation](https://www.better-auth.com)
 - [Arcjet Documentation](https://docs.arcjet.com)
 - [Resend Documentation](https://resend.com/docs)
 - [Upstash Documentation](https://upstash.com/docs)
 - [Zod Documentation](https://zod.dev)
+- [Nanostores Documentation](https://github.com/nanostores/nanostores)
 
 ---
 
