@@ -5,14 +5,17 @@ import { testSchema } from '@server/schemas/test.schema';
 
 // GET route to list planets
 export const testRoute = base.test.handler(async ({ input, context, errors }) => {
-  const req = context.request;
-  console.log('🟢 Procedure called — check where this prints!');
-  console.log('Context request:', req?.url);
-
+  if (context.request) {
+    console.log('Request called on Client');
+    context.responseHeaders?.set('X-Request-Received', new Date().toISOString());
+  } else {
+    console.log('Request called on Server');
+  }
+  // ✅ This now actually works
+  context?.responseHeaders?.set('X-Custom-Header', 'Hello from oRPC!');
   if (input.name === 'admin') {
     throw errors.FORBIDDEN(); // uses default message
   }
-
   return { name: `Hello, ${input.name}!` };
 });
 

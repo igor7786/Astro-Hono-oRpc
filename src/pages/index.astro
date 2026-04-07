@@ -4,14 +4,17 @@ import { serverClient } from '@server/server.client';
 import { TestClient } from '@rcomp/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
 import SlowRequest from '@/components/reactcomp/SlowRequest';
+import { date } from 'astro:schema';
 let data: { name: string } = { name: '' };
 try {
-  data = await serverClient.test({ name: 'from oRPC Server' });
+  data = await serverClient.test(
+  { name: 'test' },
+);
+
 } catch (error: any) {
   data = { name: error.message };
 }
-
-const names = ['alice', 'bob', 'charlie'];
+const names = ['curt', 'bob', 'charlie'];
 const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
 
 const profiles = await Promise.all(
@@ -45,7 +48,7 @@ const props = {
   <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
   # Tanstack Query with oRPC
   {profiles.map((props) => <UserProfile {...props} slot="main" client:load />)}
-  <UserProfile {...props} slot="main" client:only="react" />
+   <UserProfile {...props} slot="main" client:only="react" />
   # Slow Request Test
   <SlowRequest slot="main" client:only="react" />
 </Layout>

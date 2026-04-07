@@ -4,8 +4,11 @@ import { logger } from 'hono/logger';
 import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
+import type { envServer } from '@/lib/env/server.env';
 
-export const app = new Hono().basePath('/api');
+type Env = { Bindings: typeof envServer };
+
+export const app = new Hono<Env>().basePath('/api');
 
 // ─── Global middleware ────────────────────────────────────────────────────────
 app.use('*', logger());
@@ -15,12 +18,7 @@ app.use('/rpc/*', async (c, next) => {
   // ✅ get signal directly from the incoming request
   const { matched, response } = await rpcHandler.handle(c.req.raw, {
     prefix: '/api/rpc',
-    context: {
-      request: c.req.raw,
-      response: c.res,
-      ctx: c,
-      signal: c.req.raw.signal,
-    },
+    context: { env: c.env },
   });
   if (matched) return c.newResponse(response.body, response);
   await next();
@@ -28,15 +26,31 @@ app.use('/rpc/*', async (c, next) => {
 
 // ─── OpenAPI handler ─────────────────────────────────────────────────────────────
 app.use('/openapi/*', async (c, next) => {
+  const context = {
+    request: c.req.raw,
+    response: c.res,
+    ctx: c,
+    signal: c.req.raw.signal,
+    env: c.env,
+    responseHeaders: new Headers(),
+  };
+
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
     prefix: '/api/openapi',
-    context: {
-      request: c.req.raw,
-      response: c.res,
-      ctx: c,
-    },
+    context,
   });
-  if (matched) return c.newResponse(response.body, response);
+  if (matched) {
+    // ✅ CORRECT: merge from context
+    context.responseHeaders.forEach((value, key) => {
+      c.header(key, value);
+    });
+    const finalResponse = c.newResponse(response.body, response);
+
+    console.log([...finalResponse.headers.entries()]);
+
+    return finalResponse;
+  }
+
   await next();
 });
 
