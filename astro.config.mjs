@@ -10,6 +10,9 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  server: {
+    allowedOrigins: ['*'], // ✅ dev only
+  },
   output: 'server',
   vite: {
     resolve: {
