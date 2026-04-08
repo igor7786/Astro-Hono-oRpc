@@ -5,6 +5,8 @@ import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
+import { generateLLMsMarkdown } from '@server/llms';
+import { createHtmlFromOpenApi } from '@scalar/openapi-to-markdown';
 
 type Env = { Bindings: typeof envServer };
 
@@ -34,24 +36,12 @@ app.use('/openapi/*', async (c, next) => {
     ctx: c,
     signal: c.req.raw.signal,
     env: c.env,
-    // responseHeaders: new Headers(),
   };
 
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
     prefix: '/api/openapi',
     context,
   });
-  // if (matched) {
-  //   // ✅ CORRECT: merge from context
-  //   context.responseHeaders.forEach((value, key) => {
-  //     c.header(key, value);
-  //   });
-  //   const finalResponse = c.newResponse(response.body, response);
-
-  //   console.log([...finalResponse.headers.entries()]);
-
-  //   return finalResponse;
-  // }
   if (matched) {
     return c.newResponse(response.body, response);
   }
@@ -69,6 +59,68 @@ app.get(
   })
 );
 
+// Markdown ──────────────────────────────────────────────────────────────────────────────
+app.get('/llms.txt', async (c) => {
+  // 1. Get OpenAPI schema from your handler
+  const { response } = await openApiHandler.handle(
+    new Request('http://internal/api/openapi/generate-schema'),
+    {
+      prefix: '/api/openapi',
+      context: { env: c.env },
+    }
+  );
+  if (!response) {
+    throw new Error('OpenAPI handler did not return a response');
+  }
+
+  // 2. Parse JSON
+  const openApiDoc = await response.json();
+
+  // 3. Convert to Markdown
+  const markdown = await generateLLMsMarkdown(openApiDoc);
+
+  // 4. Return as plain text
+  return c.text(markdown);
+});
+
+app.get('/html.llms', async (c) => {
+  // 1. Get OpenAPI schema from your handler
+  const { response } = await openApiHandler.handle(
+    new Request('http://internal/api/openapi/generate-schema'),
+    {
+      prefix: '/api/openapi',
+      context: { env: c.env },
+    }
+  );
+  if (!response) {
+    throw new Error('OpenAPI handler did not return a response');
+  }
+
+  // 2. Parse JSON
+  const openApiDoc = await response.json();
+
+  // 3. Convert to Markdown
+  const markdown = await generateLLMsMarkdown(openApiDoc);
+
+  // 4. Return as HTML
+  return c.html(
+    `<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scalar Galaxy</title>
+  <!-- Basic styling for semantic HTML tags (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <main class="container">
+    ${markdown}
+  </main>
+</body>
+</html>`
+  );
+});
+
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
@@ -81,3 +133,4 @@ export default app;
 // /api/docs                       → Scalar (all APIs combined)
 // /api/health                     → health check
 // /api/auth/*                     → Better Auth (when added)
+// /api/llms.txt                   → Markdown (for Ai)
