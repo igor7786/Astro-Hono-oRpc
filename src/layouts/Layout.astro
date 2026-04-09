@@ -3,6 +3,8 @@ import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import themeScript from '@/scripts/theme-checker.js?raw';
 const { title } = Astro.props;
 import '@/styles/global.css';
+import { Toaster } from "@rcomp/ui/sonner"
+
 ---
 
 <!doctype html>
@@ -20,6 +22,7 @@ import '@/styles/global.css';
       <slot name="header" />
       <slot name="main" />
       <slot name="footer" />
+      <Toaster client:load position="top-right" />
     </div>
     <DevTools client:only="react" />
   </body><!-- Inline the theme-checker.js script -->
