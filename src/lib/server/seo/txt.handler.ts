@@ -1,23 +1,11 @@
 import { generateLLMsMarkdown } from '@server/seo/llms';
+import { generateOpenApiSchema } from '../schemas/oenapi.schema';
 
-export async function llmsTxtHandler(openApiHandler: any, env: any) {
+export async function llmsTxtHandler() {
   // 1. Get OpenAPI schema
-  const { response } = await openApiHandler.handle(
-    new Request('http://internal/api/openapi/generate-schema'),
-    {
-      prefix: '/api/openapi',
-      context: { env },
-    }
-  );
+  const openApiDoc = await generateOpenApiSchema();
 
-  if (!response) {
-    throw new Error('OpenAPI handler did not return a response');
-  }
-
-  // 2. Parse JSON
-  const openApiDoc = await response.json();
-
-  // 3. Convert to Markdown
+  // 2. Convert to Markdown
   const markdown = await generateLLMsMarkdown(openApiDoc);
 
   return markdown;

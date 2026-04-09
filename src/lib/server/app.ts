@@ -62,7 +62,7 @@ app.get(
 
 // Markdown ──────────────────────────────────────────────────────────────────────────────
 app.get('/llms.txt', async (c) => {
-  const markdown = await llmsTxtHandler(openApiHandler, c.env);
+  const markdown = await llmsTxtHandler();
 
   return c.text(markdown, 200, {
     'Content-Type': 'text/plain; charset=utf-8',
@@ -71,7 +71,7 @@ app.get('/llms.txt', async (c) => {
 });
 
 app.get('/llms.html', async (c) => {
-  const html = await htmlLlmsHandler(openApiHandler, c.env);
+  const html = await htmlLlmsHandler();
 
   return c.html(html);
 });
@@ -98,6 +98,9 @@ app.get('/og', async (c) => {
   // // 💾 store in cache
   // cache.set(title, buffer);
 
+  if (!image) {
+    return c.text('Failed to generate OG image', 500);
+  }
   // 🚀 response
   return c.body(image, 200, {
     'Content-Type': 'image/png',
