@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@server/web.client';
 import { $testData } from '@/lib/stores/ssr';
-import { Button } from '@rcomp/ui/button';;
+import { Button } from '@rcomp/ui/button';
 
 export const useTest = (name: string, initialData?: { name: string }) => {
   const client = getQueryClient();
@@ -19,19 +19,14 @@ export const useTest = (name: string, initialData?: { name: string }) => {
       queryKey: ['test', { name }],
       initialData: cachedData ?? initialData, // cache → SSR prop
       initialDataUpdatedAt: 0,
-      placeholderData: (prev) => prev,        // show previous while fetching
+      placeholderData: (prev) => prev, // show previous while fetching
       staleTime: 5000,
-      enabled: !cachedData,                   // skip if cached
+      enabled: !cachedData, // skip if cached
       retry: false,
     }),
     client
   );
 };
-
-
-
-
-
 
 interface Props {
   initialData?: { name: string };

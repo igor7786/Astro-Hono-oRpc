@@ -1,10 +1,10 @@
 ---
+import SEO from '@acomp/SEO.astro';
 import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import themeScript from '@/scripts/theme-checker.js?raw';
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 import '@/styles/global.css';
-import { Toaster } from "@rcomp/ui/sonner"
-
+import { Toaster } from '@rcomp/ui/sonner';
 ---
 
 <!doctype html>
@@ -14,7 +14,7 @@ import { Toaster } from "@rcomp/ui/sonner"
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <SEO title={title} description={description} />
     <script set:html={themeScript} />
   </head>
   <body>

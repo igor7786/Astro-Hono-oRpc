@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fast-web-tech.co.uk/sitemap.xml

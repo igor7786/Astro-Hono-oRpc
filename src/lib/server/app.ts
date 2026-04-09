@@ -5,8 +5,9 @@ import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
-import { generateLLMsMarkdown } from '@server/llms';
-import { createHtmlFromOpenApi } from '@scalar/openapi-to-markdown';
+import { ogHandler } from './seo/og.handler';
+import { htmlLlmsHandler } from '@server/seo/llms.handler';
+import { llmsTxtHandler } from '@server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };
 
@@ -61,64 +62,48 @@ app.get(
 
 // Markdown ──────────────────────────────────────────────────────────────────────────────
 app.get('/llms.txt', async (c) => {
-  // 1. Get OpenAPI schema from your handler
-  const { response } = await openApiHandler.handle(
-    new Request('http://internal/api/openapi/generate-schema'),
-    {
-      prefix: '/api/openapi',
-      context: { env: c.env },
-    }
-  );
-  if (!response) {
-    throw new Error('OpenAPI handler did not return a response');
-  }
+  const markdown = await llmsTxtHandler(openApiHandler, c.env);
 
-  // 2. Parse JSON
-  const openApiDoc = await response.json();
-
-  // 3. Convert to Markdown
-  const markdown = await generateLLMsMarkdown(openApiDoc);
-
-  // 4. Return as plain text
-  return c.text(markdown);
+  return c.text(markdown, 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600',
+  });
 });
 
-app.get('/html.llms', async (c) => {
-  // 1. Get OpenAPI schema from your handler
-  const { response } = await openApiHandler.handle(
-    new Request('http://internal/api/openapi/generate-schema'),
-    {
-      prefix: '/api/openapi',
-      context: { env: c.env },
-    }
-  );
-  if (!response) {
-    throw new Error('OpenAPI handler did not return a response');
-  }
+app.get('/llms.html', async (c) => {
+  const html = await htmlLlmsHandler(openApiHandler, c.env);
 
-  // 2. Parse JSON
-  const openApiDoc = await response.json();
+  return c.html(html);
+});
+// ─── Satori OG ────────────────────────────────────────
 
-  // 3. Convert to Markdown
-  const markdown = await generateLLMsMarkdown(openApiDoc);
+app.get('/og', async (c) => {
+  const rawTitle = c.req.query('title') ?? 'Default Title';
 
-  // 4. Return as HTML
-  return c.html(
-    `<!doctype html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <title>Scalar Galaxy</title>
-  <!-- Basic styling for semantic HTML tags (optional) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-</head>
-<body>
-  <main class="container">
-    ${markdown}
-  </main>
-</body>
-</html>`
-  );
+  // 🔒 sanitize input
+  const title = String(rawTitle).slice(0, 80);
+
+  // ⚡ cache check
+  // if (cache.has(title)) {
+  //   return c.body(cache.get(title)!, 200, {
+  //     'Content-Type': 'image/png',
+  //     'Cache-Control': 'public, max-age=31536000, immutable',
+  //   });
+  // }
+
+  // 📦 load local font (FAST + RELIABLE)
+
+  const image = await ogHandler(title);
+
+  // // 💾 store in cache
+  // cache.set(title, buffer);
+
+  // 🚀 response
+  return c.body(image, 200, {
+    'Content-Type': 'image/png',
+    'Cache-Control': 'public, max-age=31536000, immutable',
+    'Access-Control-Allow-Origin': '*',
+  });
 });
 
 // ─── Health check ─────────────────────────────────────────────────────────────
@@ -134,3 +119,5 @@ export default app;
 // /api/health                     → health check
 // /api/auth/*                     → Better Auth (when added)
 // /api/llms.txt                   → Markdown (for Ai)
+// /api/html.llms                  → HTML (for browsers)
+// /api/og                        → Open Graph image

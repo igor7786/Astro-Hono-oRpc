@@ -5,8 +5,12 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
+import sitemap from '@astrojs/sitemap';
+
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 export default defineConfig({
+  site: 'https://fast-web-tech.co.uk',
+
   devToolbar: {
     enabled: false,
   },
@@ -26,7 +30,7 @@ export default defineConfig({
     },
     plugins: [tailwindcss()],
   },
-  integrations: [react({ include: ['**/reactcomp/**/*'] })],
+  integrations: [react({ include: ['**/reactcomp/**/*'] }), sitemap()],
   adapter: node({
     mode: 'standalone',
   }),
