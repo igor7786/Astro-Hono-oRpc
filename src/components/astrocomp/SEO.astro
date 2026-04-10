@@ -22,9 +22,7 @@ const {
 } = Astro.props;
 
 // ✅ build OG image URL using our dynamic endpoint
-const ogParams = [title, description, author, date]
-  .map(v => encodeURIComponent(v ?? ''))
-  .join('/');
+const ogParams = [title, description, author, date].map((v) => encodeURIComponent(v ?? '')).join('/');
 
 const ogImageUrl = `${Astro.site}api/og/${ogParams}`;
 ---
@@ -59,12 +57,15 @@ const ogImageUrl = `${Astro.site}api/og/${ogParams}`;
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- JSON-LD -->
-<script type="application/ld+json" set:html={JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': type === 'article' ? 'Article' : 'WebSite',
-  name: title,
-  url,
-  description,
-  ...(author && { author: { '@type': 'Person', name: author } }),
-  ...(date && { datePublished: date }),
-})} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': type === 'article' ? 'Article' : 'WebSite',
+    name: title,
+    url,
+    description,
+    ...(author && { author: { '@type': 'Person', name: author } }),
+    ...(date && { datePublished: date }),
+  })}
+/>

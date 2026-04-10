@@ -23,13 +23,7 @@ const { title, description, author, date, type } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <SEO
-      title={title}
-      description={description}
-      author={author}
-      date={date}
-      type={type}
-    />
+    <SEO title={title} description={description} author={author} date={date} type={type} />
     <script set:html={themeScript} />
   </head>
   <body>
