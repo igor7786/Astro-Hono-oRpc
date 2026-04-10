@@ -1,0 +1,21 @@
+---
+// src/pages/og-test.astro
+const cases = [
+  { title: 'Hello saas', description: 'Test description', author: 'Igor', date: 'Apr 10, 2026' },
+  { title: 'No Description' },
+  { title: 'With Author Only', author: 'Igsor' },
+];
+---
+
+<html>
+  <body style="background: #111; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+    {cases.map(({ title, description, author, date }) => (
+      <img
+        src={`api/og/${[title, description, author, date]
+          .map(v => encodeURIComponent(v ?? ''))
+          .join('/')}`}
+        style="width: 600px; border-radius: 8px;"
+      />
+    ))}
+  </body>
+</html>

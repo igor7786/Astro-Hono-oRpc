@@ -5,7 +5,7 @@ import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
-import { ogHandler } from '@server/seo/og.handler';
+import { og } from '@server/seo/og.handler';
 import { llmsHtml } from '@server/seo/html.handler';
 import { llmsTxt } from '@server/seo/txt.handler';
 
@@ -65,7 +65,7 @@ app.route('/', llmsTxt);
 app.route('/', llmsHtml);
 // ─── Satori OG ────────────────────────────────────────
 
-app.route('/', ogHandler);
+app.route('/', og);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
