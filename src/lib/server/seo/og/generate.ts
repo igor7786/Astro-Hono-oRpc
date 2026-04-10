@@ -13,7 +13,7 @@ async function getFont(): Promise<ArrayBuffer> {
     const file = Bun.file(path);
     if (!(await file.exists())) throw new Error(`Font not found: ${path}`);
     _fontBuffer = await file.arrayBuffer();
-    console.log('✅ Inter font loaded');
+    console.log('✅ Geist-font loaded');
   }
   return _fontBuffer;
 }

@@ -32,6 +32,7 @@ pkg/
 */yarn-error.log*
 */pnpm-debug.log*
 src/assets/*
+/public/fonts
 ### CompressedArchive ###
 
 ### Mostly from https://en.wikipedia.org/wiki/List_of_archive_formats
