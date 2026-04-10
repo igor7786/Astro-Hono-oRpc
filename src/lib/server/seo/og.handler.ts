@@ -4,18 +4,20 @@ import { generateOgImage } from '@/lib/server/seo/og/Generate';
 export const og = new Hono();
 
 og.get('/*', async (c) => {
-  const raw = c.req.path.replace(/^\/api\/og\//, '');
-  const [title, description, author, date] = raw.split('/').map(decodeURIComponent);
+  const title = c.req.query('title') ?? 'Fast Web Tech';
+  const description = c.req.query('description') ?? undefined;
+  const author = c.req.query('author') ?? undefined;
+  const date = c.req.query('date') ?? undefined;
 
   try {
-    const png = await generateOgImage({
-      title: title || 'Fast Web Tech',
-      description: description || undefined,
-      author: author || undefined,
-      date: date || undefined,
+    const image = await generateOgImage({
+      title,
+      description,
+      author,
+      date,
     });
 
-    return new Response(new Uint8Array(png), {
+    return new Response(new Uint8Array(image), {
       headers: {
         'Content-Type': 'image/png',
         'Cache-Control': 'public, max-age=31536000, immutable',

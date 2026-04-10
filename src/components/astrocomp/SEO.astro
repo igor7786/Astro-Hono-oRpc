@@ -21,42 +21,46 @@ const {
   siteUrl = 'fast-web-tech.co.uk',
 } = Astro.props;
 
-// ✅ build OG image URL using our dynamic endpoint
-const ogParams = [title, description, author, date].map((v) => encodeURIComponent(v ?? '')).join('/');
+// 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
+const ogUrl = new URL('/api/og', Astro.site);
 
-const ogImageUrl = `${Astro.site}api/og/${ogParams}`;
+ogUrl.searchParams.set('title', title);
+ogUrl.searchParams.set('description', description);
+
+if (author) ogUrl.searchParams.set('author', author);
+if (date) ogUrl.searchParams.set('date', date);
 ---
 
+<!-- BASIC SEO -->
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#0f172a" />
-
 <link rel="canonical" href={url} />
 
-<!-- Open Graph -->
+<!-- OPEN GRAPH -->
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
-<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image" content={ogUrl.toString()} />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 
-<!-- Twitter -->
+<!-- TWITTER -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@yourhandle" />
 <meta name="twitter:creator" content="@yourhandle" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image" content={ogUrl.toString()} />
 
-<!-- Sitemap -->
+<!-- SITEMAP -->
 <link rel="sitemap" href="/sitemap-index.xml" />
 
-<!-- JSON-LD -->
+<!-- JSON-LD STRUCTURED DATA -->
 <script
   type="application/ld+json"
   set:html={JSON.stringify({
@@ -65,7 +69,14 @@ const ogImageUrl = `${Astro.site}api/og/${ogParams}`;
     name: title,
     url,
     description,
-    ...(author && { author: { '@type': 'Person', name: author } }),
-    ...(date && { datePublished: date }),
+    ...(author && {
+      author: {
+        '@type': 'Person',
+        name: author,
+      },
+    }),
+    ...(date && {
+      datePublished: date,
+    }),
   })}
 />

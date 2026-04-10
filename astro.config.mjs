@@ -98,6 +98,7 @@ export default defineConfig({
       filter(page) {
         // Exclude admin, auth, user-specific routes
         if (page.includes('/admin') || page.includes('/dashboard')) return false;
+        if (page.includes('/og') || page.includes('/api')) return false;
         // Exclude dynamic routes with params you don't want indexed
         if (page.includes('/user/') || page.includes('/account/')) return false;
         return true;
