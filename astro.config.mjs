@@ -9,7 +9,7 @@ import sitemap from '@astrojs/sitemap';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 export default defineConfig({
-  site: 'https://fast-web-tech.co.uk',
+  site: 'https://marathon-caramel-perfectly.ngrok-free.dev',
   trailingSlash: 'ignore',
   compressHTML: false,
 
@@ -18,6 +18,9 @@ export default defineConfig({
   },
   server: {
     allowedOrigins: ['*'], // ✅ dev only
+  },
+  server: {
+    allowedHosts: ['marathon-caramel-perfectly.ngrok-free.dev'],
   },
   output: 'server',
   adapter: node({
@@ -37,51 +40,51 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-    fonts: [
-      // ✅ Inter Variable — body text
-      {
-        provider: fontProviders.fontsource(),
-        name: 'Inter',
-        cssVariable: '--font-sans',
-        fallbacks: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      },
+  fonts: [
+    // ✅ Inter Variable — body text
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Inter',
+      cssVariable: '--font-sans',
+      fallbacks: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
 
-      // ✅ CalSans — headings (local file)
-      // {
-      //   provider: fontProviders.local(),
-      //   name: 'CalSans',
-      //   cssVariable: '--font-heading',
-      //   fallbacks: ['CalSans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      //   options: {
-      //     variants: [
-      //       {
-      //         weight: 600,
-      //         style: 'normal',
-      //         src: ['./public/fonts/CalSans-SemiBold.ttf'],
-      //       },
-      //     ],
-      //   },
-      // },
+    // ✅ CalSans — headings (local file)
+    // {
+    //   provider: fontProviders.local(),
+    //   name: 'CalSans',
+    //   cssVariable: '--font-heading',
+    //   fallbacks: ['CalSans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+    //   options: {
+    //     variants: [
+    //       {
+    //         weight: 600,
+    //         style: 'normal',
+    //         src: ['./public/fonts/CalSans-SemiBold.ttf'],
+    //       },
+    //     ],
+    //   },
+    // },
 
-      // // ✅ JetBrains Mono — code blocks
-      // {
-      //   provider: fontProviders.fontsource(),
+    // // ✅ JetBrains Mono — code blocks
+    // {
+    //   provider: fontProviders.fontsource(),
 
-      //   name: 'JetBrains Mono',
-      //   cssVariable: '--font-mono',
-      //   fallbacks: [
-      //     'JetBrains Mono',
-      //     'ui-monospace',
-      //     'SF Mono',
-      //     'SF Mono Regular',
-      //     'Menlo',
-      //     'Monaco',
-      //     'Consolas',
-      //     'Courier New',
-      //     'monospace',
-      //   ],
-      // },
-    ],
+    //   name: 'JetBrains Mono',
+    //   cssVariable: '--font-mono',
+    //   fallbacks: [
+    //     'JetBrains Mono',
+    //     'ui-monospace',
+    //     'SF Mono',
+    //     'SF Mono Regular',
+    //     'Menlo',
+    //     'Monaco',
+    //     'Consolas',
+    //     'Courier New',
+    //     'monospace',
+    //   ],
+    // },
+  ],
   markdown: {
     shikiConfig: {
       theme: 'dracula',

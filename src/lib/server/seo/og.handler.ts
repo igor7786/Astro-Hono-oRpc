@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { generateOgImage } from '@/lib/server/seo/og/generate';
+import { generateOgImage } from '@/lib/server/seo/og/Generate';
 
 export const og = new Hono();
 

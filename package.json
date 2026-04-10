@@ -14,7 +14,8 @@
     "bun:build": "bunx --bun astro build",
     "bun:preview": "bunx --bun astro preview",
     "ts:check": "bunx tsc --noEmit",
-    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\""
+    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
+    "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts"
   },
   "dependencies": {
     "@astrojs/node": "10.0.4",
@@ -36,6 +37,7 @@
     "@scalar/hono-api-reference": "^0.10.6",
     "@scalar/openapi-to-markdown": "^0.5.1",
     "@tailwindcss/vite": "^4.2.2",
+    "@takumi-rs/image-response": "^1.0.0",
     "@tanstack/query-async-storage-persister": "^5.94.5",
     "@tanstack/react-query": "^5.94.5",
     "@tanstack/react-query-persist-client": "^5.94.5",
