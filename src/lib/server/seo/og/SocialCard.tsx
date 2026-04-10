@@ -1,4 +1,3 @@
-// src/lib/server/seo/og/SocialCard.tsx
 export interface SocialCardProps {
   title: string;
   description?: string;
@@ -9,10 +8,10 @@ export interface SocialCardProps {
 }
 
 const colors = {
-  bg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+  bg: '#0f172a',
   primary: '#60a5fa',
   text: '#ffffff',
-  muted: 'rgba(255,255,255,0.85)',
+  muted: 'rgba(255,255,255,0.75)',
   yellow: '#facc15',
   green: '#4ade80',
   orange: '#fb923c',
@@ -26,10 +25,9 @@ const el = (type: string, props: Record<string, any>, ...children: any[]) => ({
   },
 });
 
-// ✅ Lightning — yellow
 const LightningIcon = el(
   'svg',
-  { width: 28, height: 28, viewBox: '0 0 24 24', fill: 'none' },
+  { width: 32, height: 32, viewBox: '0 0 24 24', fill: 'none' },
   el('path', {
     d: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
     fill: '#facc15',
@@ -40,10 +38,9 @@ const LightningIcon = el(
   })
 );
 
-// ✅ Person — green
 const PersonIcon = el(
   'svg',
-  { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none' },
+  { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none' },
   el('path', {
     d: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2',
     stroke: '#4ade80',
@@ -62,10 +59,9 @@ const PersonIcon = el(
   })
 );
 
-// ✅ Calendar — orange
 const CalendarIcon = el(
   'svg',
-  { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none' },
+  { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none' },
   el('rect', {
     x: 3,
     y: 4,
@@ -87,15 +83,7 @@ const CalendarIcon = el(
     strokeWidth: 2,
     strokeLinecap: 'round',
   }),
-  el('line', {
-    x1: 8,
-    y1: 2,
-    x2: 8,
-    y2: 6,
-    stroke: '#fb923c',
-    strokeWidth: 2,
-    strokeLinecap: 'round',
-  }),
+  el('line', { x1: 8, y1: 2, x2: 8, y2: 6, stroke: '#fb923c', strokeWidth: 2, strokeLinecap: 'round' }),
   el('line', {
     x1: 3,
     y1: 10,
@@ -121,148 +109,121 @@ export function SocialCard({
       style: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         width: 1200,
         height: 630,
-        padding: 60,
-        fontFamily: 'Inter, system-ui, sans-serif',
-        background: colors.bg,
+        backgroundColor: colors.bg,
         color: colors.text,
-        position: 'relative',
-        overflow: 'hidden',
+        fontFamily: 'Inter, system-ui, sans-serif',
       },
     },
 
-    // HEADER
-    el(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-        },
+    // ✅ accent line — top row, full width
+    el('div', {
+      style: {
+        display: 'flex',
+        width: 1200,
+        height: 6,
+        background: 'linear-gradient(90deg, #60a5fa, #4ade80, #fb923c)',
       },
-      LightningIcon, // ✅ yellow lightning
-      el(
-        'span',
-        {
-          style: {
-            display: 'flex',
-            fontWeight: 700,
-            fontSize: 28,
-            color: colors.primary,
-          },
-        },
-        siteName
-      ),
-      el(
-        'span',
-        {
-          style: {
-            display: 'flex',
-            fontSize: 18,
-            color: colors.muted,
-            marginLeft: 8,
-          },
-        },
-        siteUrl
-      )
-    ),
+    }),
 
-    // CONTENT
+    // ✅ main content — padded area
     el(
       'div',
       {
         style: {
           display: 'flex',
           flexDirection: 'column',
-          gap: 16,
+          justifyContent: 'space-between',
+          flex: 1,
+          padding: 64,
         },
       },
+
+      // HEADER
       el(
         'div',
-        {
-          style: {
-            display: 'flex',
-            fontSize: 60,
-            fontWeight: 800,
-            lineHeight: 1.1,
-            letterSpacing: '-0.03em',
-            color: colors.text,
+        { style: { display: 'flex', alignItems: 'center', gap: 12 } },
+        LightningIcon,
+        el(
+          'span',
+          {
+            style: { display: 'flex', fontWeight: 700, fontSize: 28, color: colors.primary },
           },
-        },
-        title
+          siteName
+        ),
+        el(
+          'span',
+          {
+            style: { display: 'flex', fontSize: 18, color: colors.muted, marginLeft: 8 },
+          },
+          siteUrl
+        )
       ),
-      description &&
+
+      // CONTENT
+      el(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: 20 } },
         el(
           'div',
           {
             style: {
               display: 'flex',
-              fontSize: 26,
-              color: colors.muted,
-              lineHeight: 1.4,
-              maxWidth: 900,
+              fontSize: 64,
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              color: colors.text,
             },
           },
-          description
-        )
-    ),
-
-    // FOOTER
-    (author || date) &&
-      el(
-        'div',
-        {
-          style: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 20,
-            fontSize: 22,
-          },
-        },
-        author &&
+          title
+        ),
+        description &&
           el(
             'div',
             {
               style: {
                 display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                fontWeight: 600,
-                color: colors.green, // ✅ green author
-              },
-            },
-            PersonIcon,
-            el('span', { style: { display: 'flex' } }, author)
-          ),
-        date &&
-          author &&
-          el(
-            'span',
-            {
-              style: {
-                display: 'flex',
+                fontSize: 26,
                 color: colors.muted,
+                lineHeight: 1.5,
+                maxWidth: 900,
               },
             },
-            '•'
-          ),
-        date &&
-          el(
-            'div',
-            {
-              style: {
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                color: colors.orange, // ✅ orange date
-              },
-            },
-            CalendarIcon,
-            el('span', { style: { display: 'flex' } }, date)
+            description
           )
-      )
+      ),
+
+      // FOOTER
+      (author || date) &&
+        el(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: 24, fontSize: 22 } },
+          author &&
+            el(
+              'div',
+              {
+                style: {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  fontWeight: 600,
+                  color: colors.green,
+                },
+              },
+              PersonIcon,
+              el('span', { style: { display: 'flex' } }, author)
+            ),
+          date && author && el('span', { style: { display: 'flex', color: colors.muted } }, '•'),
+          date &&
+            el(
+              'div',
+              { style: { display: 'flex', alignItems: 'center', gap: 10, color: colors.orange } },
+              CalendarIcon,
+              el('span', { style: { display: 'flex' } }, date)
+            )
+        )
+    )
   );
 }

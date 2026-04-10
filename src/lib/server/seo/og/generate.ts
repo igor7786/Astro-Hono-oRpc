@@ -1,36 +1,42 @@
-import satori from 'satori';
-import { Resvg } from '@resvg/resvg-js';
+import satori, { type SatoriOptions } from 'satori';
+import sharp from 'sharp';
 import { join } from 'path';
 import { SocialCard, type SocialCardProps } from './SocialCard';
 
 const FONTS_DIR = join(process.cwd(), 'public/fonts');
 
-let _fontBuffer: ArrayBuffer | null = null;
+let _satoriOptions: SatoriOptions | null = null;
 
-async function getFont(): Promise<ArrayBuffer> {
-  if (!_fontBuffer) {
-    const path = join(FONTS_DIR, 'Inter-Bold.ttf');
-    const file = Bun.file(path);
-    if (!(await file.exists())) throw new Error(`Font not found: ${path}`);
-    _fontBuffer = await file.arrayBuffer();
-    console.log('✅ Geist-font loaded');
+async function getSatoriOptions(): Promise<SatoriOptions> {
+  if (!_satoriOptions) {
+    const file = Bun.file(join(FONTS_DIR, 'Inter-Bold.ttf'));
+    if (!(await file.exists())) throw new Error('Inter-Bold.ttf not found in public/fonts/');
+    const fontData = await file.arrayBuffer();
+
+    _satoriOptions = {
+      width: 1200,
+      height: 630,
+      fonts: [
+        { name: 'Inter', data: fontData, weight: 400, style: 'normal' },
+        { name: 'Inter', data: fontData, weight: 700, style: 'normal' },
+        { name: 'Inter', data: fontData, weight: 800, style: 'normal' },
+      ],
+    };
   }
-  return _fontBuffer;
+  return _satoriOptions;
 }
 
-export async function generateOgImage(props: SocialCardProps): Promise<Uint8Array> {
-  const fontBuffer = await getFont();
+export async function generateOgImage(props: SocialCardProps): Promise<Buffer> {
+  const options = await getSatoriOptions();
 
-  const svg = await satori(SocialCard(props) as any, {
-    width: 1200,
-    height: 630,
-    fonts: [
-      { name: 'Inter', data: fontBuffer, weight: 400, style: 'normal' },
-      { name: 'Inter', data: fontBuffer, weight: 700, style: 'normal' },
-      { name: 'Inter', data: fontBuffer, weight: 800, style: 'normal' },
-    ],
-  });
+  const svg = await satori(SocialCard(props) as any, options);
 
-  const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
-  return resvg.render().asPng();
+  // ✅ sharp — better compression than resvg
+  return sharp(Buffer.from(svg))
+    .png({
+      compressionLevel: 9,
+      adaptiveFiltering: true,
+      quality: 80,
+    })
+    .toBuffer();
 }
