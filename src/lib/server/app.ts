@@ -5,9 +5,9 @@ import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
-import { ogHandler } from './seo/og.handler';
-import { htmlLlmsHandler } from '@server/seo/llms.handler';
-import { llmsTxtHandler } from '@server/seo/txt.handler';
+import { ogHandler } from '@server/seo/og.handler';
+import { llmsHtml } from '@server/seo/html.handler';
+import { llmsTxt } from '@server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };
 
@@ -60,54 +60,12 @@ app.get(
   })
 );
 
-// Markdown ──────────────────────────────────────────────────────────────────────────────
-app.get('/llms.txt', async (c) => {
-  const markdown = await llmsTxtHandler();
-
-  return c.text(markdown, 200, {
-    'Content-Type': 'text/plain; charset=utf-8',
-    'Cache-Control': 'public, max-age=3600',
-  });
-});
-
-app.get('/llms.html', async (c) => {
-  const html = await htmlLlmsHandler();
-
-  return c.html(html);
-});
+//LLMS, Markdown, TXT ──────────────────────────────────────────────────────────────────────────────
+app.route('/', llmsTxt);
+app.route('/', llmsHtml);
 // ─── Satori OG ────────────────────────────────────────
 
-app.get('/og', async (c) => {
-  const rawTitle = c.req.query('title') ?? 'Default Title';
-
-  // 🔒 sanitize input
-  const title = String(rawTitle).slice(0, 80);
-
-  // ⚡ cache check
-  // if (cache.has(title)) {
-  //   return c.body(cache.get(title)!, 200, {
-  //     'Content-Type': 'image/png',
-  //     'Cache-Control': 'public, max-age=31536000, immutable',
-  //   });
-  // }
-
-  // 📦 load local font (FAST + RELIABLE)
-
-  const image = await ogHandler(title);
-
-  // // 💾 store in cache
-  // cache.set(title, buffer);
-
-  if (!image) {
-    return c.text('Failed to generate OG image', 500);
-  }
-  // 🚀 response
-  return c.body(image, 200, {
-    'Content-Type': 'image/png',
-    'Cache-Control': 'public, max-age=31536000, immutable',
-    'Access-Control-Allow-Origin': '*',
-  });
-});
+app.route('/', ogHandler);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
