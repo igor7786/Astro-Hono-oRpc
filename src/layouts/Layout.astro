@@ -3,6 +3,7 @@ import SEO from '@acomp/SEO.astro';
 import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import themeScript from '@/scripts/theme-checker.js?raw';
 import '@/styles/global.css';
+import { Font } from 'astro:assets';
 import { Toaster } from '@rcomp/ui/sonner';
 
 interface Props {
@@ -22,6 +23,7 @@ const { title, description, author, date, type } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Font cssVariable="--font-sans" preload />
     <meta name="generator" content={Astro.generator} />
     <SEO title={title} description={description} author={author} date={date} type={type} />
     <script set:html={themeScript} />

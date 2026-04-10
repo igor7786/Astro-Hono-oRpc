@@ -1,7 +1,7 @@
 import path from 'node:path';
 import url from 'node:url';
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
@@ -36,6 +36,58 @@ export default defineConfig({
     },
     plugins: [tailwindcss()],
   },
+
+    fonts: [
+      // ✅ Inter Variable — body text
+      {
+        provider: fontProviders.fontsource(),
+        name: 'Inter',
+        cssVariable: '--font-sans',
+        fallbacks: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+
+      // ✅ CalSans — headings (local file)
+      // {
+      //   provider: fontProviders.local(),
+      //   name: 'CalSans',
+      //   cssVariable: '--font-heading',
+      //   fallbacks: ['CalSans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      //   options: {
+      //     variants: [
+      //       {
+      //         weight: 600,
+      //         style: 'normal',
+      //         src: ['./public/fonts/CalSans-SemiBold.ttf'],
+      //       },
+      //     ],
+      //   },
+      // },
+
+      // // ✅ JetBrains Mono — code blocks
+      // {
+      //   provider: fontProviders.fontsource(),
+
+      //   name: 'JetBrains Mono',
+      //   cssVariable: '--font-mono',
+      //   fallbacks: [
+      //     'JetBrains Mono',
+      //     'ui-monospace',
+      //     'SF Mono',
+      //     'SF Mono Regular',
+      //     'Menlo',
+      //     'Monaco',
+      //     'Consolas',
+      //     'Courier New',
+      //     'monospace',
+      //   ],
+      // },
+    ],
+  markdown: {
+    shikiConfig: {
+      theme: 'dracula',
+    },
+  },
+
   integrations: [
     react({ include: ['**/reactcomp/**/*'] }),
     sitemap({
