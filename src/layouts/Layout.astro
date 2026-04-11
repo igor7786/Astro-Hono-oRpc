@@ -26,6 +26,11 @@ const { title, description, author, date, type } = Astro.props;
     <Font cssVariable="--font-sans" preload />
     <meta name="generator" content={Astro.generator} />
     <SEO title={title} description={description} author={author} date={date} type={type} />
+
+    <!-- ✅ font preloads -->
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-heading" preload />
+    <Font cssVariable="--font-mono" preload />
     <script set:html={themeScript} />
   </head>
   <body>

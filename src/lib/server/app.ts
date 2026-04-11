@@ -70,6 +70,11 @@ app.route('/', og);
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+// ✅ 404 handler
+app.notFound((c) => {
+  return c.json({ error: 'Not Found', path: c.req.path }, 404);
+});
+
 export default app;
 
 // ## URLs you get

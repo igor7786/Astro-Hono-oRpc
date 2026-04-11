@@ -47,43 +47,33 @@ export default defineConfig({
       name: 'Inter',
       cssVariable: '--font-sans',
       fallbacks: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
     },
 
-    // ✅ CalSans — headings (local file)
-    // {
-    //   provider: fontProviders.local(),
-    //   name: 'CalSans',
-    //   cssVariable: '--font-heading',
-    //   fallbacks: ['CalSans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-    //   options: {
-    //     variants: [
-    //       {
-    //         weight: 600,
-    //         style: 'normal',
-    //         src: ['./public/fonts/CalSans-SemiBold.ttf'],
-    //       },
-    //     ],
-    //   },
-    // },
+    // ✅ Playfair Display — headings (elegant, editorial)
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Playfair Display',
+      cssVariable: '--font-heading',
+      fallbacks: ['Georgia', 'ui-serif', 'serif'],
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+    },
 
     // // ✅ JetBrains Mono — code blocks
-    // {
-    //   provider: fontProviders.fontsource(),
+    {
+      provider: fontProviders.fontsource(),
 
-    //   name: 'JetBrains Mono',
-    //   cssVariable: '--font-mono',
-    //   fallbacks: [
-    //     'JetBrains Mono',
-    //     'ui-monospace',
-    //     'SF Mono',
-    //     'SF Mono Regular',
-    //     'Menlo',
-    //     'Monaco',
-    //     'Consolas',
-    //     'Courier New',
-    //     'monospace',
-    //   ],
-    // },
+      name: 'JetBrains Mono',
+      cssVariable: '--font-mono',
+      fallbacks: ['ui-monospace', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+    },
   ],
   markdown: {
     shikiConfig: {
