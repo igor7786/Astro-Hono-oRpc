@@ -12,9 +12,10 @@ interface Props {
   author?: string;
   date?: string;
   type?: string;
+  siteName?: string;
+  siteUrl?: string;
+  url?: string;
 }
-
-const { title, description, author, date, type } = Astro.props;
 ---
 
 <!doctype html>
@@ -23,9 +24,8 @@ const { title, description, author, date, type } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-sans" preload />
     <meta name="generator" content={Astro.generator} />
-    <SEO title={title} description={description} author={author} date={date} type={type} />
+    <SEO {...Astro.props} />
 
     <!-- ✅ font preloads -->
     <Font cssVariable="--font-sans" preload />

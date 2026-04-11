@@ -1,12 +1,11 @@
 import { Hono } from 'hono';
 import { generateLLMsMarkdown } from '@server/seo/llms';
-import { generateOpenApiSchema } from '@server/schemas/oenapi.schema.generator';
-
+import { envServer } from '@/lib/env/server.env';
 export const llmsTxt = new Hono();
 export async function llmsTxtHandler() {
   // 1. Get OpenAPI schema
   // ✅ fetch real schema endpoint
-  const res = await fetch('http://localhost:4321/api/openapi/generate-schema');
+  const res = await fetch(`${envServer.PUBLIC_URL}/api/openapi/generate-schema`);
   const openApiDoc = await res.json();
   // 2. Convert to Markdown
   const markdown = await generateLLMsMarkdown(openApiDoc);

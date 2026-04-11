@@ -4,41 +4,33 @@ import Layout from '@/layouts/Layout.astro';
 ---
 
 <Layout title="Font Test">
-  <div slot="main" class="p-16 flex flex-col gap-8">
-
+  <div slot="main" class="flex flex-col gap-8 p-16">
     <!-- Inter — body -->
     <div>
-      <p class="text-sm text-muted-foreground mb-2">font-sans (Inter)</p>
-      <p class="font-sans text-2xl">
-        The quick brown fox jumps over the lazy dog
-      </p>
+      <p class="text-muted-foreground mb-2 text-sm">font-sans (Inter)</p>
+      <p class="font-sans text-2xl">The quick brown fox jumps over the lazy dog</p>
     </div>
 
     <!-- Playfair Display — headings -->
     <div>
-      <p class="text-sm text-muted-foreground mb-2">font-heading (Playfair Display)</p>
-      <h1 class="font-heading text-5xl font-bold">
-        The quick brown fox jumps over the lazy dog
-      </h1>
+      <p class="text-muted-foreground mb-2 text-sm">font-heading (Playfair Display)</p>
+      <h1 class="font-heading text-5xl font-bold">The quick brown fox jumps over the lazy dog</h1>
     </div>
 
     <!-- JetBrains Mono — code -->
     <div>
-      <p class="text-sm text-muted-foreground mb-2">font-mono (JetBrains Mono)</p>
-      <code class="font-mono text-2xl">
-        const hello = 'world';
-      </code>
+      <p class="text-muted-foreground mb-2 text-sm">font-mono (JetBrains Mono)</p>
+      <code class="font-mono text-2xl"> const hello = 'world'; </code>
     </div>
 
     <!-- weights -->
     <div class="font-heading flex flex-col gap-2">
-      <p class="text-sm text-muted-foreground mb-2">Playfair Display weights</p>
+      <p class="text-muted-foreground mb-2 text-sm">Playfair Display weights</p>
       <p class="text-3xl font-normal">Normal 400</p>
       <p class="text-3xl font-medium">Medium 500</p>
       <p class="text-3xl font-semibold">Semibold 600</p>
       <p class="text-3xl font-bold">Bold 700</p>
       <p class="text-3xl font-black">Black 900</p>
     </div>
-
   </div>
 </Layout>

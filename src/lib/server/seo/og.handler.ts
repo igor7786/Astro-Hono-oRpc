@@ -1,17 +1,18 @@
 import { Hono } from 'hono';
 import { generateOgImage } from '@/lib/server/seo/og/Generate';
+import { seoQuerySchema } from '@server/schemas/seo.schema';
+import { zValidator } from '@hono/zod-validator';
 
 export const og = new Hono();
 
-og.get('/og', async (c) => {
-  const title = c.req.query('title') ?? 'Fast Web Tech';
-  const description = c.req.query('description') ?? undefined;
-  const author = c.req.query('author') ?? undefined;
-  const date = c.req.query('date') ?? undefined;
+og.get('/og', zValidator('query', seoQuerySchema), async (c) => {
+  const { title, description, author, date } = c.req.valid('query');
+
+  console.log(title, description, author, date);
 
   try {
     const image = await generateOgImage({
-      title,
+      title: title ?? 'Fast Web Tech',
       description,
       author,
       date,

@@ -7,20 +7,26 @@ import react from '@astrojs/react';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 export default defineConfig({
-  site: 'https://marathon-caramel-perfectly.ngrok-free.dev',
+  ssr: { resolve: { externalConditions: ['bun', 'node'] } },
+  site: 'http://localhost:4321/',
+  server: {
+    allowedOrigins: ['*'], // ✅ dev only
+    host: 'localhost', // ← Bind the interfaces
+    port: 4321, // ← Explicit port
+    allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
+    allowedHosts: [
+      'fast-web-tech.co.uk',
+      'www.fast-web-tech.co.uk',
+      'host.docker.internal',
+      'localhost',
+    ], // ✅ dev only
+  },
   trailingSlash: 'ignore',
   compressHTML: false,
 
   devToolbar: {
     enabled: false,
-  },
-  server: {
-    allowedOrigins: ['*'], // ✅ dev only
-  },
-  server: {
-    allowedHosts: ['marathon-caramel-perfectly.ngrok-free.dev'],
   },
   output: 'server',
   adapter: node({

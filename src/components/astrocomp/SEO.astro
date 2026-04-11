@@ -1,25 +1,20 @@
 ---
-interface Props {
-  title?: string;
-  description?: string;
-  author?: string;
-  date?: string;
-  url?: string;
-  type?: string;
-  siteName?: string;
-  siteUrl?: string;
+import { seoSchema, baseSeo } from '@server/schemas/seo.schema';
+import z from 'zod';
+// ✅ Safe parse (no crash in production)
+const result = seoSchema.safeParse({
+  ...baseSeo,
+  ...Astro.props,
+});
+
+if (!result.success) {
+  console.error('[SEO] Invalid props:', z.treeifyError(result.error));
 }
 
-const {
-  title = 'Fast Web Tech',
-  description = 'My awesome app',
-  author,
-  date,
-  url = Astro.url.href,
-  type = 'website',
-  siteName = 'Fast Web Tech',
-  siteUrl = 'fast-web-tech.co.uk',
-} = Astro.props;
+// ✅ fallback to safe defaults
+const seo = result.success ? result.data : seoSchema.parse(baseSeo);
+
+const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
 
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 const ogUrl = new URL('/api/og', Astro.site);
@@ -66,8 +61,9 @@ if (date) ogUrl.searchParams.set('date', date);
   set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': type === 'article' ? 'Article' : 'WebSite',
+    '@id': url ?? siteUrl,
     name: title,
-    url,
+    url: url ?? siteUrl,
     description,
     ...(author && {
       author: {
