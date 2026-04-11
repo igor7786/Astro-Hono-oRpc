@@ -5,6 +5,9 @@ import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@server/handlers/rpc.handler';
 import openApiHandler from '@server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
+import { og } from '@server/seo/og.handler';
+import { llmsHtml } from '@server/seo/html.handler';
+import { llmsTxt } from '@server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };
 
@@ -34,24 +37,12 @@ app.use('/openapi/*', async (c, next) => {
     ctx: c,
     signal: c.req.raw.signal,
     env: c.env,
-    // responseHeaders: new Headers(),
   };
 
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
     prefix: '/api/openapi',
     context,
   });
-  // if (matched) {
-  //   // ✅ CORRECT: merge from context
-  //   context.responseHeaders.forEach((value, key) => {
-  //     c.header(key, value);
-  //   });
-  //   const finalResponse = c.newResponse(response.body, response);
-
-  //   console.log([...finalResponse.headers.entries()]);
-
-  //   return finalResponse;
-  // }
   if (matched) {
     return c.newResponse(response.body, response);
   }
@@ -69,8 +60,20 @@ app.get(
   })
 );
 
+//LLMS, Markdown, TXT ──────────────────────────────────────────────────────────────────────────────
+app.route('/', llmsTxt);
+app.route('/', llmsHtml);
+// ─── Satori OG ────────────────────────────────────────
+
+app.route('/', og);
+
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
+
+// ✅ 404 handler
+app.notFound((c) => {
+  return c.json({ error: 'Not Found', path: c.req.path }, 404);
+});
 
 export default app;
 
@@ -81,3 +84,6 @@ export default app;
 // /api/docs                       → Scalar (all APIs combined)
 // /api/health                     → health check
 // /api/auth/*                     → Better Auth (when added)
+// /api/llms.txt                   → Markdown (for Ai)
+// /api/html.llms                  → HTML (for browsers)
+// /api/og                        → Open Graph image

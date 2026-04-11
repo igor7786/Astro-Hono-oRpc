@@ -1,0 +1,10 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import ChatIndicator from '@/components/reactcomp/nanostores/ChatIndicator';
+const title = 'Online or Offline Indicator';
+---
+
+<Layout title={title}>
+  # Online or offline indicator
+  <ChatIndicator client:load slot="main" />
+</Layout>

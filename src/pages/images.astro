@@ -1,0 +1,50 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
+import myImage from '@/assets/12.jpg';
+import { TestImage } from '@rcomp/TestImage';
+---
+
+<Layout title="Images">
+  # Image Test
+  <div slot="main" class="mx-auto py-5 text-center text-2xl">
+    Astro Component<Image
+      src={myImage}
+      alt="My Image"
+      width={1200}
+      height={438}
+      quality={70}
+      format="webp"
+      decoding="async"
+      loading="lazy"
+      class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
+    />
+  </div>
+  <TestImage slot="main" client:load
+    ><Image
+      src={myImage}
+      alt="My Image"
+      width={1200}
+      height={438}
+      quality={70}
+      format="webp"
+      decoding="async"
+      loading="lazy"
+      class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
+    /></TestImage
+  >
+  <TestImage slot="main" client:load
+    ><Picture
+      src={myImage}
+      alt="My Image"
+      formats={['webp', 'avif', 'jpg', 'png']}
+      width={1200}
+      height={438}
+      quality={70}
+      decoding="async"
+      loading="lazy"
+      class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
+    /></TestImage
+  >
+</Layout>

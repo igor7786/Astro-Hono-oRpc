@@ -31,6 +31,8 @@ pkg/
 */yarn-debug.log*
 */yarn-error.log*
 */pnpm-debug.log*
+src/assets/*
+/public/fonts
 ### CompressedArchive ###
 
 ### Mostly from https://en.wikipedia.org/wiki/List_of_archive_formats
@@ -709,6 +711,9 @@ pip-selfcheck.json
 ### qwen ###
 .qwen
 QWEN.md
+### GEMINI ###
+.gemini
+GEMINI.md
 
 ### exclude ###
 !**/frontend/src/lib
