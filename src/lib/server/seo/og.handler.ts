@@ -3,7 +3,7 @@ import { generateOgImage } from '@/lib/server/seo/og/Generate';
 
 export const og = new Hono();
 
-og.get('/*', async (c) => {
+og.get('/og', async (c) => {
   const title = c.req.query('title') ?? 'Fast Web Tech';
   const description = c.req.query('description') ?? undefined;
   const author = c.req.query('author') ?? undefined;
