@@ -1,5 +1,7 @@
-import path from 'node:path';
-import url from 'node:url';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
@@ -7,11 +9,13 @@ import react from '@astrojs/react';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export default defineConfig({
   ssr: { resolve: { externalConditions: ['bun', 'node'] } },
   site: 'http://localhost:4321/',
   server: {
-    allowedOrigins: ['*'], // ✅ dev only
     host: 'localhost', // ← Bind the interfaces
     port: 4321, // ← Explicit port
     allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],

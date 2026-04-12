@@ -1,0 +1,110 @@
+---
+export const prerender = true;
+
+import Layout from '@/layouts/Layout.astro';
+import LikeButton from '@rcomp/blog/LikeButton';
+import ShareWidget from '@rcomp/blog/ShareWidget';
+import CommentSection from '@rcomp/blog/CommentSection';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const readingTime = remarkPluginFrontmatter?.readingTime;
+
+const ogDate = post.data.date?.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  author={post.data.author}
+  date={ogDate}
+  type="article"
+>
+  <div slot="main" class="mx-auto max-w-4xl px-8 py-16">
+    {/* tags */}
+    {
+      post.data.tags && (
+        <div class="mb-6 flex gap-2">
+          {post.data.tags.map((tag) => (
+            <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+          ))}
+        </div>
+      )
+    }
+
+    {/* title */}
+    <h1 class="font-heading mb-4 text-5xl font-bold">{post.data.title}</h1>
+
+    {/* description */}
+    {post.data.description && <p class="text-muted-foreground mb-6 text-xl">{post.data.description}</p>}
+
+    {/* meta + actions */}
+    <div class="border-border mb-12 flex items-center justify-between border-b pb-8">
+      <div class="text-muted-foreground flex items-center gap-3 text-sm">
+        {post.data.author && <span>{post.data.author}</span>}
+        {ogDate && <span>•</span>}
+        {ogDate && <span>{ogDate}</span>}
+        {readingTime && <span>•</span>}
+        {readingTime && <span>{readingTime}</span>}
+      </div>
+
+      {/* ✅ React islands */}
+      <div class="flex items-center gap-2">
+        <LikeButton postId={post.id} client:only="react" />
+        <ShareWidget url={post.id} title={post.data.title} client:only="react" />
+      </div>
+    </div>
+
+    {/* table of contents */}
+    {
+      headings.length > 0 && (
+        <nav class="bg-muted mb-12 rounded-lg p-6">
+          <p class="mb-3 text-sm font-semibold">Table of Contents</p>
+          <ul class="flex flex-col gap-2">
+            {headings.map((h) => {
+              const indent = (h.depth - 1) * 12;
+              return (
+                <li style={`padding-left: ${indent}px`}>
+                  <a
+                    href={`#${h.slug}`}
+                    class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )
+    }
+
+    {/* content */}
+    <article class="prose prose-invert max-w-none">
+      <Content />
+    </article>
+
+    {/* comments — loads when scrolled into view */}
+    <div class="border-border mt-16 border-t pt-8">
+      <CommentSection postId={post.id} client:only="react" />
+    </div>
+
+    {/* back link */}
+    <div class="mt-8">
+      <a href="/blog" class="text-primary text-sm hover:underline"> ← Back to Blog </a>
+    </div>
+  </div>
+</Layout>

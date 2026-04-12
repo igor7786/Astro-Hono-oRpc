@@ -6,6 +6,12 @@ import { TestClient } from '@rcomp/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
 import SlowRequest from '@/components/reactcomp/SlowRequest';
 
+import { getCollection } from 'astro:content';
+
+const workers = await getCollection('blog');
+
+console.log(workers);
+
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.test({ name: 'test' });
