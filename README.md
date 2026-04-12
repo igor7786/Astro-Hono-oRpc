@@ -51,6 +51,8 @@ cp .example.env .env
 | `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) | ✅ |
 | `CLOUD_TOKEN` | Cloud service authentication token | ✅ |
 | `QWEN_API_KEY` | Qwen API key for AI features | ✅ |
+| `PANGOLIN_ENDPOINT` | Pangolin service endpoint URL | ✅ |
+| `NEWT_SECRET` | Newt service authentication secret | ✅ |
 | `NODE_ENV` | Runtime environment (`development`, `production`, `test`, `preview`). Defaults to `development` | ❌ |
 
 #### Environment Validation
@@ -109,13 +111,19 @@ src/
 ├── components/
 │   ├── astrocomp/           # Astro-native UI components (SSR, no hydration)
 │   │   ├── SEO.astro        # Reusable SEO component (OG, Twitter, JSON-LD)
-│   │   └── Welcome.astro    # Welcome page component
+│   │   ├── Welcome.astro    # Welcome page component
+│   │   └── blog/
+│   │       └── BlogCard.astro  # Blog post card component
 │   └── reactcomp/           # React components (islands architecture)
 │       ├── lib/
 │       │   └── utils.ts     # Utility functions (cn helper)
 │       ├── ui/
 │       │   ├── button.tsx   # Button with base-ui + CVA variants
-│       │   └── sonner.tsx   # Toast notification component
+│       │   ├── sonner.tsx   # Toast notification component
+│       │   ├── avatar.tsx   # Avatar component with fallback
+│       │   ├── dropdown-menu.tsx  # Dropdown menu component
+│       │   ├── separator.tsx  # Visual separator
+│       │   └── textarea.tsx  # Textarea input component
 │       ├── nanostores/
 │       │   ├── ChatIndicator.tsx    # Online/offline indicator with toast
 │       │   ├── NanStoresQuery.tsx   # Nanostores + TanStack Query integration
@@ -123,7 +131,11 @@ src/
 │       ├── SlowRequest.tsx          # Request cancellation demo
 │       ├── TestClient.tsx           # Example React island
 │       ├── TestImage.tsx            # Astro Image/Picture wrapper
-│       └── TestTanstackQuery.tsx    # TanStack Query example
+│       ├── TestTanstackQuery.tsx    # TanStack Query example
+│       └── blog/
+│           ├── CommentSection.tsx   # Blog comments with interaction
+│           ├── LikeButton.tsx       # Blog post like button
+│           └── ShareWidget.tsx      # Social sharing widget
 ├── layouts/
 │   └── Layout.astro         # Main layout with theme + QueryDevTools
 ├── lib/
@@ -182,12 +194,16 @@ src/
 │   ├── llms.txt.astro       # LLM-friendly API docs route
 │   ├── nanostore.astro      # Nanostores integration demo
 │   ├── og.astro             # OG image test page
-│   └── robots.txt.ts        # Dynamic robots.txt (env-aware)
+│   ├── robots.txt.ts        # Dynamic robots.txt (env-aware)
+│   └── blog/
+│       ├── index.astro      # Blog listing page (all posts)
+│       └── [id].astro       # Individual blog post (dynamic route)
 ├── scripts/
 │   └── theme-checker.js     # Dark mode detection
 ├── styles/
 │   └── global.css           # Tailwind + shadcn styles
-└── middleware.ts            # Astro middleware (cache control)
+├── middleware.ts            # Astro middleware (cache control)
+└── content.config.ts        # Content collections configuration (blog)
 ```
 
 ---
@@ -476,6 +492,87 @@ client.prefetchQuery(
   })
 );
 ```
+
+---
+
+## 📝 Blog & Content Collections
+
+Astro Content Collections with Markdown-based blog system.
+
+### Architecture
+
+- **Content Layer** - Type-safe content management with Zod validation
+- **Markdown Processing** - Automatic reading time calculation
+- **RSS-ready** - Sitemap integration with blog priority settings
+- **Draft Support** - Draft flag for unpublished posts
+
+### Content Configuration (`src/content.config.ts`)
+
+```typescript
+const blog = defineCollection({
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/data/blog',
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    author: z.string().optional(),
+    date: z.coerce.date().optional(),
+    tags: z.array(z.string()).optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+```
+
+### Blog Components
+
+**Astro Components:**
+- `BlogCard.astro` - Blog post card with metadata display
+
+**React Components:**
+- `CommentSection.tsx` - Interactive comments widget
+- `LikeButton.tsx` - Like/favorite button with state
+- `ShareWidget.tsx` - Social sharing component
+
+### Usage
+
+**Creating a new blog post:**
+
+Create a markdown file in `src/data/blog/`:
+
+```markdown
+---
+title: "My First Post"
+description: "A brief description"
+author: "Author Name"
+date: "2024-01-15"
+tags: ["astro", "blog"]
+draft: false
+---
+
+# My First Post
+
+Content goes here...
+```
+
+**Listing posts (`/blog`):**
+- Auto-fetches from content collection
+- Filters out draft posts
+- Sorts by date (newest first)
+- Displays reading time
+
+**Individual posts (`/blog/[id]`):**
+- Dynamic routing with slug-based URLs
+- Markdown rendering with syntax highlighting
+- Reading time calculation
+
+### Sitemap Integration
+
+Blog posts are automatically added to sitemap with:
+- **Priority:** 0.8
+- **Change frequency:** monthly
+- **Last modified:** Uses frontmatter `updated` or `date` field
 
 ---
 
