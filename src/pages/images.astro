@@ -4,6 +4,17 @@ import { Image } from 'astro:assets';
 import { Picture } from 'astro:assets';
 import myImage from '@/assets/12.jpg';
 import { TestImage } from '@rcomp/TestImage';
+import { getImage } from "astro:assets";
+import googleIcon from '@/assets/google-icon.webp';
+import twitterIcon from '@/assets/twitter-icon.webp';
+import facebookIcon from '@/assets/facebook-icon.webp';
+import githubIcon from '@/assets/github-icon.webp';
+import ButtonSocialDemo from '@rcomp/social/ButtonSocial';
+
+const google = await getImage({ src: googleIcon, width: 20, height: 20, format: 'webp' });
+const twitter = await getImage({ src: twitterIcon, width: 20, height: 20, format: 'webp' });
+const facebook = await getImage({ src: facebookIcon, width: 20, height: 20, format: 'webp' });
+const github = await getImage({ src: githubIcon, width: 20, height: 20, format: 'webp' });
 ---
 
 <Layout title="Images">
@@ -47,4 +58,16 @@ import { TestImage } from '@rcomp/TestImage';
       class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
     /></TestImage
   >
+  <ButtonSocialDemo
+  slot="main"
+  client:load
+  icons={{
+    google: google.src,
+    twitter: twitter.src,
+    facebook: facebook.src,
+    github: github.src,
+  }}
+/>
+
+
 </Layout>
