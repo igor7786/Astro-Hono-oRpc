@@ -64,7 +64,7 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
       {/* ✅ React islands */}
       <div class="flex items-center gap-2">
         <LikeButton postId={post.id} client:only="react" />
-        <ShareWidget url={post.id} title={post.data.title} client:only="react" />
+        <ShareWidget url={post.id} title={post.data.title} client:idle />
       </div>
     </div>
 
@@ -99,7 +99,7 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
 
     {/* comments — loads when scrolled into view */}
     <div class="border-border mt-16 border-t pt-8">
-      <CommentSection postId={post.id} client:only="react" />
+      <CommentSection postId={post.id} client:only />
     </div>
 
     {/* back link */}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "tags": ["-lintignore"],
+  "ignore": ["src/components/reactcomp/ui/**", "src/components/astrocomp/Welcome.astro"],
+  "ignoreDependencies": [
+    "@astrojs/check",
+    "@nanostores/persistent",
+    "@hono/node-server",
+    "@hono/zod-validator",
+    "@tanstack/react-query-devtools",
+    "@tanstack/react-query-persist-client"
+  ],
+  "ignoreExportsUsedInFile": true
+}

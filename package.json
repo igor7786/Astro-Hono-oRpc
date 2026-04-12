@@ -15,7 +15,9 @@
     "bun:preview": "bunx --bun astro preview",
     "ts:check": "bunx tsc --noEmit",
     "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
-    "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts"
+    "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts",
+    "knip": "knip --no-exit-code",
+    "knip:fix": "knip --fix --no-exit-code"
   },
   "dependencies": {
     "@astrojs/node": "10.0.4",
@@ -34,7 +36,6 @@
     "@orpc/server": "^1.13.9",
     "@orpc/tanstack-query": "^1.13.9",
     "@orpc/zod": "^1.13.8",
-    "@resvg/resvg-js": "^2.6.2",
     "@scalar/hono-api-reference": "^0.10.6",
     "@scalar/openapi-to-markdown": "^0.5.1",
     "@tailwindcss/vite": "^4.2.2",
@@ -57,8 +58,6 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "satori": "^0.26.0",
-    "satori-astro": "^0.4.0",
-    "satori-html": "^0.3.2",
     "shadcn": "^4.0.8",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
@@ -72,11 +71,12 @@
     "@astrojs/check": "^0.9.8",
     "@tanstack/react-query-devtools": "^5.94.5",
     "@types/bun": "^1.3.11",
+    "knip": "^6.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-classnames": "^0.9.0",
     "prettier-plugin-merge": "^0.10.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }
