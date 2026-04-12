@@ -34,25 +34,22 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
   type="article"
 >
   <div slot="main" class="mx-auto max-w-4xl px-8 py-16">
-
     {/* tags */}
-    {post.data.tags && (
-      <div class="flex gap-2 mb-6">
-        {post.data.tags.map(tag => (
-          <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">
-            {tag}
-          </span>
-        ))}
-      </div>
-    )}
+    {
+      post.data.tags && (
+        <div class="mb-6 flex gap-2">
+          {post.data.tags.map((tag) => (
+            <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+          ))}
+        </div>
+      )
+    }
 
     {/* title */}
     <h1 class="font-heading mb-4 text-5xl font-bold">{post.data.title}</h1>
 
     {/* description */}
-    {post.data.description && (
-      <p class="text-muted-foreground mb-6 text-xl">{post.data.description}</p>
-    )}
+    {post.data.description && <p class="text-muted-foreground mb-6 text-xl">{post.data.description}</p>}
 
     {/* meta + actions */}
     <div class="border-border mb-12 flex items-center justify-between border-b pb-8">
@@ -72,26 +69,28 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
     </div>
 
     {/* table of contents */}
-    {headings.length > 0 && (
-      <nav class="bg-muted mb-12 rounded-lg p-6">
-        <p class="mb-3 text-sm font-semibold">Table of Contents</p>
-        <ul class="flex flex-col gap-2">
-          {headings.map((h) => {
-            const indent = (h.depth - 1) * 12;
-            return (
-              <li style={`padding-left: ${indent}px`}>
-                <a>
-                  href={`#${h.slug}`}
-                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                >
-                  {h.text}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    )}
+    {
+      headings.length > 0 && (
+        <nav class="bg-muted mb-12 rounded-lg p-6">
+          <p class="mb-3 text-sm font-semibold">Table of Contents</p>
+          <ul class="flex flex-col gap-2">
+            {headings.map((h) => {
+              const indent = (h.depth - 1) * 12;
+              return (
+                <li style={`padding-left: ${indent}px`}>
+                  <a
+                    href={`#${h.slug}`}
+                    class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )
+    }
 
     {/* content */}
     <article class="prose prose-invert max-w-none">
@@ -99,16 +98,13 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
     </article>
 
     {/* comments — loads when scrolled into view */}
-    <div class="mt-16 pt-8 border-t border-border">
+    <div class="border-border mt-16 border-t pt-8">
       <CommentSection postId={post.id} client:only="react" />
     </div>
 
     {/* back link */}
     <div class="mt-8">
-      <a href="/blog" class="text-primary text-sm hover:underline">
-        ← Back to Blog
-      </a>
+      <a href="/blog" class="text-primary text-sm hover:underline"> ← Back to Blog </a>
     </div>
-
   </div>
 </Layout>

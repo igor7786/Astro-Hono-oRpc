@@ -5,11 +5,10 @@ import Layout from '@/layouts/Layout.astro';
 import BlogCard from '@acomp/blog/BlogCard.astro';
 import { getCollection, render } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => {
-    if (!a.data.date || !b.data.date) return 0;
-    return b.data.date.valueOf() - a.data.date.valueOf();
-  });
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => {
+  if (!a.data.date || !b.data.date) return 0;
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
 
 // get reading time for each post
 const postsWithMeta = await Promise.all(
@@ -24,22 +23,22 @@ const postsWithMeta = await Promise.all(
   <div slot="main" class="mx-auto max-w-4xl px-8 py-16">
     <h1 class="font-heading mb-12 text-5xl font-bold">Blog</h1>
 
-    {postsWithMeta.length === 0 && (
-      <p class="text-muted-foreground">No posts yet.</p>
-    )}
+    {postsWithMeta.length === 0 && <p class="text-muted-foreground">No posts yet.</p>}
 
     <div class="flex flex-col gap-10">
-      {postsWithMeta.map(({ post, readingTime }) => (
-        <BlogCard
-          id={post.id}
-          title={post.data.title}
-          description={post.data.description}
-          author={post.data.author}
-          date={post.data.date}
-          tags={post.data.tags}
-          readingTime={readingTime}
-        />
-      ))}
+      {
+        postsWithMeta.map(({ post, readingTime }) => (
+          <BlogCard
+            id={post.id}
+            title={post.data.title}
+            description={post.data.description}
+            author={post.data.author}
+            date={post.data.date}
+            tags={post.data.tags}
+            readingTime={readingTime}
+          />
+        ))
+      }
     </div>
   </div>
 </Layout>
