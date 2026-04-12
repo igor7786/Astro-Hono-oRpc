@@ -1,6 +1,6 @@
 # Astro-Hono-oRPC Full-Stack Application
 
-A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development, featuring **TanStack Query** with SSR support, **IndexedDB persistence**, **contract-first API design**, **authentication with Better Auth**, and **security with Arcjet**.
+A modern full-stack web application combining **Astro** for frontend rendering with **Hono** and **oRPC** for type-safe API development, featuring **TanStack Query** with SSR support, **IndexedDB persistence**, **contract-first API design**, **dynamic OG image generation**, **SEO optimization**, **LLM-friendly documentation**, and **Nanostores** state management.
 
 ## 🚀 Quick Start
 
@@ -19,7 +19,7 @@ bun install
 bun dev
 ```
 
-The dev server runs at `http://localhost:4321`.
+The dev server runs at `http://localhost:4321` (exposed to network with `--host`).
 
 ### Environment Variables
 
@@ -29,29 +29,29 @@ Copy `.example.env` to `.env` and fill in the required values:
 cp .example.env .env
 ```
 
-> **Note:** The `.example.env` file contains minimal defaults. The application validates a comprehensive set of environment variables at startup (see table below). Variables not in `.example.env` must still be provided in your `.env` file.
+> **Note:** The `.example.env` file contains minimal defaults. The application validates a comprehensive set of environment variables at startup.
 
 #### Required Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `BUN_FS_POLLING` | Enable Bun file system polling (set to `1`) |
-| `DB_URL` | Database connection string (NeonDB/PostgreSQL) |
-| `UPSTASH_REDIS_URL` | Upstash Redis connection URL |
-| `BETTER_AUTH_SECRET` | Secret key for Better Auth session encryption |
-| `BETTER_AUTH_URL` | Base URL for Better Auth (e.g., `http://localhost:4321`) |
-| `PUBLIC_URL` | Public-facing application URL |
-| `PUBLIC_API_URL` | Public API base URL |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret |
-| `RESEND_EMAIL` | Resend API key for transactional emails |
-| `ARCJET_KEY` | Arcjet security API key |
-| `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) |
-| `CLOUD_TOKEN` | Cloud service authentication token |
-| `QWEN_API_KEY` | Qwen API key for AI features |
-| `NODE_ENV` | Runtime environment (`development`, `production`, `test`, `preview`). Defaults to `development` |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `BUN_FS_POLLING` | Enable Bun file system polling (set to `1`) | ✅ |
+| `DB_URL` | Database connection string (NeonDB/PostgreSQL) | ✅ |
+| `UPSTASH_REDIS_URL` | Upstash Redis connection URL | ✅ |
+| `BETTER_AUTH_SECRET` | Secret key for Better Auth session encryption | ✅ |
+| `BETTER_AUTH_URL` | Base URL for Better Auth (e.g., `http://localhost:4321`) | ✅ |
+| `PUBLIC_URL` | Public-facing application URL | ✅ |
+| `PUBLIC_API_URL` | Public API base URL | ✅ |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | ✅ |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | ✅ |
+| `GITHUB_CLIENT_ID` | GitHub OAuth client ID | ✅ |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | ✅ |
+| `RESEND_EMAIL` | Resend API key for transactional emails | ✅ |
+| `ARCJET_KEY` | Arcjet security API key | ✅ |
+| `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) | ✅ |
+| `CLOUD_TOKEN` | Cloud service authentication token | ✅ |
+| `QWEN_API_KEY` | Qwen API key for AI features | ✅ |
+| `NODE_ENV` | Runtime environment (`development`, `production`, `test`, `preview`). Defaults to `development` | ❌ |
 
 #### Environment Validation
 
@@ -81,77 +81,113 @@ bun preview
 
 Production builds output to `./dist/` and run as a Node.js standalone server.
 
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `bun install` | Install all dependencies |
+| `bun dev` | Start development server at `localhost:4321` |
+| `bun build` | Build production site to `./dist/` |
+| `bun preview` | Preview production build locally |
+| `bun:dev` | Start development server with Bun (host mode, exposed to network) |
+| `bun:build` | Build production site with Bun |
+| `bun:preview` | Preview production build with Bun |
+| `bun astro ...` | Run Astro CLI commands (e.g., `astro add`, `astro check`) |
+| `bun ts:check` | Type check with TypeScript (no emit) |
+| `bun format` | Format code with Prettier |
+| `og:test` | Test OG image generation (`bun run src/lib/server/seo/og/test-simple-og.ts`) |
+
 ---
 
 ## 📁 Project Structure
 
 ```
-/home/igor7786/MyProjects/Astro-Hono-oRpc/
-├── public/
-│   ├── favicon.ico
-│   └── favicon.svg
-├── src/
-│   ├── assets/                   # Static image assets
-│   │   ├── astro.svg
-│   │   └── background.svg
-│   ├── components/
-│   │   ├── astrocomp/          # Astro-native UI components (SSR, no hydration)
-│   │   │   └── Welcome.astro
-│   │   └── reactcomp/          # React components (islands architecture)
-│   │       ├── lib/
-│   │       │   └── utils.ts    # Utility functions (cn helper for classnames)
-│   │       ├── ui/
-│   │       │   └── button.tsx  # shadcn/ui components
-│   │       ├── SlowRequest.tsx # Demo component for request cancellation
-│   │       ├── TestClient.tsx  # Example React island component
-│   │       └── TestTanstackQuery.tsx  # TanStack Query integration example
-│   ├── layouts/
-│   │   └── Layout.astro        # Main layout with theme support (dark/light)
-│   ├── lib/
-│   │   ├── env/                  # Environment variable validation
-│   │   │   ├── client.env.ts       # Client-side env (PUBLIC_* vars only)
-│   │   │   └── server.env.ts       # Server-side env (all vars with Zod validation)
-│   │   ├── server/             # Server-side oRPC/Hono code
-│   │   │   ├── app.ts          # Hono app configuration with CORS & middleware
-│   │   │   ├── contracts/
-│   │   │   │   ├── all.contracts.ts  # Contract aggregator
-│   │   │   │   ├── oc.base.ts        # Base oRPC contract with error definitions
-│   │   │   │   └── test.contract.ts  # Example contract definition
-│   │   │   ├── handlers/
-│   │   │   │   ├── openapi.handler.ts  # OpenAPI schema generation handler
-│   │   │   │   └── rpc.handler.ts      # oRPC procedure handler
-│   │   │   ├── middlewares/
-│   │   │   │   └── validation-errors.ts  # oRPC validation error handler
-│   │   │   ├── procedures/
-│   │   │   │   └── base.ts     # Base oRPC procedure with context & middleware
-│   │   │   ├── routers/
-│   │   │   │   ├── all.routers.ts  # Router aggregator
-│   │   │   │   └── test.ts     # Example oRPC router (test + slowTest)
-│   │   │   ├── schemas/
-│   │   │   │   └── test.schema.ts  # Zod validation schemas
-│   │   │   ├── server.client.ts    # Server-side oRPC client
-│   │   │   └── web.client.ts       # Browser oRPC client
-│   │   ├── stores/
-│   │   │   └── ssr.ts          # Nanostores for SSR state management
-│   │   └── tanstack-query/     # TanStack Query configuration
-│   │       ├── mainQuery.ts        # Query client factory (browser + IndexedDB)
-│   │       ├── query.ts            # Server-side query client
-│   │       ├── QueryDevTools.tsx   # TanStack Query DevTools component
-│   │       └── SsrQueryProvider.tsx  # SSR hydration provider
-│   ├── pages/
-│   │   ├── api/
-│   │   │   └── [...path].ts    # Hono API catch-all route
-│   │   └── index.astro         # Home page with SSR data fetching
-│   ├── scripts/
-│   │   └── theme-checker.js    # Dark mode detection script
-│   ├── styles/
-│   │   └── global.css          # Tailwind CSS + shadcn/ui styles
-│   └── middleware.ts           # Astro middleware (cache control for HTML)
-├── astro.config.mjs            # Astro configuration (SSR, Node adapter)
-├── components.json             # shadcn/ui configuration
-├── package.json
-├── tsconfig.json               # TypeScript configuration with path aliases
-└── .prettierrc.mjs             # Prettier configuration
+src/
+├── assets/                   # Static image assets
+│   ├── astro.svg
+│   └── background.svg
+├── components/
+│   ├── astrocomp/           # Astro-native UI components (SSR, no hydration)
+│   │   ├── SEO.astro        # Reusable SEO component (OG, Twitter, JSON-LD)
+│   │   └── Welcome.astro    # Welcome page component
+│   └── reactcomp/           # React components (islands architecture)
+│       ├── lib/
+│       │   └── utils.ts     # Utility functions (cn helper)
+│       ├── ui/
+│       │   ├── button.tsx   # Button with base-ui + CVA variants
+│       │   └── sonner.tsx   # Toast notification component
+│       ├── nanostores/
+│       │   ├── ChatIndicator.tsx    # Online/offline indicator with toast
+│       │   ├── NanStoresQuery.tsx   # Nanostores + TanStack Query integration
+│       │   └── AnyOtherComponent.tsx # Shared nanostore state demo
+│       ├── SlowRequest.tsx          # Request cancellation demo
+│       ├── TestClient.tsx           # Example React island
+│       ├── TestImage.tsx            # Astro Image/Picture wrapper
+│       └── TestTanstackQuery.tsx    # TanStack Query example
+├── layouts/
+│   └── Layout.astro         # Main layout with theme + QueryDevTools
+├── lib/
+│   ├── env/                 # Environment variable validation
+│   │   ├── client.env.ts    # Client-side env (PUBLIC_* vars)
+│   │   └── server.env.ts    # Server-side env (Zod validation)
+│   ├── queues/
+│   │   └── redis.ts         # Redis client with TLS + retry strategy
+│   ├── stores/
+│   │   ├── online.ts        # $isOnline atom (browser events)
+│   │   └── ssr.ts           # $testData atom for SSR state
+│   ├── tanstack-query/
+│   │   ├── mainQuery.ts     # QueryClient with IndexedDB + SuperJSON
+│   │   ├── query.ts         # Server-side query client
+│   │   ├── QueryDevTools.tsx  # DevTools component
+│   │   └── SsrQueryProvider.tsx  # SSR hydration provider
+│   └── server/
+│       ├── app.ts           # Hono app + CORS + middleware
+│       ├── contracts/
+│       │   ├── all.contracts.ts  # Contract aggregator
+│       │   ├── oc.base.ts        # Base contract with error schema
+│       │   └── test.contract.ts  # Example contract
+│       ├── handlers/
+│       │   ├── openapi.handler.ts  # OpenAPI + Scalar docs
+│       │   └── rpc.handler.ts      # oRPC procedure handler
+│       ├── middlewares/
+│       │   └── validation-errors.ts # Validation error handler
+│       ├── procedures/
+│       │   └── base.ts      # Base procedure with context
+│       ├── routers/
+│       │   ├── all.routers.ts  # Router aggregator
+│       │   └── test.ts      # Example router (test + slowTest)
+│       ├── schemas/
+│       │   ├── oenapi.schema.generator.ts  # OpenAPI schema generator
+│       │   ├── seo.schema.ts    # SEO metadata Zod schema
+│       │   └── test.schema.ts   # Test validation schema
+│       ├── seo/
+│       │   ├── html.handler.ts   # LLMs.html handler
+│       │   ├── llms.ts           # OpenAPI-to-Markdown conversion
+│       │   ├── og.handler.ts     # OG image generation route
+│       │   ├── txt.handler.ts    # LLMs.txt handler
+│       │   └── og/
+│       │       ├── Generate.tsx      # OG image React template
+│       │       ├── SocialCard.tsx    # Social card layout
+│       │       ├── cache.ts          # Redis caching (7-day TTL)
+│       │       └── fonts.ts          # Satori font loading
+│       ├── server.client.ts   # Server-side oRPC client
+│       └── web.client.ts      # Browser oRPC client (8s timeout)
+├── pages/
+│   ├── api/
+│   │   └── [...path].ts     # Hono API catch-all route
+│   ├── index.astro          # Home page with SSR data fetching
+│   ├── indicator.astro      # Online/offline status demo
+│   ├── images.astro         # Image optimization test (Image/Picture)
+│   ├── fonts-test.astro     # Font rendering test page
+│   ├── llms.txt.astro       # LLM-friendly API docs route
+│   ├── nanostore.astro      # Nanostores integration demo
+│   ├── og.astro             # OG image test page
+│   └── robots.txt.ts        # Dynamic robots.txt (env-aware)
+├── scripts/
+│   └── theme-checker.js     # Dark mode detection
+├── styles/
+│   └── global.css           # Tailwind + shadcn styles
+└── middleware.ts            # Astro middleware (cache control)
 ```
 
 ---
@@ -160,301 +196,361 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 
 ### Hybrid Architecture
 
-The application follows a **hybrid architecture**:
-
 - **Static/SSR pages** served by Astro
 - **API routes** handled by Hono with oRPC for type-safe RPC calls
-- **Islands architecture** - React components are hydrated selectively using `client:load`
+- **Islands architecture** - React components hydrated selectively via `client:load`
 - **SSR with TanStack Query** - Server-side data fetching with client hydration
 
 ### Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Frontend** | Astro v6 | Server-side rendering, static generation |
-| **UI Framework** | React v19 + base-ui | Interactive islands (hydrated components) |
-| **Styling** | Tailwind CSS v4 + shadcn/ui | Utility-first CSS with pre-built components |
-| **API** | Hono v4 | Lightweight web framework for API routes |
-| **RPC** | oRPC v1.13 | Type-safe RPC with OpenAPI support |
-| **State** | Nanostores + TanStack Query | Client-side state management |
-| **Query Cache** | IndexedDB (idb-keyval) | Persistent query cache with SuperJSON serialization |
-| **Validation** | Zod v4 | Schema validation for inputs/outputs and environment variables |
-| **API Docs** | Scalar | Interactive OpenAPI documentation |
-| **Authentication** | Better Auth | Session management with OAuth (Google, GitHub) |
-| **Security** | Arcjet | Rate limiting and bot protection |
-| **Email** | Resend | Transactional email service |
-| **Cache** | Upstash Redis | Distributed caching layer |
-| **AI** | Qwen API | AI-powered features |
+| **Frontend** | Astro v6 | SSR, static generation |
+| **UI Framework** | React v19 + @base-ui/react | Interactive islands |
+| **Styling** | Tailwind CSS v4 + shadcn/ui | Utility-first CSS |
+| **API** | Hono v4 | Web framework for API |
+| **RPC** | oRPC v1.13 | Type-safe RPC + OpenAPI |
+| **State** | Nanostores + TanStack Query | Client state management |
+| **Query Cache** | IndexedDB (idb-keyval) | Persistent cache + SuperJSON |
+| **Validation** | Zod v4 | Schema validation |
+| **API Docs** | Scalar | OpenAPI documentation |
+| **OG Images** | @takumi-rs/image-response + satori | Dynamic image generation |
+| **Icons** | lucide-react | Icon library |
+| **Toasts** | sonner | Toast notifications |
+| **Themes** | next-themes | Dark/light theme |
+| **Image Processing** | sharp + @resvg/resvg-js | Image manipulation |
+| **Caching** | ioredis (Upstash Redis) | Distributed cache |
+| **Serialization** | superjson | Complex type preservation |
 | **Runtime** | Node.js >= 22.12.0 | Server runtime |
-| **Package Manager** | Bun | Fast package manager and runtime |
+| **Package Manager** | Bun | Fast package management |
 
 ---
 
 ## 🔌 API Endpoints
 
-All API routes are prefixed with `/api/` and served through Hono.
+All API routes prefixed with `/api/`.
 
-### Base URL
-
-- **Development:** `http://localhost:4321/api`
-- **Production:** `https://your-domain.com/api`
-
-### Endpoints
+### Core Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/health` | Health check endpoint |
-| `GET` | `/api/docs` | Scalar API documentation |
+| `GET` | `/api/health` | Health check (`{ status: 'ok' }`) |
 | `POST` | `/api/rpc/*` | oRPC procedure calls |
+| `GET` | `/api/docs` | Scalar API documentation |
 | `GET` | `/api/rpc/generate-schema` | OpenAPI schema for oRPC |
-
-### Health Check
-
-**GET `/api/health`**
-
-Returns the health status of the API.
-
-**Response:**
-```json
-{
-  "status": "ok"
-}
-```
-
----
+| `GET` | `/api/openapi/generate-schema` | Raw OpenAPI JSON spec |
+| `GET` | `/api/openapi/orpc-docs` | Scalar docs for oRPC API |
+| `GET` | `/api/llms.txt` | API docs as plain text markdown (for AI tools) |
+| `GET` | `/api/llms.html` | API docs as styled HTML (PicoCSS) |
+| `GET` | `/api/og` | Dynamic OG image generation (PNG, 1200x630) |
+| `GET` | `/robots.txt` | Dynamic robots.txt (disallows in non-production) |
+| `GET` | `/sitemap-index.xml` | Auto-generated sitemap |
 
 ### oRPC Procedures
 
 #### GET `/api/rpc/test`
 
-Test procedure demonstrating oRPC setup.
+Test procedure for oRPC configuration.
 
-**Description:** Test route for verifying oRPC configuration.
-
-**Input Schema:**
+**Input:**
 ```typescript
-{
-  name: string  // 3-40 characters
-}
+{ name: string }  // 3-40 characters
 ```
 
-**Output Schema:**
+**Output:**
 ```typescript
-{
-  name: string
-}
-```
-
-**Example Request:**
-```typescript
-import { client } from '@/lib/server/web.client';
-
-const result = await client.test({ name: 'World' });
-// Returns: { name: 'Hello, World!' }
+{ name: string }  // Returns: { name: 'Hello, {name}!' }
 ```
 
 **Errors:**
-
 | Status | Code | Reason |
 |--------|------|--------|
 | 403 | `FORBIDDEN` | If name is "admin" |
-| 422 | `INPUT_VALIDATION_FAILED` | Invalid input schema |
+| 422 | `INPUT_VALIDATION_FAILED` | Invalid input |
 
 #### POST `/api/rpc/testSlow`
 
-Slow test procedure demonstrating request cancellation and abort signal handling.
+Simulates slow operation (3s delay) to test cancellation.
 
-**Description:** Simulates a slow operation (3 second delay) to test request cancellation.
+**Features:**
+- Supports `AbortSignal` for request cancellation
+- Returns `CLIENT_CLOSED_REQUEST` (499) when aborted
+- Sets custom headers and cookies
 
-**Input Schema:**
-```typescript
-{
-  name: string
-}
-```
-
-**Output Schema:**
-```typescript
-{
-  name: string
-}
-```
-
-**Example Request:**
+**Example:**
 ```typescript
 import { client } from '@/lib/server/web.client';
 
 const result = await client.testSlow({ name: 'World' });
-// Returns: { name: 'Hello, World!' } after ~3 seconds
+// Returns after ~3 seconds
 ```
-
-**Features:**
-- Supports `AbortSignal` for request cancellation
-- Returns `CLIENT_CLOSED_REQUEST` (499) when client aborts
-- Sets custom headers (`x-custom-header`) and cookies on client-side requests
 
 ---
 
-## 🎯 TanStack Query Integration
+## 🖼️ Dynamic OG Image Generation
 
-### Features
-
-- **SSR Support** - Server-side data fetching with hydration
-- **IndexedDB Persistence** - Query cache persists across sessions (24h TTL)
-- **SuperJSON Serialization** - Preserves dates, Maps, Sets, and other complex types
-- **Request Cancellation** - AbortController integration for slow requests
-- **Query Prefetching** - Optimistic data loading on hover
+Generate social card images dynamically using React components and Satori.
 
 ### Architecture
 
-The TanStack Query setup consists of:
+- **Templates** - React components define card layouts (`SocialCard.tsx`)
+- **Rendering** - `@takumi-rs/image-response` converts HTML/CSS to PNG
+- **Fonts** - Auto-loaded from `/public/fonts/` via `fonts.ts`
+- **Caching** - Redis-backed cache with 7-day TTL (`cache.ts`)
+- **SEO Schema** - Zod-validated metadata (`seo.schema.ts`)
 
-1. **Query Client Factory** (`mainQuery.ts`) - Creates configured QueryClient instances with IndexedDB persistence and SuperJSON serialization
-2. **Server Client** (`query.ts`) - Server-side query client for SSR
-3. **SSR Provider** (`SsrQueryProvider.tsx`) - Hydration boundary component
-4. **Query DevTools** (`QueryDevTools.tsx`) - Development debugging tools
+### Usage
 
-### Usage Example
+**Endpoint:**
+```
+GET /api/og?title=My+Page&description=My+Description&type=default
+```
 
+**Parameters:**
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `title` | string | - | Card title (required) |
+| `description` | string | - | Card description |
+| `type` | `'default' \| 'simple'` | `default` | Card template type |
+
+**Example:**
+```html
+<meta property="og:image" content="/api/og?title=My+Page" />
+```
+
+### Testing
+
+```bash
+# Run OG test script
+bun run og:test
+
+# Or visit directly
+http://localhost:4321/og
+```
+
+---
+
+## 🔍 SEO & Meta Tags
+
+### SEO Component (`@acomp/SEO.astro`)
+
+Comprehensive SEO component supporting:
+- **Open Graph tags** - Facebook, LinkedIn, Discord
+- **Twitter Cards** - Summary and large image cards
+- **JSON-LD** - Structured data for search engines
+- **Canonical URLs** - Prevent duplicate content
+- **Sitemap link** - Auto-included in `<head>`
+
+**Usage:**
+```astro
+---
+import SEO from '@/components/astrocomp/SEO.astro';
+import { createSeo } from '@/lib/server/schemas/seo.schema';
+
+const seo = createSeo({
+  title: 'My Page',
+  description: 'Page description',
+  image: '/api/og?title=My+Page',
+});
+---
+<SEO {...seo} />
+```
+
+### Robots.txt
+
+Dynamic `robots.txt` generation:
+- **Production** - Allows all crawling
+- **Development/Preview** - Disallows all
+
+### Sitemap
+
+Auto-generated sitemap with:
+- Smart `lastmod` detection
+- Filtered routes (excludes API, images, test pages)
+- Priority and changefreq metadata
+
+---
+
+## 🤖 LLM-Friendly Documentation
+
+Auto-generated API documentation optimized for AI tools.
+
+### Endpoints
+
+| Endpoint | Format | Use Case |
+|----------|--------|----------|
+| `/api/llms.txt` | Plain text markdown | Cursor, Claude, ChatGPT |
+| `/api/llms.html` | Styled HTML (PicoCSS) | Browser viewing |
+
+### Features
+
+- **OpenAPI-to-Markdown** - Converts oRPC contracts to readable docs
+- **Structured** - Clear sections for endpoints, inputs, outputs
+- **AI-Optimized** - Formatted for LLM consumption
+
+**Usage in AI tools:**
+```
+Add this to your project context:
+https://your-domain.com/api/llms.txt
+```
+
+---
+
+## 💾 State Management
+
+### Nanostores
+
+Lightweight reactive state management.
+
+**Stores:**
+- `$isOnline` (`src/lib/stores/online.ts`) - Browser online/offline status
+- `$testData` (`src/lib/stores/ssr.ts`) - SSR state sharing
+
+**Usage:**
+```tsx
+import { $isOnline } from '@/lib/stores/online';
+import { useStore } from '@nanostores/react';
+
+function OnlineIndicator() {
+  const online = useStore($isOnline);
+  return <span>{online ? '🟢 Online' : '🔴 Offline'}</span>;
+}
+```
+
+**Nanostores + TanStack Query Integration:**
+Components can use nanostores as a cache layer before triggering TanStack Query fetches, enabling cache-first strategies.
+
+### TanStack Query
+
+#### Features
+
+- **SSR Support** - Server-side data fetching with hydration
+- **IndexedDB Persistence** - 24h TTL, persists across sessions
+- **SuperJSON Serialization** - Preserves Dates, Maps, Sets
+- **Request Cancellation** - AbortController integration
+- **Query Prefetching** - Optimistic loading on hover
+- **DevTools** - Embedded QueryDevTools component
+
+#### Architecture
+
+```
+mainQuery.ts  →  Browser QueryClient (IndexedDB + SuperJSON)
+query.ts      →  Server QueryClient (SSR only)
+```
+
+#### Usage
+
+**Server-side (Astro page):**
 ```typescript
-// Server-side data fetching (index.astro)
+---
 import { serverClient } from '@server/server.client';
+const data = await serverClient.test({ name: 'SSR' });
+---
+```
 
-const data = await serverClient.test({ name: 'from SSR' });
-
-// Client-side with TanStack Query (TestTanstackQuery.tsx)
+**Client-side (React component):**
+```tsx
 import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@server/web.client';
 
-const { data, isLoading, error } = useQuery(
+const { data } = useQuery(
   orpc.test.queryOptions({
     input: { name: 'test' },
-    queryKey: ['test', { name: 'test' }],
+    queryKey: ['test', { name }],
+    initialData: serverData, // SSR hydration
   }),
   client
 );
 ```
 
-### Request Cancellation Example
+**Request Cancellation:**
+```tsx
+// Cancel running queries
+client.cancelQueries({ queryKey: ['slow-test'] });
 
-The `SlowRequest.tsx` component demonstrates:
-- Query cancellation on user action
-- Query prefetching on hover
-- Automatic cleanup of cancelled queries
-
-```typescript
-const handleCancel = () => {
-  client.cancelQueries({ queryKey: ['slow-test'] });
-};
-
-const handleMouseEnter = () => {
-  client.prefetchQuery(
-    orpc.testSlow.queryOptions({
-      input: { name: 'slow operation' },
-      queryKey: ['slow-test', fetchId],
-    })
-  );
-};
+// Prefetch on hover
+client.prefetchQuery(
+  orpc.testSlow.queryOptions({
+    input: { name: 'test' },
+    queryKey: ['slow-test'],
+  })
+);
 ```
 
 ---
 
 ## 📝 Contract-First API Design
 
-oRPC supports a contract-first approach where API contracts are defined separately from implementations, enabling better type safety and client generation.
+API contracts defined separately from implementations for type safety.
 
 ### Architecture
 
-Contracts are defined in `src/lib/server/contracts/`:
+```
+contracts/
+  oc.base.ts          →  Base contract with error schema
+  test.contract.ts    →  Individual contract
+  all.contracts.ts    →  Contract aggregator
+```
 
-1. **Base Contract** (`oc.base.ts`) - Defines shared error schema for all procedures
-2. **Contract Definitions** (`*.contract.ts`) - Individual contract definitions with routes, inputs, outputs
-3. **Contract Aggregator** (`all.contracts.ts`) - Exports all contracts as a single typed object
-
-### Usage Example
-
-**Define a contract:**
+### Example
 
 ```typescript
-// src/lib/server/contracts/my.contract.ts
-import { baseOc } from '@/lib/server/contracts/oc.base';
-import { mySchema } from '@server/schemas/my.schema';
-
+// Define contract
 export const myContract = baseOc
   .route({
     method: 'GET',
     path: '/my-endpoint',
-    description: 'Description of the endpoint',
-    summary: 'Short summary',
+    description: 'Endpoint description',
     tags: ['MyTag'],
-    successDescription: 'Success response',
-    successStatus: 200,
   })
-  .input(mySchema)
-  .output(mySchema);
-```
+  .input(myInputSchema)
+  .output(myOutputSchema);
 
-**Export in aggregator:**
-
-```typescript
-// src/lib/server/contracts/all.contracts.ts
-import { myContract } from '@server/contracts/my.contract';
-
+// Export in aggregator
 export const appContract = {
   my: myContract,
 };
-
-export type AppContract = typeof appContract;
 ```
 
 ### Benefits
 
-- **Type-safe clients** - Full TypeScript inference from contracts
-- **OpenAPI generation** - Contracts automatically generate OpenAPI schemas
-- **Error consistency** - Shared error definitions across all procedures
+- **Type-safe clients** - Full TypeScript inference
+- **OpenAPI generation** - Auto-generated from contracts
+- **Error consistency** - Shared error definitions
 - **Decoupled design** - Contracts separate from implementation
 
 ---
 
-## 🔐 Environment Variable Management
+## 🎨 Styling & Theming
 
-### Server-Side Validation
+### Tailwind CSS v4
 
-All server environment variables are validated at startup using Zod. The app will fail fast if required variables are missing.
+- Vite integration (no separate config file)
+- Utility-first CSS framework
 
-```typescript
-// src/lib/env/server.env.ts
-import { envServer } from '@/lib/env/server.env';
+### shadcn/ui (base-vega style)
 
-// Type-safe access to environment variables
-const dbUrl = envServer.DB_URL;
-const authSecret = envServer.BETTER_AUTH_SECRET;
-```
+- Pre-built UI components
+- CSS variables for theming
+- Lucide icons
 
-### Client-Side Exposure
+### Theme System
 
-Only `PUBLIC_*` prefixed variables are exposed to the browser for security.
+- **Auto-detection** - `theme-checker.js` script
+- **Dark/Light modes** - Toggled via `next-themes`
+- **OKLCH colors** - Perceptually uniform color space
+- **Semantic tokens** - Sidebar, chart, and semantic colors
 
-```typescript
-// src/lib/env/client.env.ts
-import { envClient } from '@/lib/env/client.env';
-
-// Safe for browser use
-const apiUrl = envClient.PUBLIC_API_URL;
-```
-
-### Adding New Environment Variables
-
-1. Add the variable to `.example.env`
-2. Add validation schema in `src/lib/env/server.env.ts` (for server vars)
-3. Add to `src/lib/env/client.env.ts` (for `PUBLIC_*` client vars only)
+**CSS Variables defined in `src/styles/global.css`:**
+- Base colors (background, foreground, primary, secondary)
+- Semantic colors (success, warning, error, info)
+- Component colors (sidebar, cards, dialogs)
 
 ---
 
 ## 🛠️ Configuration
 
-### Path Aliases (tsconfig.json)
+### Path Aliases
 
 | Alias | Path |
 |-------|------|
@@ -464,80 +560,28 @@ const apiUrl = envClient.PUBLIC_API_URL;
 | `@acomp/*` | `./src/components/astrocomp/*` |
 | `@server/*` | `./src/lib/server/*` |
 
-### Astro Configuration (astro.config.mjs)
+### Astro Configuration
 
-- **Output mode:** `server` (SSR)
-- **Adapter:** `@astrojs/node` (standalone mode)
-- **React integration:** Enabled with `client:load` hydration
+- **Output:** `server` (SSR mode)
+- **Adapter:** `@astrojs/node` (standalone)
+- **React:** Islands architecture (`client:load`)
+- **Sitemap:** Auto-generated with smart lastmod
+- **Fonts:** Inter (body), Playfair Display (headings), JetBrains Mono (code)
+- **Shiki theme:** Dracula (Markdown code blocks)
+- **Allowed hosts:** `fast-web-tech.co.uk`, `localhost`, `host.docker.internal`
 
-### TypeScript Configuration
+### TypeScript
 
 - **Strict mode:** Enabled
 - **JSX:** `react-jsx`
 - **Module resolution:** `bundler`
-- **Path aliases:** Configured for clean imports
 
-### Prettier Configuration
+### Prettier
 
 - **Line length:** 105 characters
-- **Quotes:** Single quotes
+- **Quotes:** Single
 - **Semicolons:** Required
-- **Trailing commas:** ES5 style
 - **Plugins:** astro, classnames, tailwindcss, merge
-
----
-
-## 🎨 Styling & Theming
-
-### Tailwind CSS v4
-
-Uses Tailwind CSS v4 with Vite integration. No separate `tailwind.config.js` required.
-
-### shadcn/ui (base-vega style)
-
-Pre-built UI components following the base-vega design system.
-
-**Configuration (`components.json`):**
-- Style: `base-vega`
-- Icon library: Lucide
-- CSS variables: Enabled
-- Base color: Neutral
-
-### Dark/Light Theme
-
-Automatic theme detection via `src/scripts/theme-checker.js`.
-
-**CSS Variables:**
-- Defined in `src/styles/global.css`
-- Uses OKLCH color space for better perceptual uniformity
-- Sidebar, chart, and semantic color tokens included
-
-**Usage:**
-```astro
----
-import Layout from '@/layouts/Layout.astro';
----
-<Layout title="My Page">
-  <div slot="main">Content</div>
-</Layout>
-```
-
----
-
-## 📦 Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `bun install` | Install all dependencies |
-| `bun dev` | Start development server at `localhost:4321` |
-| `bun build` | Build production site to `./dist/` |
-| `bun preview` | Preview production build locally |
-| `bun:dev` | Start development server with Bun (host mode) |
-| `bun:build` | Build production site with Bun |
-| `bun:preview` | Preview production build with Bun |
-| `bun astro ...` | Run Astro CLI commands (e.g., `astro add`, `astro check`) |
-| `bun ts:check` | Type check with TypeScript (no emit) |
-| `bun format` | Format code with Prettier |
 
 ---
 
@@ -545,19 +589,14 @@ import Layout from '@/layouts/Layout.astro';
 
 ### Code Style
 
-- **Explicit over implicit** — Always define types and imports clearly
-- **No magic** — Avoid clever one-liners; prefer readable logic
-- **Named exports** — Use named exports over default exports
-- **Comments on intent** — Document _what_ and _why_, not _how_
+- **Explicit over implicit** - Define types and imports clearly
+- **No magic** - Avoid clever one-liners
+- **Named exports** - Prefer over default exports
+- **Comments on intent** - Document _what_ and _why_, not _how_
 
 ### Component Patterns
 
-#### Astro Components (`.astro`)
-
-- Located in `src/components/astrocomp/`
-- Use `@acomp/` alias
-- Server-rendered by default (no hydration)
-- Define `Props` interface for typed props
+#### Astro Components
 
 ```astro
 ---
@@ -569,12 +608,7 @@ const { title }: Props = Astro.props;
 <h1>{title}</h1>
 ```
 
-#### React Components (`.tsx`)
-
-- Located in `src/components/reactcomp/`
-- Use `@rcomp/` alias
-- Must use hydration directive (`client:load`, `client:visible`, etc.)
-- shadcn/ui components follow base-vega style
+#### React Components
 
 ```tsx
 'use client';
@@ -587,82 +621,31 @@ export function MyComponent() {
 
 ### oRPC Patterns
 
-**Procedure Definition:**
-
+**Procedure:**
 ```typescript
 import { base } from '@server/procedures/base';
-import { z } from 'zod';
 
 export const myProcedure = base
   .route({
     method: 'GET',
     path: '/my-endpoint',
-    description: 'Description of the endpoint',
+    description: 'Description',
     tags: ['Tag'],
   })
-  .input(z.object({ param: z.string() }))
-  .output(z.object({ result: z.string() }))
-  .handler(async ({ input, context, errors }) => {
-    // Handler logic
+  .input(inputSchema)
+  .output(outputSchema)
+  .handler(async ({ input, context }) => {
     return { result: 'Success' };
   });
 ```
 
-**Adding New oRPC Procedures:**
-
-1. Create a schema in `src/lib/server/schemas/`
-2. Create a router in `src/lib/server/routers/` using `base` procedure
-3. Export the router in `src/lib/server/routers/all.routers.ts`
-4. Call from client using `client` from `@/lib/server/web.client`
-
-### TanStack Query Patterns
-
-**Server-Side Data Fetching (SSR):**
-
-```typescript
-// In Astro page/layout
----
-import { serverClient } from '@server/server.client';
-
-const data = await serverClient.test({ name: 'SSR' });
----
-```
-
-**Client-Side with Hydration:**
-
-```typescript
-import { useQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@server/web.client';
-
-const { data, isLoading } = useQuery(
-  orpc.test.queryOptions({
-    input: { name },
-    queryKey: ['test', { name }],
-    initialData: serverData, // SSR hydration data
-  }),
-  client
-);
-```
-
-**Query Cancellation:**
-
-```typescript
-// Cancel running queries
-client.cancelQueries({ queryKey: ['my-query'] });
-
-// Prefetch on hover
-client.prefetchQuery(
-  orpc.test.queryOptions({
-    input: { name: 'test' },
-    queryKey: ['my-query'],
-  })
-);
-```
+**Adding New Procedures:**
+1. Create schema in `src/lib/server/schemas/`
+2. Create router in `src/lib/server/routers/`
+3. Export router in `all.routers.ts`
+4. Call from client using `@/lib/server/web.client`
 
 ### Error Handling
-
-oRPC errors are defined in `src/lib/server/procedures/base.ts`:
 
 | Error | Status | Message |
 |-------|--------|---------|
@@ -673,37 +656,44 @@ oRPC errors are defined in `src/lib/server/procedures/base.ts`:
 | `CONFLICT` | 409 | Resource conflict |
 | `INPUT_VALIDATION_FAILED` | 422 | Input validation failed |
 | `OUTPUT_VALIDATION_FAILED` | 500 | Output validation failed |
-| `TOO_MANY_REQUESTS` | 429 | Rate limit exceeded please try again later |
+| `TOO_MANY_REQUESTS` | 429 | Rate limit exceeded |
 | `CLIENT_CLOSED_REQUEST` | 499 | Client closed the request |
 | `INTERNAL_SERVER_ERROR` | 500 | Internal Server Error |
+
+### Client-Side oRPC Features
+
+The web client (`web.client.ts`) includes:
+- **8-second timeout** - Auto-aborts long requests
+- **Cookie auth** - `credentials: 'include'`
+- **Response validation** - `ResponseValidationPlugin`
+- **Auto-redirect** - On `UNAUTHORIZED` → `/login`, `FORBIDDEN` → `/403`
 
 ---
 
 ## 🧪 Testing
 
-No test framework is currently configured. Consider adding:
+No test framework currently configured.
 
-- **Vitest** for unit testing
-- **Playwright** for E2E testing
+**Recommended:**
+- **Vitest** - Unit testing
+- **Playwright** - E2E testing
 
 ---
 
 ## 📚 Additional Resources
 
-- [Astro Documentation](https://docs.astro.build)
-- [Hono Documentation](https://hono.dev)
-- [oRPC Documentation](https://orpc.unno.io)
-- [TanStack Query Documentation](https://tanstack.com/query/latest)
-- [Tailwind CSS Documentation](https://tailwindcss.com)
-- [shadcn/ui Documentation](https://ui.shadcn.com)
-- [base-ui Documentation](https://base-ui.com)
-- [Scalar Documentation](https://scalar.com)
-- [Better Auth Documentation](https://www.better-auth.com)
-- [Arcjet Documentation](https://docs.arcjet.com)
-- [Resend Documentation](https://resend.com/docs)
-- [Upstash Documentation](https://upstash.com/docs)
-- [Zod Documentation](https://zod.dev)
-- [Nanostores Documentation](https://github.com/nanostores/nanostores)
+- [Astro](https://docs.astro.build)
+- [Hono](https://hono.dev)
+- [oRPC](https://orpc.unno.io)
+- [TanStack Query](https://tanstack.com/query/latest)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com)
+- [base-ui](https://base-ui.com)
+- [Scalar](https://scalar.com)
+- [Nanostores](https://github.com/nanostores/nanostores)
+- [Sonner](https://sonner.emilkowal.ski)
+- [Satori](https://github.com/vercel/satori)
+- [Zod](https://zod.dev)
 
 ---
 
