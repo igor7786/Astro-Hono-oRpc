@@ -4,12 +4,12 @@ import { Image } from 'astro:assets';
 import { Picture } from 'astro:assets';
 import myImage from '@/assets/12.jpg';
 import { TestImage } from '@rcomp/TestImage';
-import { getImage } from "astro:assets";
+import { getImage } from 'astro:assets';
 import googleIcon from '@/assets/google-icon.webp';
 import twitterIcon from '@/assets/twitter-icon.webp';
 import facebookIcon from '@/assets/facebook-icon.webp';
 import githubIcon from '@/assets/github-icon.webp';
-import ButtonSocialDemo from '@rcomp/social/ButtonSocial';
+import ButtonSocialDemo from '@rcomp/shadcn-studio/ButtonSocial';
 
 const google = await getImage({ src: googleIcon, width: 20, height: 20, format: 'webp' });
 const twitter = await getImage({ src: twitterIcon, width: 20, height: 20, format: 'webp' });
@@ -59,15 +59,13 @@ const github = await getImage({ src: githubIcon, width: 20, height: 20, format: 
     /></TestImage
   >
   <ButtonSocialDemo
-  slot="main"
-  client:load
-  icons={{
-    google: google.src,
-    twitter: twitter.src,
-    facebook: facebook.src,
-    github: github.src,
-  }}
-/>
-
-
+    slot="main"
+    client:load
+    icons={{
+      google: google.src,
+      twitter: twitter.src,
+      facebook: facebook.src,
+      github: github.src,
+    }}
+  />
 </Layout>

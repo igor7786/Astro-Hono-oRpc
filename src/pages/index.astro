@@ -5,7 +5,6 @@ import { serverClient } from '@server/server.client';
 import { TestClient } from '@rcomp/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
 import SlowRequest from '@rcomp/SlowRequest';
-import ButtonSocialDemo from '@rcomp/social/ButtonSocial';
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.test({ name: 'test' });

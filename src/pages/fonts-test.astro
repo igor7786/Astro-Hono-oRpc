@@ -1,10 +1,12 @@
 ---
 // src/pages/font-test.astro
 import Layout from '@/layouts/Layout.astro';
+import IconButtonNotificationDotDemo from '@rcomp/shadcn-studio/button-38';
 ---
 
 <Layout title="Font Test">
   <div slot="main" class="flex flex-col gap-8 p-16">
+    <IconButtonNotificationDotDemo client:load />
     <!-- Inter — body -->
     <div>
       <p class="text-muted-foreground mb-2 text-sm">font-sans (Inter)</p>
