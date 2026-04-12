@@ -714,6 +714,8 @@ QWEN.md
 ### GEMINI ###
 .gemini
 GEMINI.md
+### GIT.txt ###
+GIT.txt
 
 ### exclude ###
 !**/frontend/src/lib
