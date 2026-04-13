@@ -47,6 +47,7 @@ export default function CommentSection({ postId }: Props) {
           },
         ];
       },
+      enabled: mounted,
     },
     client
   );
@@ -77,7 +78,7 @@ export default function CommentSection({ postId }: Props) {
     }
     mutate({ author, content: comment });
   };
-
+  if (!mounted || isPending) return <div>Loading...</div>;
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center gap-2">

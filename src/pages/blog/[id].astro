@@ -99,7 +99,7 @@ const ogDate = post.data.date?.toLocaleDateString('en-GB', {
 
     {/* comments — loads when scrolled into view */}
     <div class="border-border mt-16 border-t pt-8">
-      <CommentSection postId={post.id} client:only />
+      <CommentSection postId={post.id} client:visible />
     </div>
 
     {/* back link */}
