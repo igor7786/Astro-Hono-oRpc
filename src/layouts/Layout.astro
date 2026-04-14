@@ -31,7 +31,12 @@ interface Props {
     <Font cssVariable="--font-sans" preload />
     <Font cssVariable="--font-heading" preload />
     <Font cssVariable="--font-mono" preload />
+    <!-- ✅ theme -->
     <script set:html={themeScript} />
+    <!-- ✅ bones registry, auto-generated -->
+    <script>
+      import '@/bones/registry.js';
+    </script>
   </head>
   <body>
     <div class="bg-background min-h-screen">

@@ -47,6 +47,7 @@
     "@types/react-dom": "^19.2.3",
     "add": "^2.0.6",
     "astro": "6.1.4",
+    "boneyard-js": "^1.7.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "hono": "^4.12.8",

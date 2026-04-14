@@ -1,0 +1,10 @@
+{
+  "animate": "shimmer",
+  "darkColor": "#1a1a2e",
+  "darkShimmerColor": "#2d2d50",
+  "speed": "1.5s",
+  "shimmerAngle": 110,
+  "stagger": 80,
+  "transition": 300,
+  "gap": 12
+}
