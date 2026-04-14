@@ -3,7 +3,7 @@
 import { registerBones } from 'boneyard-js';
 import { configureBoneyard } from 'boneyard-js/react';
 
-import _notifications from './notifications.bones.json';
+import _Card from './Card.bones.json';
 
 configureBoneyard({
   darkColor: '#1a1a2e',
@@ -16,5 +16,5 @@ configureBoneyard({
 });
 
 registerBones({
-  notifications: _notifications,
+  Card: _Card,
 });

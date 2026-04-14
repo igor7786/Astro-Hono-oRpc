@@ -16,7 +16,7 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   ssr: {
     resolve: { externalConditions: ['bun', 'node'] },
-    //  external: ['boneyard-js']
+    // external: ['boneyard-js'],
   },
   site: 'http://localhost:4321/',
   server: {
@@ -54,13 +54,13 @@ export default defineConfig({
     plugins: [
       tailwindcss(),
       // bunx boneyard-js build http://localhost:4321/notifications
-      boneyardPlugin({
-        out: './src/bones',
-        breakpoints: [375, 768, 1280],
-        wait: 3000,
-        skipInitial: false,
-        watch: true,
-      }),
+      // boneyardPlugin({
+      //   out: './src/bones',
+      //   breakpoints: [375, 768, 1280],
+      //   wait: 3000,
+      //   skipInitial: false,
+      //   watch: true,
+      // }),
     ],
   },
 
