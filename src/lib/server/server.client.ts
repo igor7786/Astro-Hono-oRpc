@@ -12,10 +12,11 @@ export const serverClient: RouterClient<AppRouter> = createRouterClient(allRoute
   interceptors: [
     onError((error) => {
       if (!(error instanceof ORPCError)) {
-        console.error('[oRPC server] Unexpected error', error);
+        console.log('[oRPC server] Unexpected error', error);
         return;
       }
-      console.error(`[oRPC server] ${error.code} - ${error.message}`);
+      console.log(`[oRPC server] ${error.code} - ${error.message}`);
+      return;
     }),
   ],
 });

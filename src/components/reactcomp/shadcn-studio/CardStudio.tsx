@@ -1,41 +1,66 @@
-import { Button } from '@/components/reactcomp/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardDescription,
-  CardTitle,
-  CardFooter,
-} from '@/components/reactcomp/ui/card';
-import { Skeleton } from 'boneyard-js/react';
 import { useEffect, useState } from 'react';
+import { clientOrpc as orpc } from '@server/web.client';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
+import { Skeleton } from 'boneyard-js/react';
+import { Button } from '@/components/reactcomp/ui/button';
+import { Card, CardContent, CardHeader, CardDescription, CardTitle, CardFooter } from '@rcomp/ui/card';
+import { type TestInput } from '@server/schemas/test.schema';
+import { useQuery } from '@tanstack/react-query';
 
-const CardTopImageDemo = () => {
-  const [mainLoading, setMainLoading] = useState<boolean>(true);
+type CardInnerProps = {
+  initialData: TestInput['name'] | null;
+  input: string;
+  imageSrc: string;
+};
+
+const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [manualLoading, setManualLoading] = useState<boolean>(false); // ← add this
+  const client = getQueryClient();
+
   useEffect(() => {
-    const timer = setTimeout(() => setMainLoading(false), 3000);
-    return () => clearTimeout(timer); // cleanup
+    setMounted(true);
   }, []);
+
+  const { data, isLoading, isFetching } = useQuery(
+    orpc.testSlow.queryOptions({
+      input: { name: input },
+      queryKey: ['test', { name: input }],
+      initialData: initialData ? { name: initialData } : undefined,
+      staleTime: 30_000,
+      enabled: mounted,
+    }),
+    client
+  );
+
+  const handleRefresh = async () => {
+    setManualLoading(true); // ← show skeleton immediately
+    await client.invalidateQueries({
+      queryKey: ['test', { name: input }],
+      refetchType: 'all',
+    });
+    setManualLoading(false); // ← hide skeleton when done
+  };
+
+  const loading = !mounted || isLoading || manualLoading;
+  const name = data?.name ?? initialData;
+
   return (
-    <Skeleton name="Card" loading={mainLoading}>
-      <div className="flex min-h-screen items-center justify-center" slot="main">
+    <Skeleton name="Card" loading={loading}>
+      <div className="flex min-h-screen items-center justify-center">
         <Card className="max-w-md pt-0">
           <CardContent className="px-0">
-            <img
-              src="https://cdn.shadcnstudio.com/ss-assets/components/card/image-2.png?height=280&format=auto"
-              alt="Banner"
-              className="aspect-video h-70 rounded-t-xl object-cover"
-            />
+            <img src={imageSrc} alt="Banner" className="aspect-video h-70 rounded-t-xl object-cover" />
           </CardContent>
           <CardHeader>
             <CardTitle>Ethereal Swirl Gradient</CardTitle>
-            <CardDescription>
-              Smooth, flowing gradients blending rich reds and blues in an abstract swirl.
-            </CardDescription>
+            <CardDescription>{name}</CardDescription>
           </CardHeader>
           <CardFooter className="gap-3 max-sm:flex-col max-sm:items-stretch">
             <Button>Explore More</Button>
-            <Button variant={'outline'}>Download Now</Button>
+            <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
+              {isFetching ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
           </CardFooter>
         </Card>
       </div>

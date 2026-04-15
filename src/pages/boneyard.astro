@@ -1,9 +1,39 @@
 ---
-// src/pages/font-test.astro
+// src/pages/boneyard.astro
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
 import Layout from '@/layouts/Layout.astro';
+import { serverClient } from '@/lib/server/server.client';
+// src/lib/orpc.server.ts
+const inputData = {
+  name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
+};
+import cardImage from '@/assets/card.webp';
+import { getImage } from 'astro:assets';
+const optimizedBackground = await getImage({ src: cardImage, format: 'avif' });
+let data: { name: string } | null = null;
+
+try {
+  data = await Promise.race([
+    serverClient.testSlow(inputData),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 300)),
+  ]);
+} catch (e) {
+  // server fetch failed → fall back to client-side fetch
+  if (e instanceof Error) {
+    console.error('prefetch failed:', e.message);
+  } else {
+    console.error('prefetch failed:', e);
+  }
+}
+const name = data?.name ?? null;
 ---
 
 <Layout title="Skeleton Test">
-  <CardTopImageDemo client:load slot="main" />
+  <CardTopImageDemo
+    client:load
+    initialData={name}
+    input={inputData.name}
+    imageSrc={optimizedBackground.src}
+    slot="main"
+  />
 </Layout>
