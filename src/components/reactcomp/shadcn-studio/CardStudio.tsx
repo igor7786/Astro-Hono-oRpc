@@ -21,14 +21,12 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const { data, isLoading, isFetching } = useQuery(
+  const { data, isLoading, isFetching, error } = useQuery(
     orpc.testSlow.queryOptions({
       input: { name: input },
       queryKey: ['test', { name: input }],
       initialData: initialData ? { name: initialData } : undefined,
-      staleTime: 30_000,
-      enabled: mounted,
+      enabled: mounted && !initialData,
     }),
     client
   );
@@ -47,23 +45,21 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
 
   return (
     <Skeleton name="Card" loading={loading}>
-      <div className="flex min-h-screen items-center justify-center">
-        <Card className="max-w-md pt-0">
-          <CardContent className="px-0">
-            <img src={imageSrc} alt="Banner" className="aspect-video h-70 rounded-t-xl object-cover" />
-          </CardContent>
-          <CardHeader>
-            <CardTitle>Ethereal Swirl Gradient</CardTitle>
-            <CardDescription>{name}</CardDescription>
-          </CardHeader>
-          <CardFooter className="gap-3 max-sm:flex-col max-sm:items-stretch">
-            <Button>Explore More</Button>
-            <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
-              {isFetching ? 'Refreshing...' : 'Refresh Data'}
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <Card className="max-w-md pt-0">
+        <CardContent className="px-0">
+          <img src={imageSrc} alt="Banner" className="aspect-video h-70 rounded-t-xl object-cover" />
+        </CardContent>
+        <CardHeader>
+          <CardTitle>Ethereal Swirl Gradient</CardTitle>
+          <CardDescription>{data?.name || error?.message}</CardDescription>
+        </CardHeader>
+        <CardFooter className="gap-3 max-sm:flex-col max-sm:items-stretch">
+          <Button>Explore More</Button>
+          <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
+            {isFetching ? 'Refreshing...' : 'Refresh Data'}
+          </Button>
+        </CardFooter>
+      </Card>
     </Skeleton>
   );
 };

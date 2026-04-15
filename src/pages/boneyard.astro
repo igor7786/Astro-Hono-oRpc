@@ -1,6 +1,7 @@
 ---
 // src/pages/boneyard.astro
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
+import { createSeo } from '@server/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
 import { serverClient } from '@/lib/server/server.client';
 // src/lib/orpc.server.ts
@@ -9,7 +10,7 @@ const inputData = {
 };
 import cardImage from '@/assets/card.webp';
 import { getImage } from 'astro:assets';
-const optimizedBackground = await getImage({ src: cardImage, format: 'avif' });
+const optimizedImage = await getImage({ src: cardImage, format: 'avif' });
 let data: { name: string } | null = null;
 
 try {
@@ -26,14 +27,46 @@ try {
   }
 }
 const name = data?.name ?? null;
+const seo = createSeo({
+  title: 'Skeleton Test',
+  description: 'Powered by Astro + Hono + oRPC',
+});
 ---
 
-<Layout title="Skeleton Test">
+<Layout {...seo}>
+  <div class="flex min-h-screen flex-col items-center justify-center gap-4" slot="main">
   <CardTopImageDemo
     client:load
-    initialData={name}
-    input={inputData.name}
-    imageSrc={optimizedBackground.src}
+    initialData={name }
+    input={inputData.name + '(client:load)'}
+    imageSrc={optimizedImage.src}
     slot="main"
   />
+  <CardTopImageDemo
+    client:only="react"
+    initialData={name }
+    input={inputData.name + '(client:only="react")'}
+    imageSrc={optimizedImage.src}
+    slot="main"
+  />
+    <CardTopImageDemo
+    client:idle={{timeout: 2000}}
+    initialData={name }
+    input={inputData.name + '(client:idle:max-delay-2s)'}
+    imageSrc={optimizedImage.src}
+    slot="main"
+  />
+  <div class="h-[150vh]" slot="main">Offset 150vh starts</div>
+
+   <CardTopImageDemo
+    client:visible={{rootMargin: "75px"}}
+    initialData={name}
+    input={inputData.name + '(client:visible:offset-75px)'}
+    imageSrc={optimizedImage.src}
+    slot="main"
+  />
+  <div class="mb-32" slot="main">Offset 150vh ends</div>
+  </div>
+
+
 </Layout>
