@@ -8,19 +8,26 @@ export const og = new Hono();
 og.get('/og', zValidator('query', seoQuerySchema), async (c) => {
   const { title, description, author, date } = c.req.valid('query');
 
-  console.log(title, description, author, date);
+  const accept = c.req.header('accept') ?? '';
+
+  const isWebp = accept.includes('image/webp') && !accept.includes('facebookexternalhit');
+
+  const format = isWebp ? 'webp' : 'png';
 
   try {
-    const image = await generateOgImage({
-      title: title ?? 'Fast Web Tech',
-      description,
-      author,
-      date,
-    });
+    const image = await generateOgImage(
+      {
+        title: title ?? 'Fast Web Tech',
+        description,
+        author,
+        date,
+      },
+      format
+    );
 
     return new Response(new Uint8Array(image), {
       headers: {
-        'Content-Type': 'image/png',
+        'Content-Type': format === 'webp' ? 'image/webp' : 'image/png',
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
