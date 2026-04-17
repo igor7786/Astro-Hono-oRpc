@@ -1,4 +1,4 @@
-import { generateOgImage } from '@/lib/server/seo/og/Generate';
+import { generateOgImage } from '@/server/seo/og/Generate';
 
 const image = await generateOgImage({
   title: 'Building Production OG Images',

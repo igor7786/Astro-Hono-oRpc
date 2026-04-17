@@ -1,7 +1,6 @@
-// src/server/handlers/rpc.handler.ts
 import { RPCHandler } from '@orpc/server/fetch';
 import { ORPCError } from '@orpc/server';
-import { allRouters } from '@server/routers/all.routers';
+import { allRouters } from '@/server/routers/all.routers';
 
 const rpcHandler = new RPCHandler(allRouters, {
   interceptors: [

@@ -1,5 +1,3 @@
-// src/lib/server/seo/og/SocialCard.tsx
-
 export interface SocialCardProps {
   title: string;
   description?: string;

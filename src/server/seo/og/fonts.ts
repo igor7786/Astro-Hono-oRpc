@@ -1,4 +1,3 @@
-// src/lib/server/seo/og/fonts.ts
 import { join } from 'path';
 import type { SatoriOptions } from 'satori';
 

@@ -1,5 +1,4 @@
-// src/components/react/TestClient.tsx
-import { client } from '@/lib/server/web.client';
+import { client } from '@/server/web.client';
 import { ORPCError } from '@orpc/client';
 import { useState, useEffect } from 'react';
 interface TestClientProps {

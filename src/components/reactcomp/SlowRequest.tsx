@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@server/web.client';
+import { clientOrpc as orpc } from '@/server/web.client';
 import { Button } from '@rcomp/ui/button';
 import { useState } from 'react';
 

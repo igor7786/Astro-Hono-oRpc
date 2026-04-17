@@ -1,4 +1,3 @@
-// src/lib/server/web.client.ts
 import { createORPCClient, onError, ORPCError } from '@orpc/client';
 import type { ContractRouterClient } from '@orpc/contract';
 import { ResponseValidationPlugin } from '@orpc/contract/plugins';
@@ -8,7 +7,7 @@ import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 // 1. You need the contract reference here
 // If AppRouter is just a type, you might need to import the actual router object
 // or the contract if you are using separate contracts.
-import { appContract, type AppContract } from '@server/contracts/all.contracts';
+import { appContract, type AppContract } from '@/server/contracts/all.contracts';
 
 const link = new OpenAPILink(appContract, {
   // <--- Added allRouters as 1st argument

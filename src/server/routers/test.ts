@@ -1,5 +1,5 @@
 import { setCookie } from '@orpc/server/helpers';
-import { base } from '@server/procedures/base';
+import { base } from '@/server/procedures/base';
 
 export const testRoute = base.test.handler(async ({ input, context, errors }) => {
   if (context.request) {

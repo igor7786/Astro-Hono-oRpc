@@ -1,4 +1,3 @@
-// src/components/TestImage.tsx
 type Props = {
   children?: React.ReactNode; // ✅ Astro passes slot content as children
 };

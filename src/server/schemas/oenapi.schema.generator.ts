@@ -1,8 +1,6 @@
-// src/lib/server/openapi/schema.ts
-
 import { OpenAPIGenerator } from '@orpc/openapi';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
-import { allRouters } from '@server/routers/all.routers';
+import { allRouters } from '@/server/routers/all.routers';
 
 const generator = new OpenAPIGenerator({
   schemaConverters: [new ZodToJsonSchemaConverter()],

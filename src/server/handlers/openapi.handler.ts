@@ -3,7 +3,7 @@ import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
 import { SmartCoercionPlugin } from '@orpc/json-schema';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 import { onError, ORPCError } from '@orpc/server';
-import { allRouters } from '@server/routers/all.routers';
+import { allRouters } from '@/server/routers/all.routers';
 import { ResponseHeadersPlugin } from '@orpc/server/plugins';
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];

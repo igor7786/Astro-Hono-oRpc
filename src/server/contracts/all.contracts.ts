@@ -1,4 +1,4 @@
-import { testContract, slowTestContract } from '@server/contracts/test.contract';
+import { testContract, slowTestContract } from '@/server/contracts/test.contract';
 
 export const appContract = {
   test: testContract,

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { clientOrpc as orpc } from '@server/web.client';
+import { clientOrpc as orpc } from '@/server/web.client';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { Skeleton } from 'boneyard-js/react';
 import { Button } from '@/components/reactcomp/ui/button';
 import { Card, CardContent, CardHeader, CardDescription, CardTitle, CardFooter } from '@rcomp/ui/card';
-import { type TestInput } from '@server/schemas/test.schema';
+import { type TestInput } from '@/server/schemas/test.schema';
 import { useQuery } from '@tanstack/react-query';
 
 type CardInnerProps = {

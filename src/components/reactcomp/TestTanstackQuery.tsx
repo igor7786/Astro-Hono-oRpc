@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery'; // ← use the mainQuery client, not the old query
-import { clientOrpc as orpc } from '@server/web.client';
-import { type TestInput } from '@server/schemas/test.schema';
+import { clientOrpc as orpc } from '@/server/web.client';
+import { type TestInput } from '@/server/schemas/test.schema';
 interface Props {
   className?: string;
   initialData?: { name: string } | null;

@@ -1,4 +1,3 @@
-// src/components/reactcomp/AnyOtherComponent.tsx
 import { useStore } from '@nanostores/react';
 import { $testData } from '@/lib/stores/ssr';
 import { Button } from '@rcomp/ui/button';

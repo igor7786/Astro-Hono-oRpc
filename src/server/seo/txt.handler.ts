@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { generateLLMsMarkdown } from '@server/seo/llms';
+import { generateLLMsMarkdown } from '@/server/seo/llms';
 import { envServer } from '@/lib/env/server.env';
 export const llmsTxt = new Hono();
 export async function llmsTxtHandler() {

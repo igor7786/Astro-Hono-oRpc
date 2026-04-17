@@ -1,4 +1,3 @@
-// src/components/reactcomp/ChatIndicator.tsx
 import { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { $isOnline } from '@/lib/stores/online';
