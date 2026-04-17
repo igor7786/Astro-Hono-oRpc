@@ -1,10 +1,8 @@
 ---
-// src/pages/boneyard.astro
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
-import { createSeo } from '@server/schemas/seo.schema';
+import { createSeo } from '@/server/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
-import { serverClient } from '@/lib/server/server.client';
-// src/lib/orpc.server.ts
+import { serverClient } from '@/server/server.client';
 const inputData = {
   name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
 };

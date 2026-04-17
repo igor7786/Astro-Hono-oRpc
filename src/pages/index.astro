@@ -1,7 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { createSeo } from '@server/schemas/seo.schema';
-import { serverClient } from '@server/server.client';
+import { createSeo } from '@/server/schemas/seo.schema';
+import { serverClient } from '@/server/server.client';
 import { TestClient } from '@rcomp/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
 import SlowRequest from '@rcomp/SlowRequest';
@@ -41,6 +41,7 @@ const props = {
 const seo = createSeo({
   title: 'Home | My App',
   description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
 });
 ---
 

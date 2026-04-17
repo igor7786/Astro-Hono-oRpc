@@ -2,10 +2,15 @@
 import Layout from '@/layouts/Layout.astro';
 import { Nano } from '@rcomp/nanostores/NanStoresQuery';
 import { AnyOtherComponent } from '@rcomp/nanostores/AnyOtherComponent';
-const title = 'Nanostores Query Test';
+import { createSeo } from '@/server/schemas/seo.schema';
+const seo = createSeo({
+  title: 'Nanostores Query Test',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
 ---
 
-<Layout title={title}>
+<Layout {...seo}>
   # Nanostores Query Test
   <Nano slot="main" initialData={{ name: 'Initial Name' }} client:visible />
   <Nano slot="main" initialData={{ name: 'Initial Name' }} client:load />

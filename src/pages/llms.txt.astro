@@ -1,7 +1,7 @@
 ---
 // src/pages/llms.txt.astro
-import { generateLLMsMarkdown } from '@server/seo/llms';
-import { generateOpenApiSchema } from '@server/schemas/oenapi.schema.generator';
+import { generateLLMsMarkdown } from '@/server/seo/llms';
+import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
 
 const openApiDoc = await generateOpenApiSchema();
 const markdown = await generateLLMsMarkdown(openApiDoc);

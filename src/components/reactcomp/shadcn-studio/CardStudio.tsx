@@ -41,8 +41,6 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
   };
 
   const loading = !mounted || isLoading || manualLoading;
-  const name = data?.name ?? initialData;
-
   return (
     <Skeleton name="Card" loading={loading}>
       <Card className="max-w-md pt-0">
@@ -51,7 +49,7 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
         </CardContent>
         <CardHeader>
           <CardTitle>Ethereal Swirl Gradient</CardTitle>
-          <CardDescription>{data?.name || error?.message}</CardDescription>
+          <CardDescription>{initialData || data?.name || error?.message}</CardDescription>
         </CardHeader>
         <CardFooter className="gap-3 max-sm:flex-col max-sm:items-stretch">
           <Button>Explore More</Button>

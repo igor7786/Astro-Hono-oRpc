@@ -1,10 +1,15 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import ChatIndicator from '@/components/reactcomp/nanostores/ChatIndicator';
-const title = 'Online or Offline Indicator';
+import { createSeo } from '@/server/schemas/seo.schema';
+const seo = createSeo({
+  title: 'Test Indicator',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
 ---
 
-<Layout title={title}>
+<Layout {...seo}>
   # Online or offline indicator
   <ChatIndicator client:load slot="main" />
 </Layout>

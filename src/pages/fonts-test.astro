@@ -1,10 +1,15 @@
 ---
-// src/pages/font-test.astro
 import Layout from '@/layouts/Layout.astro';
+import { createSeo } from '@/server/schemas/seo.schema';
 import IconButtonNotificationDotDemo from '@rcomp/shadcn-studio/button-38';
+const seo = createSeo({
+  title: 'Font Test',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
 ---
 
-<Layout title="Font Test">
+<Layout {...seo}>
   <div slot="main" class="flex flex-col gap-8 p-16">
     <IconButtonNotificationDotDemo client:load />
     <!-- Inter — body -->
