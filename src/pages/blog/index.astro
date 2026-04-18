@@ -10,7 +10,6 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, 
   if (!a.data.date || !b.data.date) return 0;
   return b.data.date.valueOf() - a.data.date.valueOf();
 });
-console.log(posts);
 // get reading time for each post
 const postsWithMeta = await Promise.all(
   posts.map(async (post) => {

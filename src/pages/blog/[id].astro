@@ -6,6 +6,8 @@ import LikeButton from '@rcomp/blog/LikeButton';
 import ShareWidget from '@rcomp/blog/ShareWidget';
 import CommentSection from '@rcomp/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
+import { formatDate } from '@/server/schemas/seo.schema';
+import { createSeo } from '@/server/schemas/seo.schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -18,21 +20,17 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const readingTime = remarkPluginFrontmatter?.readingTime;
-
-const ogDate = post.data.date?.toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
+const ogDate = formatDate(post.data.date?.toISOString());
+const seo = createSeo({
+  title: post.data.title,
+  description: post.data.description,
+  date: post.data.date?.toISOString(),
+  author: post.data.author,
+  type: 'article',
 });
 ---
 
-<Layout
-  title={post.data.title}
-  description={post.data.description}
-  author={post.data.author}
-  date={ogDate}
-  type="article"
->
+<Layout {...seo}>
   <div slot="main" class="mx-auto max-w-4xl px-8 py-16">
     {/* tags */}
     {

@@ -5,6 +5,7 @@ import z from 'zod';
 const result = seoSchema.safeParse({
   ...baseSeo,
   ...Astro.props,
+  url: Astro.props.url ?? Astro.url.href,
 });
 
 if (!result.success) {
