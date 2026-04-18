@@ -55,9 +55,11 @@ export default defineConfig({
       tailwindcss(),
       // bunx boneyard-js build http://localhost:4321/notifications
       // boneyardPlugin({
+      //   framework: 'react',
+      //   // routes: ['/'],
       //   out: './src/bones',
       //   breakpoints: [375, 768, 1280],
-      //   wait: 3000,
+      //   wait: 200,
       //   skipInitial: false,
       //   watch: true,
       // }),

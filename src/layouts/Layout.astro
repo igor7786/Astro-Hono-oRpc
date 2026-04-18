@@ -1,53 +1,21 @@
 ---
-import SEO from '@acomp/SEO.astro';
 import DevTools from '@/lib/tanstack-query/QueryDevTools';
-import themeScript from '@/scripts/theme-checker.js?raw';
 import '@/styles/global.css';
-import { Font } from 'astro:assets';
 import { Toaster } from '@rcomp/ui/sonner';
-import PageLoader from '@acomp/PageLoader.astro';
+import HEAD from '@/components/astrocomp/layout/HEAD.astro';
+import type { SEO } from '@/server/schemas/seo.schema';
 
-interface Props {
-  title?: string;
-  description?: string;
-  author?: string;
-  date?: string;
-  type?: string;
-  siteName?: string;
-  siteUrl?: string;
-  url?: string;
-}
+const props = Astro.props as Partial<SEO>;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+  <!-- METADATA, CSS, JS, etc -->
+  <HEAD {...props} />
 
-    <!-- ✅ SEO -->
-    <SEO {...Astro.props} />
-
-    <!-- ✅ font preloads -->
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-heading" preload />
-    <Font cssVariable="--font-mono" preload />
-
-    <!-- ✅ theme -->
-    <script set:html={themeScript} />
-
-    <!-- ✅ bones registry, auto-generated -->
-    <script>
-      import '@/bones/registry.js';
-    </script>
-  </head>
+  <!-- BODY, CONTENT, FOOTER -->
   <body>
     <div class="bg-background min-h-screen">
-      <!-- Loader -->
-      <PageLoader delay={300} componentCount={1} />
-
       <!-- Content -->
       <slot name="header" />
       <slot name="main" />

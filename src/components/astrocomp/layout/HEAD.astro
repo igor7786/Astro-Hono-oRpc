@@ -1,0 +1,24 @@
+---
+import SEO from '@acomp/layout/SEO.astro';
+import type { SEO as SEOType } from '@/server/schemas/seo.schema';
+import themeScript from '@/scripts/theme-checker.js?raw';
+import '@/styles/global.css';
+import FONTS from '@acomp/layout/FONTS.astro';
+const props = Astro.props as Partial<SEOType>;
+---
+
+<head>
+  <!-- ✅ SEO -->
+  <SEO {...props} />
+
+  <!-- ✅ font preloads -->
+  <FONTS />
+
+  <!-- ✅ theme -->
+  <script set:html={themeScript} />
+
+  <!-- ✅ bones registry, auto-generated -->
+  <script>
+    import '@/bones/registry.js';
+  </script>
+</head>

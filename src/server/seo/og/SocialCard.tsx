@@ -7,60 +7,6 @@ export interface SocialCardProps {
   siteUrl?: string;
 }
 
-const LightningIcon = (
-  <svg width={32} height={32} viewBox="0 0 24 24" fill="none">
-    <path
-      d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-      fill="#facc15"
-      stroke="#facc15"
-      strokeWidth={1}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const PersonIcon = (
-  <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
-    <path
-      d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-      stroke="#4ade80"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <circle
-      cx={12}
-      cy={7}
-      r={4}
-      stroke="#4ade80"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const CalendarIcon = (
-  <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
-    <rect
-      x={3}
-      y={4}
-      width={18}
-      height={18}
-      rx={2}
-      ry={2}
-      stroke="#fb923c"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <line x1={16} y1={2} x2={16} y2={6} stroke="#fb923c" strokeWidth={2} strokeLinecap="round" />
-    <line x1={8} y1={2} x2={8} y2={6} stroke="#fb923c" strokeWidth={2} strokeLinecap="round" />
-    <line x1={3} y1={10} x2={21} y2={10} stroke="#fb923c" strokeWidth={2} strokeLinecap="round" />
-  </svg>
-);
-
 export function SocialCard({
   title,
   description,
