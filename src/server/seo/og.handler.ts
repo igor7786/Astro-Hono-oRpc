@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { generateOgImage } from '@/server/seo/og/Generate';
-import { seoQuerySchema } from '@/server/schemas/seo.schema';
+import { seoQuerySchema } from '@/components/astrocomp/layout/seo.schema';
 import { zValidator } from '@hono/zod-validator';
 
 export const og = new Hono();

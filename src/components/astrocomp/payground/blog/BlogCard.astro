@@ -8,7 +8,7 @@ interface Props {
   tags?: string[];
   readingTime?: string;
 }
-import { formatDate } from '@/server/schemas/seo.schema';
+import { formatDate } from '@/components/astrocomp/layout/seo.schema';
 const { id, title, description, author, date, tags, readingTime } = Astro.props as Props;
 const formattedDate = formatDate(date?.toISOString());
 ---
