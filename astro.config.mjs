@@ -48,7 +48,6 @@ export default defineConfig({
         '@db': path.resolve(__dirname, './db'),
         '@rcomp': path.resolve(__dirname, './src/components/reactcomp'),
         '@acomp': path.resolve(__dirname, './src/components/astrocomp'),
-        '@server': path.resolve(__dirname, './src/lib/server'),
       },
     },
     plugins: [
