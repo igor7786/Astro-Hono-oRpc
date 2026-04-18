@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function ShareWidget({ url, title = '' }: Props) {
-  const [mounted, setMounted] = useState(false);
+  const [, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
   const [copied, setCopied] = useState(false);

@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
+// import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { Scalar } from '@scalar/hono-api-reference';
 import rpcHandler from '@/server/handlers/rpc.handler';

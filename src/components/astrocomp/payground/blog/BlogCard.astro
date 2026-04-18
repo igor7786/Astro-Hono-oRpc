@@ -8,14 +8,9 @@ interface Props {
   tags?: string[];
   readingTime?: string;
 }
-
-const { id, title, description, author, date, tags, readingTime } = Astro.props;
-
-const formattedDate = date?.toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
+import { formatDate } from '@/server/schemas/seo.schema';
+const { id, title, description, author, date, tags, readingTime } = Astro.props as Props;
+const formattedDate = formatDate(date?.toISOString());
 ---
 
 <a href={`/blog/${id}`} class="group">
@@ -38,7 +33,7 @@ const formattedDate = date?.toLocaleDateString('en-GB', {
 
     <div class="text-muted-foreground flex items-center gap-3 text-sm">
       {author && <span>{author}</span>}
-      {author && formattedDate && <span>•</span>}
+      {author && date && <span>•</span>}
       {formattedDate && <span>{formattedDate}</span>}
       {readingTime && <span>•</span>}
       {readingTime && <span>{readingTime}</span>}

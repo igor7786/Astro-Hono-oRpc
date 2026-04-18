@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function LikeButton({ postId }: Props) {
-  const [mounted, setMounted] = useState(false);
+  const [, setMounted] = useState(false);
 
   const client = getQueryClient();
   const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null);

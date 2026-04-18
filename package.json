@@ -13,7 +13,7 @@
     "bun:dev": "bunx --bun astro dev --host",
     "bun:build": "bunx --bun astro build",
     "bun:preview": "bunx --bun astro preview",
-    "ts:check": "bunx tsc --noEmit",
+    "ts:check": "astro check && bunx tsc --noEmit",
     "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
     "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts",
     "knip": "knip --no-exit-code",

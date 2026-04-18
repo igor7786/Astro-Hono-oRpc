@@ -15,7 +15,7 @@ const props = Astro.props as Partial<SEOType>;
   <FONTS />
 
   <!-- ✅ theme -->
-  <script set:html={themeScript} />
+  <script is:inline set:html={themeScript} />
 
   <!-- ✅ bones registry, auto-generated -->
   <script>

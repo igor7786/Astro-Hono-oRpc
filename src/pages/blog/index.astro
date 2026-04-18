@@ -3,7 +3,7 @@ export const prerender = true;
 
 import Layout from '@/layouts/Layout.astro';
 import { createSeo } from '@/server/schemas/seo.schema';
-import BlogCard from '@acomp/blog/BlogCard.astro';
+import BlogCard from '@acomp/payground/blog/BlogCard.astro';
 import { getCollection, render } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => {
