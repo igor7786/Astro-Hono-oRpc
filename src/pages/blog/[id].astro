@@ -2,9 +2,9 @@
 export const prerender = true;
 
 import Layout from '@/layouts/Layout.astro';
-import LikeButton from '@rcomp/blog/LikeButton';
-import ShareWidget from '@rcomp/blog/ShareWidget';
-import CommentSection from '@rcomp/blog/CommentSection';
+import LikeButton from '@/components/reactcomp/blog/LikeButton';
+import ShareWidget from '@/components/reactcomp/blog/ShareWidget';
+import CommentSection from '@/components/reactcomp/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
 import { formatDate } from '@/server/schemas/seo.schema';
 import { createSeo } from '@/server/schemas/seo.schema';

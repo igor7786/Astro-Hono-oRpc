@@ -2,9 +2,9 @@
 import Layout from '@/layouts/Layout.astro';
 import { createSeo } from '@/server/schemas/seo.schema';
 import { serverClient } from '@/server/server.client';
-import { TestClient } from '@rcomp/TestClient';
+import { TestClient } from '@rcomp/playground/TestClient';
 import UserProfile from '@/components/reactcomp/TestTanstackQuery';
-import SlowRequest from '@rcomp/SlowRequest';
+import SlowRequest from '@rcomp/playground/SlowRequest';
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.test({ name: 'test' });
