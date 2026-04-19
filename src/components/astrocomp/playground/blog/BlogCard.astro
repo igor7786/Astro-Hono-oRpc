@@ -1,19 +1,22 @@
 ---
-interface Props {
-  id: string;
-  title: string;
-  description?: string;
-  author?: string;
-  date?: Date;
-  tags?: string[];
-  readingTime?: string;
-}
-import { formatDate } from '@/components/astrocomp/layout/seo.schema';
-const { id, title, description, author, date, tags, readingTime } = Astro.props as Props;
+import { formatDate } from '@acomp/layout/seo.schema';
+import type { Post } from '@/content.config';
+
+type Props = {
+  post: Post;
+  readingTime: {
+    text: string;
+  };
+};
+const { post, readingTime } = Astro.props as Props;
+const { id } = post;
+const { title, description, author, date, tags } = post.data;
+
 const formattedDate = formatDate(date?.toISOString());
+console.log(readingTime);
 ---
 
-<a href={`/blog/${id}`} class="group">
+<a href={`/playground/blog/${id}`} class="group">
   <article class="border-border flex flex-col gap-3 border-b pb-10">
     {
       tags && (
@@ -36,7 +39,8 @@ const formattedDate = formatDate(date?.toISOString());
       {author && date && <span>•</span>}
       {formattedDate && <span>{formattedDate}</span>}
       {readingTime && <span>•</span>}
-      {readingTime && <span>{readingTime}</span>}
+      <div>H⚡</div>
+      {readingTime?.text && <span>{readingTime.text}</span>}
     </div>
 
     <span class="text-primary text-sm font-medium group-hover:underline"> Read more → </span>

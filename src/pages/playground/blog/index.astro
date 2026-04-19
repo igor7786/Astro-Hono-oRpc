@@ -2,8 +2,8 @@
 export const prerender = true;
 
 import Layout from '@/layouts/Layout.astro';
-import { createSeo } from '@/components/astrocomp/layout/seo.schema';
-import BlogCard from '@acomp/payground/blog/BlogCard.astro';
+import { createSeo } from '@acomp/layout/seo.schema';
+import BlogCard from '@acomp/playground/blog/BlogCard.astro';
 import { getCollection, render } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => {
@@ -33,19 +33,7 @@ const seo = createSeo({
     {postsWithMeta.length === 0 && <p class="text-muted-foreground">No posts yet.</p>}
 
     <div class="flex flex-col gap-10">
-      {
-        postsWithMeta.map(({ post, readingTime }) => (
-          <BlogCard
-            id={post.id}
-            title={post.data.title}
-            description={post.data.description}
-            author={post.data.author}
-            date={post.data.date}
-            tags={post.data.tags}
-            readingTime={readingTime}
-          />
-        ))
-      }
+      {postsWithMeta.map(({ post, readingTime }) => <BlogCard post={post} readingTime={readingTime} />)}
     </div>
   </div>
 </Layout>

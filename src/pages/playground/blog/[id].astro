@@ -2,12 +2,12 @@
 export const prerender = true;
 
 import Layout from '@/layouts/Layout.astro';
-import LikeButton from '@/components/reactcomp/blog/LikeButton';
-import ShareWidget from '@/components/reactcomp/blog/ShareWidget';
-import CommentSection from '@/components/reactcomp/blog/CommentSection';
+import LikeButton from '@rcomp/playground/blog/LikeButton';
+import ShareWidget from '@rcomp/playground/blog/ShareWidget';
+import CommentSection from '@rcomp/playground/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
-import { formatDate } from '@/components/astrocomp/layout/seo.schema';
-import { createSeo } from '@/components/astrocomp/layout/seo.schema';
+import { formatDate } from '@acomp/layout/seo.schema';
+import { createSeo } from '@acomp/layout/seo.schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -20,6 +20,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const readingTime = remarkPluginFrontmatter?.readingTime;
+console.log('readingTime', readingTime);
 const ogDate = formatDate(post.data.date?.toISOString());
 const seo = createSeo({
   title: post.data.title,

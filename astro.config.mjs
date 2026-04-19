@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
+import readingTime from 'remark-reading-time';
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +17,6 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   ssr: {
     resolve: { externalConditions: ['bun', 'node'] },
-    // external: ['boneyard-js'],
   },
   site: 'http://localhost:4321/',
   server: {
@@ -53,15 +53,6 @@ export default defineConfig({
     plugins: [
       tailwindcss(),
       // bunx boneyard-js build http://localhost:4321/notifications
-      // boneyardPlugin({
-      //   framework: 'react',
-      //   // routes: ['/'],
-      //   out: './src/bones',
-      //   breakpoints: [375, 768, 1280],
-      //   wait: 200,
-      //   skipInitial: false,
-      //   watch: true,
-      // }),
     ],
   },
 
@@ -105,7 +96,6 @@ export default defineConfig({
       theme: 'dracula',
     },
   },
-
   integrations: [
     react({ include: ['**/reactcomp/**/*'] }),
     sitemap({
