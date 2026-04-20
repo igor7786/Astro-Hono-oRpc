@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
-import readingTime from 'remark-reading-time';
+import { remarkReadingTime } from './src/plugins/remark.reading.time.mjs';
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -92,6 +92,7 @@ export default defineConfig({
     },
   ],
   markdown: {
+    remarkPlugins: [remarkReadingTime],
     shikiConfig: {
       theme: 'dracula',
     },

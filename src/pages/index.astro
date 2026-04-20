@@ -1,0 +1,146 @@
+---
+import Layout from '@/layouts/Layout.astro';
+export const prerender = true;
+
+// Grab all page files
+const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', { eager: true });
+console.log('allFiles', allFiles);
+const IGNORED = ['llms', 'robots', '_astro', '_', 'api', '['];
+
+function isIgnored(path: string) {
+  return IGNORED.some(
+    (ignored) =>
+      path.includes(`/${ignored}/`) || path.includes(`/${ignored}.`) || path.endsWith(`/${ignored}`)
+  );
+}
+// Convert file path to route '../pages/blog/index.astro' => '/blog'
+function fileToRoute(filePath: string): string {
+  let route = filePath.replace('../pages', '').replace(/\.(astro|ts|tsx|js|jsx)$/, '');
+  if (route.endsWith('/index')) route = route.replace('/index', '');
+  return route || '/';
+}
+// Convert route '/blog' => 'Blog'
+function toLabel(route: string): string {
+  if (route === '/') return 'Home';
+  return route
+    .replace(/^\//, '')
+    .replace(/-/g, ' ')
+    .replace(/\//g, ' › ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const ssrRoutes: { route: string; file: string; label: string }[] = [];
+const staticRoutes: { route: string; file: string; label: string }[] = [];
+// Loop through all files, filtering out ignored, and calling getStaticPaths
+for (const [filePath, mod] of Object.entries(allFiles)) {
+  if (isIgnored(filePath)) continue;
+
+  const isDynamic = filePath.includes('[');
+  const file = filePath.replace('../pages/', 'src/pages/');
+  const module = mod as any;
+
+  if (isDynamic) {
+    // Static page — call getStaticPaths to get real URLs
+    if (typeof module.getStaticPaths !== 'function') continue;
+
+    try {
+      const paths = await module.getStaticPaths();
+
+      for (const { params } of paths) {
+        // Replace [param] segments with actual values
+        let route = fileToRoute(filePath);
+        for (const [key, value] of Object.entries(params as Record<string, string>)) {
+          route = route.replace(`[${key}]`, value);
+        }
+
+        staticRoutes.push({
+          route,
+          file,
+          label: toLabel(route),
+        });
+      }
+    } catch (e) {
+      console.warn(`Could not call getStaticPaths for ${filePath}:`, e);
+    }
+  } else {
+    // SSR page — fixed route
+    const route = fileToRoute(filePath);
+    ssrRoutes.push({ route, file, label: toLabel(route) });
+  }
+}
+
+ssrRoutes.sort((a, b) => a.route.localeCompare(b.route));
+staticRoutes.sort((a, b) => a.route.localeCompare(b.route));
+---
+
+<Layout title="Page Directory">
+  <div class="mx-auto max-w-3xl px-6 py-16" slot="main">
+    <h1 class="text-foreground mb-2 text-3xl font-bold">Page Directory</h1>
+    <p class="text-muted-foreground mb-10 text-sm">
+      Auto-discovered from <code class="bg-muted rounded px-1 py-0.5">src/pages</code>
+      — {ssrRoutes.length + staticRoutes.length} page{
+        ssrRoutes.length + staticRoutes.length !== 1 ? 's' : ''
+      } found
+    </p>
+
+    <!-- SSR Pages -->
+    <section class="mb-10">
+      <h2 class="text-foreground mb-4 text-lg font-semibold">
+        SSR Pages
+        <span class="text-muted-foreground ml-2 text-sm font-normal">({ssrRoutes.length})</span>
+      </h2>
+
+      {
+        ssrRoutes.length === 0 ? (
+          <p class="text-muted-foreground text-sm">No SSR pages found.</p>
+        ) : (
+          <ul class="space-y-2">
+            {ssrRoutes.map(({ route, file, label }) => (
+              <li class="bg-card border-border hover:border-primary flex items-center justify-between rounded-lg border px-4 py-3 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="bg-primary/10 text-primary rounded px-2 py-0.5 font-mono text-xs">
+                    {route}
+                  </span>
+                  <a href={route} class="text-foreground text-sm font-medium hover:underline">
+                    {label}
+                  </a>
+                </div>
+                <span class="text-muted-foreground hidden text-xs sm:block">{file}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </section>
+
+    <!-- Static Pages -->
+    <section>
+      <h2 class="text-foreground mb-4 text-lg font-semibold">
+        Static Pages
+        <span class="text-muted-foreground ml-2 text-sm font-normal">({staticRoutes.length})</span>
+      </h2>
+
+      {
+        staticRoutes.length === 0 ? (
+          <p class="text-muted-foreground text-sm">No static pages found.</p>
+        ) : (
+          <ul class="space-y-2">
+            {staticRoutes.map(({ route, file, label }) => (
+              <li class="bg-card border-border hover:border-primary flex items-center justify-between rounded-lg border px-4 py-3 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="rounded bg-green-500/10 px-2 py-0.5 font-mono text-xs text-green-600 dark:text-green-400">
+                    {route}
+                  </span>
+                  <a href={route} class="text-foreground text-sm font-medium hover:underline">
+                    {label}
+                  </a>
+                </div>
+                <span class="text-muted-foreground hidden text-xs sm:block">{file}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </section>
+  </div>
+</Layout>

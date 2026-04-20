@@ -14,7 +14,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, 
 const postsWithMeta = await Promise.all(
   posts.map(async (post) => {
     const { remarkPluginFrontmatter } = await render(post);
-    return { post, readingTime: remarkPluginFrontmatter?.readingTime };
+    const minutesRead: string = remarkPluginFrontmatter?.minutesRead;
+    return { post, readingTime: minutesRead };
   })
 );
 

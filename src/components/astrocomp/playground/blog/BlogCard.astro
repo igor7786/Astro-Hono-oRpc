@@ -1,19 +1,16 @@
 ---
 import { formatDate } from '@acomp/layout/seo.schema';
-import type { Post } from '@/content.config';
+import type { CollectionEntry } from 'astro:content';
 
 type Props = {
-  post: Post;
-  readingTime: {
-    text: string;
-  };
+  post: CollectionEntry<'blog'>;
+  readingTime: string;
 };
 const { post, readingTime } = Astro.props as Props;
 const { id } = post;
 const { title, description, author, date, tags } = post.data;
 
 const formattedDate = formatDate(date?.toISOString());
-console.log(readingTime);
 ---
 
 <a href={`/playground/blog/${id}`} class="group">
@@ -35,12 +32,11 @@ console.log(readingTime);
     {description && <p class="text-muted-foreground text-lg">{description}</p>}
 
     <div class="text-muted-foreground flex items-center gap-3 text-sm">
-      {author && <span>{author}</span>}
-      {author && date && <span>•</span>}
+      {author && <span>👤 {author}</span>}
+      {author && date && <span>• 📅</span>}
       {formattedDate && <span>{formattedDate}</span>}
       {readingTime && <span>•</span>}
-      <div>H⚡</div>
-      {readingTime?.text && <span>{readingTime.text}</span>}
+      {readingTime && <span>⚡ {readingTime}</span>}
     </div>
 
     <span class="text-primary text-sm font-medium group-hover:underline"> Read more → </span>
