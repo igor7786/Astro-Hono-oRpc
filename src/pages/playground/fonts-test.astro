@@ -2,6 +2,12 @@
 import Layout from '@/layouts/Layout.astro';
 import { createSeo } from '@acomp/layout/seo.schema';
 import IconButtonNotificationDotDemo from '@rcomp/shadcn-studio/button-38';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return [{ params: {} }];
+}
+
 const seo = createSeo({
   title: 'Font Test',
   description: 'Powered by Astro + Hono + oRPC',
