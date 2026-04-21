@@ -31,24 +31,23 @@ const link = new OpenAPILink(appContract, {
   interceptors: [
     onError((error) => {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        console.error('[oRPC client] Request aborted by user', error);
-        return;
-      }
-      if (!(error instanceof ORPCError)) {
-        console.error('[oRPC client] Unexpected error', error);
+        // ❌ do NOT log abort in production
         return;
       }
 
-      console.error(`[oRPC client] ${error.code} - ${error.message}`);
+      if (!(error instanceof ORPCError)) {
+        console.error('[oRPC client] unexpected error', error);
+        return;
+      }
+
+      console.error(`[oRPC client] ${error.code}`);
 
       if (error.code === 'UNAUTHORIZED') {
         window.location.href = '/login';
-        return;
       }
 
       if (error.code === 'FORBIDDEN') {
         window.location.href = '/403';
-        return;
       }
     }),
   ],

@@ -14,11 +14,6 @@ const rpcHandler = new RPCHandler(allRouters, {
           message: 'Client closed the request',
         });
       }
-
-      signal?.addEventListener('abort', () => {
-        console.log(`[oRPC] Client closed the request: ${request?.url}`);
-      });
-
       return next();
     },
   ],

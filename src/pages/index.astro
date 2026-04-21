@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
   eager: true,
 });
-const { ssrRoutes, staticRoutes, allRoutes } = await discoverRoutes(allFiles);
+const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles);
 
 const seo = createSeo({
   title: 'Playground | Home',
