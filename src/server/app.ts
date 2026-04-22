@@ -15,14 +15,13 @@ type Env = { Bindings: typeof envServer };
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
 
 // ─── Global middleware ────────────────────────────────────────────────────────
-// src/lib/server/app.ts
 app.use(
   '*',
   cors({
     origin: (origin, c) => (origin === c.env.PUBLIC_URL ? origin : undefined),
     credentials: true,
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+    allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
   })
