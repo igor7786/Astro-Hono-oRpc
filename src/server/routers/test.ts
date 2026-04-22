@@ -23,7 +23,7 @@ export const testRoute = base.test.handler(async ({ input, context, errors }) =>
 });
 
 export const slowTestRoute = base.testSlow.handler(async ({ input, context, errors }) => {
-  const signal = context.signal ?? context.request?.signal; // ← fallback
+  const signal = context.signal; // ← fallback
   // Not working as expected in Bun
   await new Promise<void>((resolve, reject) => {
     const timeout = setTimeout(() => resolve(), 6_000);

@@ -12,11 +12,11 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
   interceptors: [
     onError((err) => {
       if (err instanceof ORPCError) {
-        console.error('[oRPC openapi]', err.status, err.code);
+        console.error('[oRPC Openapi]', err.status, err.code);
         return;
       }
 
-      console.error('[oRPC openapi] unexpected error', err);
+      console.error('[oRPC Openapi] unexpected error', err);
     }),
   ],
 
