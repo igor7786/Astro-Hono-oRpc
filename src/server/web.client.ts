@@ -14,32 +14,25 @@ const link = new OpenAPILink(appContract, {
   url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi`,
 
   fetch: async (url, init) => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    try {
-      return await fetch(url, {
-        ...init,
-        signal: controller.signal,
-        credentials: 'include',
-      });
-    } finally {
-      clearTimeout(timeout);
-    }
+    return await fetch(url, {
+      ...init,
+      credentials: 'include',
+    });
   },
+
   plugins: [new ResponseValidationPlugin(appContract)],
   interceptors: [
     onError((error) => {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        console.error('[oRPC client] Request aborted by user', error);
+        console.error('[oRPC Client] Request aborted by user', error);
         return;
       }
       if (!(error instanceof ORPCError)) {
-        console.error('[oRPC client] Unexpected error', error);
+        console.error('[oRPC Client] Unexpected error', error);
         return;
       }
 
-      console.error(`[oRPC client] ${error.code} - ${error.message}`);
+      console.error(`[oRPC Client] ${error.code} - ${error.message}`);
 
       if (error.code === 'UNAUTHORIZED') {
         window.location.href = '/login';
