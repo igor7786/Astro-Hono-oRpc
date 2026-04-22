@@ -19,21 +19,14 @@ export const app = new Hono<Env>({ strict: false }).basePath('/api');
 app.use(
   '*',
   cors({
-    // ✅ Use array (more reliable than string)
-    origin: ['http://localhost:4321'],
+    origin: (origin, c) => (origin === c.env.PUBLIC_URL ? origin : undefined),
+    credentials: true,
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['GET', 'POST', 'OPTIONS'],
+    allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
-    credentials: true,
   })
 );
-app.use('*', async (c, next) => {
-  const incomingOrigin = c.req.header('Origin');
-  console.log(`[CORS Debug] Incoming Origin: ${incomingOrigin}`);
-  await next();
-  console.log(`[CORS Debug] Response headers:`, c.res.headers.get('Access-Control-Allow-Origin'));
-});
 
 app.use('*', logger());
 
