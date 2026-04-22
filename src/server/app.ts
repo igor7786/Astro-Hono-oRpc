@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 // import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { Scalar } from '@scalar/hono-api-reference';
@@ -11,9 +12,29 @@ import { llmsTxt } from '@/server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };
 
-export const app = new Hono<Env>().basePath('/api');
+export const app = new Hono<Env>({ strict: false }).basePath('/api');
 
 // ─── Global middleware ────────────────────────────────────────────────────────
+// src/lib/server/app.ts
+app.use(
+  '*',
+  cors({
+    // ✅ Use array (more reliable than string)
+    origin: ['http://localhost:4321'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['GET', 'POST', 'OPTIONS'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 600,
+    credentials: true,
+  })
+);
+app.use('*', async (c, next) => {
+  const incomingOrigin = c.req.header('Origin');
+  console.log(`[CORS Debug] Incoming Origin: ${incomingOrigin}`);
+  await next();
+  console.log(`[CORS Debug] Response headers:`, c.res.headers.get('Access-Control-Allow-Origin'));
+});
+
 app.use('*', logger());
 
 // ─── oRPC handler ─────────────────────────────────────────────────────────────
