@@ -12,12 +12,14 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
   interceptors: [
     onError((err) => {
       if (err instanceof ORPCError) {
-        console.error('[oRPC Error]', err.status, err.code, err.message);
+        console.error('[oRPC openapi]', err.status, err.code);
         return;
       }
-      console.error('[Unexpected Error]', err);
+
+      console.error('[oRPC openapi] unexpected error', err);
     }),
   ],
+
   plugins: [
     new ResponseHeadersPlugin(),
     new SmartCoercionPlugin({ schemaConverters }),
@@ -29,13 +31,13 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
       specGenerateOptions: {
         info: { title: 'My API Docs', version: '1.0.0' },
         servers: [{ url: '/api/openapi' }],
-        security: [{ cookieAuth: [] }], // ← cookie auth in spec
+        security: [{ cookieAuth: [] }],
         components: {
           securitySchemes: {
             cookieAuth: {
               type: 'apiKey',
               in: 'cookie',
-              name: 'session', // ← Better Auth cookie name
+              name: 'session',
             },
           },
         },
@@ -43,4 +45,5 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
     }),
   ],
 });
+
 export default openApiHandler;
