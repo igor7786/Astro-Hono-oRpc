@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { Button } from '@rcomp/ui/button';
-import { Textarea } from '@rcomp/ui/textarea';
-import { Avatar, AvatarFallback } from '@rcomp/ui/avatar';
-import { Separator } from '@rcomp/ui/separator';
 import { MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Avatar, AvatarFallback } from '@rcomp/ui/avatar';
+import { Button } from '@rcomp/ui/button';
+import { Separator } from '@rcomp/ui/separator';
+import { Textarea } from '@rcomp/ui/textarea';
+import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 
 interface Comment {
   id: string;

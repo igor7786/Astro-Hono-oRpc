@@ -1,10 +1,10 @@
+import { SmartCoercionPlugin } from '@orpc/json-schema';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
-import { SmartCoercionPlugin } from '@orpc/json-schema';
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
-import { onError, ORPCError } from '@orpc/server';
-import { allRouters } from '@/server/routers/all.routers';
+import { ORPCError, onError } from '@orpc/server';
 import { ResponseHeadersPlugin } from '@orpc/server/plugins';
+import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
+import { allRouters } from '@/server/routers/all.routers';
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
 

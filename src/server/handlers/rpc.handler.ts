@@ -1,5 +1,5 @@
-import { RPCHandler } from '@orpc/server/fetch';
 import { ORPCError } from '@orpc/server';
+import { RPCHandler } from '@orpc/server/fetch';
 import { allRouters } from '@/server/routers/all.routers';
 
 const rpcHandler = new RPCHandler(allRouters, {

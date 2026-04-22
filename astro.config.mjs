@@ -1,14 +1,15 @@
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import node from '@astrojs/node';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import react from '@astrojs/react';
-import node from '@astrojs/node';
-import sitemap from '@astrojs/sitemap';
+import fs from 'fs';
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { remarkReadingTime } from './src/plugins/remark.reading.time.mjs';
+
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);

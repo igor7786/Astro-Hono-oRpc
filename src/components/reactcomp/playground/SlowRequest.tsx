@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Button } from '@rcomp/ui/button';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@/server/web.client';
-import { Button } from '@rcomp/ui/button';
-import { useState } from 'react';
 
 export default function SlowRequest() {
   const client = getQueryClient();

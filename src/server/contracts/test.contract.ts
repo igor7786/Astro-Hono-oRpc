@@ -1,5 +1,6 @@
 import { baseOc } from '@/server/contracts/oc.base';
 import { testSchema } from '@/server/schemas/test.schema';
+
 export const testContract = baseOc
   .route({
     method: 'GET',

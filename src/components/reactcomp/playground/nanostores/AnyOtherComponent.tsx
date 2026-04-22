@@ -1,6 +1,6 @@
 import { useStore } from '@nanostores/react';
-import { $testData } from '@/lib/stores/ssr';
 import { Button } from '@rcomp/ui/button';
+import { $testData } from '@/lib/stores/ssr';
 
 export const AnyOtherComponent = () => {
   const data = useStore($testData);

@@ -5,8 +5,10 @@ export default {
     'prettier-plugin-classnames',
     'prettier-plugin-merge',
     'prettier-plugin-tailwindcss',
+    '@trivago/prettier-plugin-sort-imports',
   ],
-  printWidth: 105, // Use this to limit line length globally, including classes
+
+  printWidth: 105,
   proseWrap: 'always',
   tabWidth: 2,
   useTabs: false,
@@ -15,7 +17,33 @@ export default {
   trailingComma: 'es5',
   bracketSpacing: true,
   arrowParens: 'always',
-  // tailwindConfig: './tailwind.config.mjs',
+
+  // 👇 better import structure
+  importOrder: [
+    '<BUILTIN_MODULES>',
+
+    // React ecosystem (UI state + query libs)
+    '^react$',
+    '^react-dom$',
+    '^@tanstack/(.*)$',
+
+    // UI libraries (ALL component systems)
+    '^@acomp/(.*)$',
+    '^@rcomp/(.*)$',
+
+    // Astro
+    '^astro:(.*)$',
+
+    // App code (everything internal)
+    '^@/(.*)$',
+
+    // Relative imports last
+    '^[./]',
+  ],
+
+  importOrderSeparation: false,
+  importOrderSortSpecifiers: true,
+
   overrides: [
     {
       files: '*.astro',

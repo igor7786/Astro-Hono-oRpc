@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
-import { generateLLMsMarkdown } from '@/server/seo/llms';
 import { envServer } from '@/lib/env/server.env';
+import { generateLLMsMarkdown } from '@/server/seo/llms';
+
 export const llmsTxt = new Hono();
 export async function llmsTxtHandler() {
   // 1. Get OpenAPI schema

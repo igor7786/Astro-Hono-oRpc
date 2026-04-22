@@ -1,4 +1,5 @@
 import { oc } from '@orpc/contract';
+
 export const baseOc = oc.errors({
   BAD_REQUEST: { message: 'Bad Request', status: 400 },
   UNAUTHORIZED: { message: 'You are Unauthorized', status: 401 },

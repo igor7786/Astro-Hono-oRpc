@@ -1,6 +1,6 @@
 // src/lib/env/server.env.ts
-
 import { z } from 'zod';
+
 // Schema for validation
 const EnvSchema = z.object({
   // Database

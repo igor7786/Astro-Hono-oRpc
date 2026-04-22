@@ -1,6 +1,7 @@
-import { client } from '@/server/web.client';
 import { ORPCError } from '@orpc/client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { client } from '@/server/web.client';
+
 interface TestClientProps {
   className?: string;
   // Add other props as needed

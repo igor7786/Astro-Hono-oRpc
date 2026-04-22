@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Button } from '@rcomp/ui/button';
 import { Heart } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Button } from '@rcomp/ui/button';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { useQuery, useMutation } from '@tanstack/react-query';
 
 interface Props {
   postId: string;

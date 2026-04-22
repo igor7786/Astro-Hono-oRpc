@@ -1,13 +1,13 @@
+import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 // import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { Scalar } from '@scalar/hono-api-reference';
-import rpcHandler from '@/server/handlers/rpc.handler';
-import openApiHandler from '@/server/handlers/openapi.handler';
 import type { envServer } from '@/lib/env/server.env';
-import { og } from '@/server/seo/og.handler';
+import openApiHandler from '@/server/handlers/openapi.handler';
+import rpcHandler from '@/server/handlers/rpc.handler';
 import { llmsHtml } from '@/server/seo/html.handler';
+import { og } from '@/server/seo/og.handler';
 import { llmsTxt } from '@/server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };

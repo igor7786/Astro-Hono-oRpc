@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { generateLLMsMarkdown } from '@/server/seo/llms';
 import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
+import { generateLLMsMarkdown } from '@/server/seo/llms';
 
 export const llmsHtml = new Hono();
 
