@@ -4,7 +4,7 @@ import { allRouters } from '@/server/routers/all.routers';
 
 const rpcHandler = new RPCHandler(allRouters, {
   interceptors: [
-    // ✅ HTTP level — first line of defence
+    // ✅ HTTP level — first line of defense
     async ({ request, next }) => {
       const signal = request?.signal;
 
