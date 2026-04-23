@@ -17,6 +17,7 @@ export default {
   trailingComma: 'es5',
   bracketSpacing: true,
   arrowParens: 'always',
+  jsxSingleQuote: false,
 
   // 👇 better import structure
   importOrder: [
@@ -41,8 +42,9 @@ export default {
     '^[./]',
   ],
 
-  importOrderSeparation: false,
+  importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+  importOrderCaseInsensitive: true,
 
   overrides: [
     {

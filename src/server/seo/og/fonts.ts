@@ -1,4 +1,5 @@
 import type { SatoriOptions } from 'satori';
+
 import { join } from 'path';
 
 const FONTS_DIR = join(process.cwd(), 'public/fonts');

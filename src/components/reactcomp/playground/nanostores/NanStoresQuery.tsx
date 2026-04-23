@@ -1,7 +1,11 @@
 import { useStore } from '@nanostores/react';
+
 import { useEffect, useState } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
+
 import { Button } from '@rcomp/ui/button';
+
 import { $testData } from '@/lib/stores/ssr';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc as orpc } from '@/server/web.client';

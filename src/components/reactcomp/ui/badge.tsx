@@ -1,6 +1,7 @@
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
-import { type VariantProps, cva } from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
+
 import { cn } from '@/components/reactcomp/lib/utils';
 
 const badgeVariants = cva(

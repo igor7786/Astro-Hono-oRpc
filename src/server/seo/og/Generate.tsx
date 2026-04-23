@@ -1,4 +1,5 @@
 import { ImageResponse } from '@takumi-rs/image-response';
+
 import { SocialCard, type SocialCardProps } from '@/server/seo/og/SocialCard';
 
 type OgFormat = 'png' | 'webp';

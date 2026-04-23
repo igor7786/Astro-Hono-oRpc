@@ -1,12 +1,15 @@
-import { Check, Link, Share2, createLucideIcon } from 'lucide-react';
+import { Check, createLucideIcon, Link, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
+
 import { useEffect, useState } from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@rcomp/ui/dropdown-menu';
+
 import { envClient } from '@/lib/env/client.env';
 
 const XIcon = createLucideIcon('X', [

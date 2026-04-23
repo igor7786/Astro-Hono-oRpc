@@ -1,6 +1,8 @@
 import { useStore } from '@nanostores/react';
 import { toast } from 'sonner';
+
 import { useEffect, useState } from 'react';
+
 import { $isOnline } from '@/lib/stores/online';
 
 export default function ChatIndicator() {

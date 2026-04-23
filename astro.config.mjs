@@ -4,10 +4,12 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+
 import fs from 'fs';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+
 import { remarkReadingTime } from './src/plugins/remark.reading.time.mjs';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';

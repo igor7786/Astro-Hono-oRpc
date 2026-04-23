@@ -1,11 +1,15 @@
 import { MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+
 import { useEffect, useState } from 'react';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
+
 import { Avatar, AvatarFallback } from '@rcomp/ui/avatar';
 import { Button } from '@rcomp/ui/button';
 import { Separator } from '@rcomp/ui/separator';
 import { Textarea } from '@rcomp/ui/textarea';
+
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 
 interface Comment {

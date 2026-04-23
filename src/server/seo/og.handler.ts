@@ -1,5 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
+
 import { seoQuerySchema } from '@/components/astrocomp/layout/seo.schema';
 import { generateOgImage } from '@/server/seo/og/Generate';
 

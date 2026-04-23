@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 // import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
+
 import type { envServer } from '@/lib/env/server.env';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';

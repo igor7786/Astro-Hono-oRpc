@@ -1,5 +1,7 @@
 import { useStore } from '@nanostores/react';
+
 import { Button } from '@rcomp/ui/button';
+
 import { $testData } from '@/lib/stores/ssr';
 
 export const AnyOtherComponent = () => {

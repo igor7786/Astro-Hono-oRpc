@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { envServer } from '@/lib/env/server.env';
 
 export const seoSchema = z.object({

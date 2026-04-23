@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+
 import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
 import { generateLLMsMarkdown } from '@/server/seo/llms';
 

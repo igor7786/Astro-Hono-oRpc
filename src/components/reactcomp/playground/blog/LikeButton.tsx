@@ -1,7 +1,11 @@
 import { Heart } from 'lucide-react';
+
 import { useEffect, useState } from 'react';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
+
 import { Button } from '@rcomp/ui/button';
+
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 
 interface Props {
