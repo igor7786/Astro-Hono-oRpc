@@ -2,7 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import { Nano } from '@rcomp/playground/nanostores/NanStoresQuery';
 import { AnyOtherComponent } from '@rcomp/playground/nanostores/AnyOtherComponent';
-import { createSeo } from '@acomp/layout/seo.schema';
+import { createSeo } from '@/lib/shared/schemas/seo.schema';
 const seo = createSeo({
   title: 'Nanostores Query Test',
   description: 'Powered by Astro + Hono + oRPC',

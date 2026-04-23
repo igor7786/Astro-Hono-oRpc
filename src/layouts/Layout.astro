@@ -3,7 +3,7 @@ import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import '@/styles/global.css';
 import { Toaster } from '@rcomp/ui/sonner';
 import HEAD from '@/components/astrocomp/layout/HEAD.astro';
-import type { SEO } from '@/components/astrocomp/layout/seo.schema';
+import type { SEO } from '@/lib/shared/schemas/seo.schema';
 
 const props = Astro.props as Partial<SEO>;
 ---

@@ -6,8 +6,7 @@ import LikeButton from '@rcomp/playground/blog/LikeButton';
 import ShareWidget from '@rcomp/playground/blog/ShareWidget';
 import CommentSection from '@rcomp/playground/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
-import { formatDate } from '@acomp/layout/seo.schema';
-import { createSeo } from '@acomp/layout/seo.schema';
+import { formatDate, createSeo } from '@/lib/shared/schemas/seo.schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
