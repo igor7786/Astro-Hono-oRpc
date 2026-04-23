@@ -9,7 +9,7 @@ export default {
   ],
 
   printWidth: 105,
-  proseWrap: 'always',
+  proseWrap: 'preserve',
   tabWidth: 2,
   useTabs: false,
   semi: true,
@@ -18,6 +18,10 @@ export default {
   bracketSpacing: true,
   arrowParens: 'always',
   jsxSingleQuote: false,
+
+  // ✅ Astro-specific:
+  astroAllowShorthand: true,
+  htmlWhitespaceSensitivity: 'ignore',
 
   // 👇 better import structure
   importOrder: [
@@ -49,7 +53,9 @@ export default {
   overrides: [
     {
       files: '*.astro',
-      options: { parser: 'astro' },
+      options: {
+        parser: 'astro',
+      },
     },
   ],
 };
