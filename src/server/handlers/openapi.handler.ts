@@ -5,6 +5,7 @@ import { onError, ORPCError } from '@orpc/server';
 import { ResponseHeadersPlugin } from '@orpc/server/plugins';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 
+import { openApiBasePath } from '@/lib/helpers/paths';
 import { allRouters } from '@/server/routers/all.routers';
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
@@ -31,7 +32,7 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
       specPath: '/generate-schema',
       specGenerateOptions: {
         info: { title: 'My API Docs', version: '1.0.0' },
-        servers: [{ url: '/api/openapi' }],
+        servers: [{ url: openApiBasePath }],
         security: [{ cookieAuth: [] }],
         components: {
           securitySchemes: {

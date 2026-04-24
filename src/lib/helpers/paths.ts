@@ -1,3 +1,5 @@
+import { appContract } from '@/server/contracts/all.contracts';
+
 // Files/folders to ignore globally when scanning routes
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
 
@@ -190,3 +192,7 @@ export async function discoverRoutes(
   allRoutes.sort((a, b) => a.route.localeCompare(b.route));
   return { ssrRoutes, staticRoutes, allRoutes };
 }
+
+export const openApiBasePath = '/api/openapi';
+export const rpcBasePath = '/api/rpc';
+export const ogPath = appContract.og['~orpc'].route.path;

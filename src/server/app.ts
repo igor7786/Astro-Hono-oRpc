@@ -5,10 +5,10 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
 import type { envServer } from '@/lib/env/server.env';
+import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
 import { llmsHtml } from '@/server/seo/html.handler';
-import { og } from '@/server/seo/og.handler';
 import { llmsTxt } from '@/server/seo/txt.handler';
 
 type Env = { Bindings: typeof envServer };
@@ -34,7 +34,7 @@ app.use('*', logger());
 app.use('/rpc/*', async (c, next) => {
   // ✅ get signal directly from the incoming request
   const { matched, response } = await rpcHandler.handle(c.req.raw, {
-    prefix: '/api/rpc',
+    prefix: rpcBasePath,
     context: { env: c.env },
   });
   if (matched) {
@@ -54,7 +54,7 @@ app.use('/openapi/*', async (c, next) => {
   };
 
   const { matched, response } = await openApiHandler.handle(c.req.raw, {
-    prefix: '/api/openapi',
+    prefix: openApiBasePath,
     context,
   });
   if (matched) {
@@ -77,9 +77,6 @@ app.get(
 //LLMS, Markdown, TXT ──────────────────────────────────────────────────────────────────────────────
 app.route('/', llmsTxt);
 app.route('/', llmsHtml);
-// ─── Satori OG ────────────────────────────────────────
-
-app.route('/', og);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));

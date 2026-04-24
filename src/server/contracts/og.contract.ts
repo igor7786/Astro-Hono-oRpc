@@ -1,0 +1,26 @@
+import { z } from 'zod';
+
+import { seoQuerySchema } from '@/lib/shared/schemas/seo.schema';
+import { baseOc } from '@/server/contracts/oc.base';
+
+export const ogContract = baseOc
+  .route({
+    method: 'GET',
+    path: '/og',
+    description: 'Og image',
+    summary: 'Generates og images',
+    tags: ['Files'],
+    successDescription: 'Og image generated successfully',
+    successStatus: 200,
+    outputStructure: 'detailed',
+  })
+  .input(seoQuerySchema)
+  .output(
+    z.object({
+      body: z.file(),
+      headers: z.object({
+        'Content-Type': z.string(),
+        'Cache-Control': z.string(),
+      }),
+    })
+  );

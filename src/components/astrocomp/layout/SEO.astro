@@ -1,6 +1,7 @@
 ---
 import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
 import z from 'zod';
+import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
@@ -18,7 +19,9 @@ const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
 
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
-const ogUrl = new URL('/api/og', Astro.site);
+
+const fullPath = openApiBasePath + ogPath;
+const ogUrl = new URL(fullPath, Astro.site);
 
 ogUrl.searchParams.set('title', title);
 ogUrl.searchParams.set('description', description);
