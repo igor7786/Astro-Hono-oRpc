@@ -195,4 +195,4 @@ export async function discoverRoutes(
 
 export const openApiBasePath = '/api/openapi';
 export const rpcBasePath = '/api/rpc';
-export const ogPath = appContract.og['~orpc'].route.path;
+export const ogPath = appContract.seo.og['~orpc'].route.path;

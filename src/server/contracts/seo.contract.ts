@@ -9,7 +9,7 @@ export const ogContract = baseOc
     path: '/og',
     description: 'Og image',
     summary: 'Generates og images',
-    tags: ['Files'],
+    tags: ['SEO'],
     successDescription: 'Og image generated successfully',
     successStatus: 200,
     outputStructure: 'detailed',
