@@ -39,12 +39,15 @@ export function formatDate(date?: string) {
   });
 }
 
-export const seoQuerySchema = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  author: z.string().optional(),
-  date: z
-    .string()
-    .optional()
-    .transform((val) => (val ? formatDate(val) : undefined)),
-});
+export const seoQuerySchema = z
+  .object({
+    title: z.string().nonempty('Title must not be empty').default('Fast Web Tech'),
+    description: z.string().nonempty('Description must not be empty').default('My awesome app'),
+    author: z.string().nonempty('Author must not be empty').default('Alberto'),
+    date: z
+      .string()
+      .nonempty()
+      .default(new Date(2026, 3, 15).toISOString())
+      .transform((val) => (val ? formatDate(val) : undefined)),
+  })
+  .strict();
