@@ -13,7 +13,7 @@ let data: { name: string } | null = null;
 
 try {
   data = await Promise.race([
-    serverClient.testSlow(inputData),
+    serverClient.testPath.slowTest(inputData),
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 300)),
   ]);
 } catch (e) {

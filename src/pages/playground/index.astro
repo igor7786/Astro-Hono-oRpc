@@ -7,7 +7,7 @@ import UserProfile from '@rcomp/playground/TestTanstackQuery';
 import SlowRequest from '@rcomp/playground/SlowRequest';
 let data: { name: string } = { name: '' };
 try {
-  data = await serverClient.test({ name: 'test' });
+  data = await serverClient.testPath.test({ name: 'test' });
 } catch (error: any) {
   data = { name: error.message };
 }
@@ -17,7 +17,7 @@ const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
 const profiles = await Promise.all(
   names.map(async (name, index) => {
     try {
-      const initialData = await serverClient.test({ name });
+      const initialData = await serverClient.testPath.test({ name });
       return {
         name,
         initialData,
