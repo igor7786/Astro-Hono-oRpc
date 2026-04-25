@@ -3,6 +3,7 @@ import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
 import { onError, ORPCError } from '@orpc/server';
 import { ResponseHeadersPlugin } from '@orpc/server/plugins';
+import { CORSPlugin } from '@orpc/server/plugins';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 
 import { openApiBasePath } from '@/lib/helpers/paths';
@@ -25,6 +26,9 @@ const openApiHandler = new OpenAPIHandler(allRouters, {
   plugins: [
     new ResponseHeadersPlugin(),
     new SmartCoercionPlugin({ schemaConverters }),
+    new CORSPlugin({
+      exposeHeaders: ['Content-Disposition'],
+    }),
     new OpenAPIReferencePlugin({
       schemaConverters,
       docsProvider: 'scalar',
