@@ -1,4 +1,4 @@
-import { appContract } from '@/server/contracts/all.contracts';
+import { allRouters } from '@/server/routers/all.routers';
 
 // Files/folders to ignore globally when scanning routes
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
@@ -195,4 +195,4 @@ export async function discoverRoutes(
 
 export const openApiBasePath = '/api/openapi';
 export const rpcBasePath = '/api/rpc';
-export const ogPath = appContract.seo.og['~orpc'].route.path;
+export const ogPath = allRouters.seoPath.ogRoute['~orpc'].route.path; // derived from router definition
