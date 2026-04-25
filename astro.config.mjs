@@ -1,8 +1,8 @@
-import node from '@astrojs/node';
 import react from '@astrojs/react';
+// @ts-check
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-// @ts-check
+import bun from '@wyattjoh/astro-bun-adapter';
 import { defineConfig, fontProviders } from 'astro/config';
 
 import fs from 'fs';
@@ -40,9 +40,7 @@ export default defineConfig({
     enabled: false,
   },
   output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: bun({ isr: true }),
 
   vite: {
     resolve: {

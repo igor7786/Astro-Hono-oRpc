@@ -27,8 +27,8 @@
     ]
   },
   "dependencies": {
-    "@astrojs/node": "10.0.4",
-    "@astrojs/react": "5.0.3",
+    "@astrojs/node": "10.0.6",
+    "@astrojs/react": "5.0.4",
     "@astrojs/sitemap": "^3.7.2",
     "@base-ui/react": "^1.3.0",
     "@fontsource-variable/inter": "^5.2.8",
@@ -52,8 +52,9 @@
     "@tanstack/react-query-persist-client": "^5.94.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@wyattjoh/astro-bun-adapter": "^2.0.1",
     "add": "^2.0.6",
-    "astro": "6.1.4",
+    "astro": "6.1.9",
     "boneyard-js": "^1.7.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

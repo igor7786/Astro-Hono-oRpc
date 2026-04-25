@@ -27,9 +27,12 @@ export default {
   importOrder: [
     '<BUILTIN_MODULES>',
 
+    // Bun
+    '^bun$',
     // React ecosystem (UI state + query libs)
     '^react$',
     '^react-dom$',
+    // Other UI state libs (TanStack, Jotai, Zustand, etc.)
     '^@tanstack/(.*)$',
 
     // UI libraries (ALL component systems)
