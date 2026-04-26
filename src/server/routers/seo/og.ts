@@ -23,7 +23,8 @@ export const ogRoute = base.seo.ogRoute.handler(async ({ input, context, errors 
     const contentType = format === 'webp' ? 'image/webp' : 'image/png'; // derive once
 
     return {
-      body: new File([Buffer.from(image)], `og.${format}`, { type: contentType }),
+      body: new Blob([image as Uint8Array<ArrayBuffer>], { type: contentType }),
+
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',

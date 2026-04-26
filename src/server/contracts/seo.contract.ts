@@ -18,7 +18,7 @@ export const ogContract = baseOc
   .input(seoQuerySchema)
   .output(
     z.object({
-      body: z.file(),
+      body: z.instanceof(Blob),
       headers: z.object({
         'Content-Type': z.string(),
         'Cache-Control': z.string(),

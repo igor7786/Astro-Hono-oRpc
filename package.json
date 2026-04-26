@@ -12,7 +12,7 @@
     "astro": "astro",
     "bun:dev": "bunx --bun astro dev --host",
     "bun:build": "bunx --bun astro build",
-    "bun:preview": "bunx --bun astro preview",
+    "bun:preview": "bun run --bun  ./dist/server/entry.mjs",
     "ts:check": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
     "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
     "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts",
