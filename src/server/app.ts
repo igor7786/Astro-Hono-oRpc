@@ -1,16 +1,16 @@
 import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
 
-import { envServer } from '@/lib/env/server.env';
+import { envServer, type EnvServer } from '@/lib/env/server.env';
 import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
+import { prettyLogger } from '@/server/logger/logger';
 import { llmsHtml } from '@/server/seo/html.handler';
 import { llmsTxt } from '@/server/seo/txt.handler';
 
-type Env = { Bindings: typeof envServer };
+type Env = { Bindings: EnvServer };
 
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
 
@@ -27,23 +27,20 @@ app.use(
   })
 );
 
-app.use('*', logger());
+app.use(prettyLogger);
 
 // ─── oRPC handler ─────────────────────────────────────────────────────────────
-app.use('/rpc/*', async (c, next) => {
+app.use('/*', async (c, next) => {
   // ✅ get signal directly from the incoming request
-  const { matched, response } = await rpcHandler.handle(c.req.raw, {
+  const res = await rpcHandler.handle(c.req.raw, {
     prefix: rpcBasePath,
     context: { env: c.env },
   });
-  if (matched) {
-    return c.newResponse(response.body, response);
+  if (res.matched) {
+    return c.newResponse(res.response.body, res.response);
   }
-  await next();
-});
 
-// ─── OpenAPI handler ─────────────────────────────────────────────────────────────
-app.use('/openapi/*', async (c, next) => {
+  // ─── OpenAPI handler ─────────────────────────────────────────────────────────────
   const context = {
     request: c.req.raw,
     response: c.res,
@@ -52,13 +49,14 @@ app.use('/openapi/*', async (c, next) => {
     env: c.env,
   };
 
-  const { matched, response } = await openApiHandler.handle(c.req.raw, {
+  const apiRes = await openApiHandler.handle(c.req.raw, {
     prefix: openApiBasePath,
     context,
   });
-  if (matched) {
-    return c.newResponse(response.body, response);
+  if (apiRes.matched) {
+    return c.newResponse(apiRes.response.body, apiRes.response);
   }
+
   await next();
 });
 

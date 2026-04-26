@@ -43,10 +43,9 @@ const EnvSchema = z.object({
 });
 
 // Type inferred from schema
-export type ServerEnv = z.infer<typeof EnvSchema>;
 
 // Load & validate environment vars from process.env
-export function getServerEnv(): ServerEnv {
+export function getServerEnv(): EnvServer {
   const envSource = typeof Bun !== 'undefined' ? Bun.env : process.env;
   const parsed = EnvSchema.parse(envSource);
   return parsed;
@@ -54,3 +53,4 @@ export function getServerEnv(): ServerEnv {
 
 // Export parsed env
 export const envServer = getServerEnv();
+export type EnvServer = z.infer<typeof EnvSchema>;
