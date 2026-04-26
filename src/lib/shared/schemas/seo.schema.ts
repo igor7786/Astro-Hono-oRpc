@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { envServer } from '@/lib/env/server.env';
+import { envClient } from '@/lib/env/client.env';
 
 export const seoSchema = z.object({
   title: z.string().default('Fast Web Tech'),
@@ -9,7 +9,7 @@ export const seoSchema = z.object({
   date: z.string().default(() => new Date().toISOString()),
   type: z.enum(['website', 'article']).default('website'),
   siteName: z.string().default('Fast Web Tech'),
-  siteUrl: z.string().default(envServer.PUBLIC_URL),
+  siteUrl: z.string().default(envClient.PUBLIC_URL),
   url: z.string().optional(),
 });
 
@@ -17,7 +17,7 @@ export type SEO = z.infer<typeof seoSchema>;
 
 export const baseSeo = {
   siteName: 'Fast Web Tech',
-  siteUrl: envServer.PUBLIC_URL,
+  siteUrl: envClient.PUBLIC_URL,
   author: 'Igor',
   type: 'website' as const,
 };

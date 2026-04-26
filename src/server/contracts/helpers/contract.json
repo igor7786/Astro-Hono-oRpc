@@ -1,0 +1,52 @@
+{
+  "testPath": {
+    "test": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/all-test/test",
+          "description": "Test route",
+          "summary": "Test route summary",
+          "tags": ["Test"],
+          "successDescription": "Test route successful",
+          "successStatus": 200
+        }
+      }
+    },
+    "slowTest": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "POST",
+          "path": "/all-test/slow-test",
+          "description": "Slow test route",
+          "summary": "Slow test route summary",
+          "tags": ["Test"],
+          "successDescription": "Test route successful",
+          "successStatus": 200
+        }
+      }
+    }
+  },
+  "seoPath": {
+    "ogRoute": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/seo/og",
+          "description": "Og image",
+          "summary": "Generates og images",
+          "tags": ["SEO"],
+          "successDescription": "Og image generated successfully",
+          "successStatus": 200,
+          "outputStructure": "detailed"
+        }
+      }
+    }
+  }
+}

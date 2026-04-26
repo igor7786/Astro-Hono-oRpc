@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 import { Button } from '@/components/reactcomp/ui/button';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
+import { clientOrpc as orpc } from '@/server/clients/web.client';
 import { type TestInput } from '@/server/schemas/test.schema';
-import { clientOrpc as orpc } from '@/server/web.client';
 
 type CardInnerProps = {
   initialData: TestInput['name'] | null;

@@ -8,7 +8,7 @@ import { Button } from '@rcomp/ui/button';
 
 import { $testData } from '@/lib/stores/ssr';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/web.client';
+import { clientOrpc as orpc } from '@/server/clients/web.client';
 
 export const useTest = (name: string, initialData?: { name: string }) => {
   const client = getQueryClient();

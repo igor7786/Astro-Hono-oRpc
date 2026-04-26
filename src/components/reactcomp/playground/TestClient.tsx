@@ -2,7 +2,7 @@ import { ORPCError } from '@orpc/client';
 
 import { useEffect, useState } from 'react';
 
-import { client } from '@/server/web.client';
+import { client } from '@/server/clients/web.client';
 
 interface TestClientProps {
   className?: string;

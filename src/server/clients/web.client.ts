@@ -1,6 +1,7 @@
 import { createORPCClient, onError, ORPCError } from '@orpc/client';
 import type { ContractRouterClient } from '@orpc/contract';
 import { ResponseValidationPlugin } from '@orpc/contract/plugins';
+import type { JsonifiedClient } from '@orpc/openapi-client';
 import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
@@ -45,5 +46,5 @@ const link = new OpenAPILink(appContract, {
   ],
 });
 
-export const client: ContractRouterClient<AppContract> = createORPCClient(link);
+export const client: JsonifiedClient<ContractRouterClient<AppContract>> = createORPCClient(link);
 export const clientOrpc = createTanstackQueryUtils(client);

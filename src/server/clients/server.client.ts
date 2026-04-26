@@ -7,10 +7,6 @@ import type { AppRouter } from '@/server/routers/all.routers';
 import { allRouters } from '@/server/routers/all.routers';
 
 export const serverClient: RouterClient<AppRouter> = createRouterClient(allRouters, {
-  context: {
-    env: envServer,
-  },
-
   interceptors: [
     onError((error) => {
       if (!(error instanceof ORPCError)) {

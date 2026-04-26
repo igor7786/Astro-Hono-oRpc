@@ -19,7 +19,8 @@
     "knip": "knip --no-exit-code",
     "knip:fix": "knip --fix --no-exit-code",
     "husky:init": "bunx husky init",
-    "prepare": "husky"
+    "prepare": "husky",
+      "generate:contract": "bun run src/server/contracts/helpers/generate-contract-json.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,astro,json,css,scss,md,html}": [
