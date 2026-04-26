@@ -1,10 +1,9 @@
 import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-// import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
-import type { envServer } from '@/lib/env/server.env';
+import { envServer } from '@/lib/env/server.env';
 import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
@@ -19,7 +18,7 @@ export const app = new Hono<Env>({ strict: false }).basePath('/api');
 app.use(
   '*',
   cors({
-    origin: (origin, c) => (origin === c.env.PUBLIC_URL ? origin : undefined),
+    origin: [envServer.PUBLIC_URL],
     credentials: true,
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
