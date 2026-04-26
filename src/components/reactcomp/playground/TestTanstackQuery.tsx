@@ -15,7 +15,7 @@ interface Props {
 export default function UserProfile({ className, initialData, name }: Props) {
   const client = getQueryClient();
   const { data, isLoading, error } = useQuery(
-    orpc.test.queryOptions({
+    orpc.tests.test.queryOptions({
       input: { name }, // ← use the prop, not hardcoded
       queryKey: ['test', { name }],
       initialData: initialData ?? undefined,

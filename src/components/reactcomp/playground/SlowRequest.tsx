@@ -13,7 +13,7 @@ export default function SlowRequest() {
   const [cancelled, setCancelled] = useState(false);
 
   const { data, isFetching, error } = useQuery(
-    orpc.testSlow.queryOptions({
+    orpc.tests.slowTest.queryOptions({
       input: { name: 'slow operation' },
       queryKey: ['slow-test', fetchId], // ← changes on every fetch
       enabled: fetchId > 0, // don't fetch on mount
@@ -30,7 +30,7 @@ export default function SlowRequest() {
   };
   const handleMouseEnter = () => {
     client.prefetchQuery(
-      orpc.testSlow.queryOptions({
+      orpc.tests.slowTest.queryOptions({
         input: { name: 'slow operation' },
         queryKey: ['slow-test', fetchId],
       })

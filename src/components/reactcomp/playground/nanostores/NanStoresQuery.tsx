@@ -18,7 +18,7 @@ export const useTest = (name: string, initialData?: { name: string }) => {
   console.log('Cached data:', cachedData);
 
   return useQuery(
-    orpc.test.queryOptions({
+    orpc.tests.test.queryOptions({
       input: { name },
       queryKey: ['test', { name }],
       initialData: cachedData ?? initialData, // cache → SSR prop

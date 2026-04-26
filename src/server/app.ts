@@ -3,10 +3,10 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
 import { envServer, type EnvServer } from '@/lib/env/server.env';
+import { prettyLogger } from '@/lib/helpers/logger';
 import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
-import { prettyLogger } from '@/server/logger/logger';
 import { llmsHtml } from '@/server/seo/html.handler';
 import { llmsTxt } from '@/server/seo/txt.handler';
 

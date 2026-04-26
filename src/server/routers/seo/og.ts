@@ -1,7 +1,7 @@
 import { base } from '@/server/procedures/base';
 import { generateOgImage } from '@/server/seo/og/Generate';
 
-export const ogRoute = base.seo.og.handler(async ({ input, context, errors }) => {
+export const ogRoute = base.seo.ogRoute.handler(async ({ input, context, errors }) => {
   const { title, description, author, date } = input;
 
   const accept = context.request?.headers.get('accept') ?? '';

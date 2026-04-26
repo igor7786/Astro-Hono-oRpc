@@ -3,10 +3,11 @@ import { z } from 'zod';
 import { seoQuerySchema } from '@/lib/shared/schemas/seo.schema';
 import { baseOc } from '@/server/contracts/oc.base';
 
+const pathPrefix = '/seo'; // ✅ added path prefix
 export const ogContract = baseOc
   .route({
     method: 'GET',
-    path: '/og',
+    path: `${pathPrefix}/og`,
     description: 'Og image',
     summary: 'Generates og images',
     tags: ['SEO'],

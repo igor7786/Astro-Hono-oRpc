@@ -13,7 +13,7 @@ export function TestClient({ className }: TestClientProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    client
+    client.tests
       .test({ name: 'from oRPC Client' })
       .then(setData)
       .catch((err) => {

@@ -2,9 +2,13 @@ import { ogContract } from '@/server/contracts/seo.contract';
 import { slowTestContract, testContract } from '@/server/contracts/test.contract';
 
 export const appContract = {
-  test: testContract,
-  testSlow: slowTestContract,
-  seo: { og: ogContract },
+  tests: {
+    test: testContract,
+    slowTest: slowTestContract, // ✅ fixed
+  },
+  seo: {
+    ogRoute: ogContract, // ✅ fixed
+  },
 };
 
 export type AppContract = typeof appContract;

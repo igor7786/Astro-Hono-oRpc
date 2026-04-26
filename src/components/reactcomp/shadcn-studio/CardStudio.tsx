@@ -26,7 +26,7 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
     setMounted(true);
   }, []);
   const { data, isLoading, isFetching, error } = useQuery(
-    orpc.testSlow.queryOptions({
+    orpc.tests.slowTest.queryOptions({
       input: { name: input },
       queryKey: ['test', { name: input }],
       initialData: initialData ? { name: initialData } : undefined,

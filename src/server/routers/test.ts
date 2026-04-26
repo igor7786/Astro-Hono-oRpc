@@ -2,7 +2,7 @@ import { setCookie } from '@orpc/server/helpers';
 
 import { base } from '@/server/procedures/base';
 
-export const testRoute = base.test.handler(async ({ input, context, errors }) => {
+export const testRoute = base.tests.test.handler(async ({ input, context, errors }) => {
   if (context.request) {
     context.resHeaders?.set('x-custom-header', 'Hello from oRPC!');
     setCookie(context.resHeaders, 'test', 'abc123', {
@@ -23,7 +23,7 @@ export const testRoute = base.test.handler(async ({ input, context, errors }) =>
   return { name: `Hello, ${input.name}!` };
 });
 
-export const slowTestRoute = base.testSlow.handler(async ({ input, context, errors }) => {
+export const slowTestRoute = base.tests.slowTest.handler(async ({ input, context, errors }) => {
   const signal = context.signal; // ← fallback
   // Not working as expected in Bun
   await new Promise<void>((resolve, reject) => {

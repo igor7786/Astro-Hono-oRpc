@@ -2,7 +2,7 @@
 import SEO from '@acomp/layout/SEO.astro';
 import FONTS from '@acomp/layout/FONTS.astro';
 import type { SEO as SEOType } from '@/lib/shared/schemas/seo.schema';
-import themeScript from '@/scripts/theme-checker.js?raw';
+import themeScript from '@/lib/helpers/theme-checker?raw';
 import '@/styles/global.css';
 const props = Astro.props as Partial<SEOType>;
 ---
