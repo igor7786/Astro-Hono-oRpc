@@ -1,8 +1,7 @@
 import { ImageResponse } from '@takumi-rs/image-response';
 
+import { getSatoriOptions } from '@/server/seo/og/cache.fonts';
 import { SocialCard, type SocialCardProps } from '@/server/seo/og/SocialCard';
-
-import { getSatoriOptions } from './fonts';
 
 type OgFormat = 'png' | 'webp';
 
