@@ -21,7 +21,6 @@ export async function getSatoriOptions(): Promise<SatoriOptions> {
         { name: 'Inter', data: fontData, weight: 800, style: 'normal' },
       ],
     };
-    console.log('✅ Fonts loaded');
   }
   return _satoriOptions;
 }
