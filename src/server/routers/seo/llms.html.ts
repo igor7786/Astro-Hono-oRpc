@@ -28,12 +28,12 @@ export async function htmlLlmsHandler() {
 <head>
   <meta charset="UTF-8" />
   <title>Api Docs in Markdown</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="/llms.css" />
 </head>
-<body>
-  <main class="container" id="llms-markdown">
-    ${markdown}
-  </main>
+<body class="bg-gray-950 text-gray-100">
+    <main class="prose prose-invert mx-auto max-w-3xl p-6">
+      ${markdown}
+    </main>
 </body>
 </html>`;
 }
