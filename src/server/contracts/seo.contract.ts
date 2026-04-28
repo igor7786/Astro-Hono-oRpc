@@ -4,7 +4,7 @@ import { seoQuerySchema } from '@/lib/shared/schemas/seo.schema';
 import { baseOc } from '@/server/contracts/oc.base';
 
 const pathPrefix = '/seo'; // ✅ added path prefix
-export const ogContract = baseOc
+export const og = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/og`,
@@ -27,7 +27,7 @@ export const ogContract = baseOc
     })
   );
 
-export const llmsContract = baseOc
+export const llmsHtml = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/llms.html`,

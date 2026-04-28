@@ -1,14 +1,14 @@
-import { llmsContract, ogContract } from '@/server/contracts/seo.contract';
-import { slowTestContract, testContract } from '@/server/contracts/test.contract';
+import { llmsHtml, og } from '@/server/contracts/seo.contract';
+import { slowTest, test } from '@/server/contracts/test.contract';
 
 export const appContract = {
   tests: {
-    test: testContract,
-    slowTest: slowTestContract, // ✅ fixed
+    test,
+    slowTest,
   },
   seo: {
-    ogRoute: ogContract, // ✅ fixed
-    llmsRoute: llmsContract, // ✅ fixed
+    og, // ✅ fixed
+    llmsHtml, // ✅ fixed
   },
 };
 
