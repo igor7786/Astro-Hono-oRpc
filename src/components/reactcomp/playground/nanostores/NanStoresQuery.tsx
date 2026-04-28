@@ -15,8 +15,6 @@ export const useTest = (name: string, initialData?: { name: string }) => {
 
   // ✅ check cache first — skip fetch if already cached
   const cachedData = client.getQueryData<{ name: string }>(['test', { name }]);
-  console.log('Cached data:', cachedData);
-
   return useQuery(
     orpc.tests.test.queryOptions({
       input: { name },
