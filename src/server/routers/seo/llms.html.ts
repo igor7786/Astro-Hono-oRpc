@@ -1,0 +1,39 @@
+import { base } from '@/server/procedures/base';
+import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
+import { generateLLMsMarkdown } from '@/server/seo/llms';
+
+export const llmsRoute = base.seo.llmsRoute.handler(async ({ errors }) => {
+  const html = await htmlLlmsHandler().catch((_err) => {
+    throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to parse HTML' });
+  });
+
+  return {
+    body: new Blob([html], { type: 'text/html' }),
+    headers: {
+      'Content-Type': 'text/html',
+      'Cache-Control': 'public, max-age=360',
+      'Content-Disposition': 'inline; filename="llms.html"',
+    },
+  };
+});
+
+export async function htmlLlmsHandler() {
+  // 1. Get OpenAPI schema
+  const openApiDoc = await generateOpenApiSchema();
+  // 2. Convert to Markdown
+  const markdown = await generateLLMsMarkdown(openApiDoc);
+  // 3. Return full HTML
+  return `<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Api Docs in Markdown</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <main class="container" id="llms-markdown">
+    ${markdown}
+  </main>
+</body>
+</html>`;
+}

@@ -1,4 +1,4 @@
-import { ogContract } from '@/server/contracts/seo.contract';
+import { llmsContract, ogContract } from '@/server/contracts/seo.contract';
 import { slowTestContract, testContract } from '@/server/contracts/test.contract';
 
 export const appContract = {
@@ -8,6 +8,7 @@ export const appContract = {
   },
   seo: {
     ogRoute: ogContract, // ✅ fixed
+    llmsRoute: llmsContract, // ✅ fixed
   },
 };
 

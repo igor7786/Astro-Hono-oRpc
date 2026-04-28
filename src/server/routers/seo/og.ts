@@ -27,11 +27,12 @@ export const ogRoute = base
     const contentType = format === 'webp' ? 'image/webp' : 'image/png'; // derive once
 
     return {
-      body: new Blob([image as Uint8Array<ArrayBuffer>], { type: contentType }),
+      body: new File([image as Uint8Array<ArrayBuffer>], 'og-image', { type: contentType }),
 
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
+        'Content-Disposition': 'inline; filename="og-image.' + format + '"',
       },
     };
   });

@@ -18,10 +18,34 @@ export const ogContract = baseOc
   .input(seoQuerySchema)
   .output(
     z.object({
+      body: z.file(),
+      headers: z.object({
+        'Content-Type': z.string(),
+        'Cache-Control': z.string(),
+        'Content-Disposition': z.string(),
+      }),
+    })
+  );
+
+export const llmsContract = baseOc
+  .route({
+    method: 'GET',
+    path: `${pathPrefix}/llms.html`,
+    description: 'LLMs Html',
+    summary: 'Generates LLMs Html',
+    tags: ['SEO'],
+    successDescription: 'LLMs Html generated successfully',
+    successStatus: 200,
+    outputStructure: 'detailed',
+  })
+  .input(seoQuerySchema)
+  .output(
+    z.object({
       body: z.instanceof(Blob),
       headers: z.object({
         'Content-Type': z.string(),
         'Cache-Control': z.string(),
+        'Content-Disposition': z.string(),
       }),
     })
   );
