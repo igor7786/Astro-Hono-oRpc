@@ -1,11 +1,9 @@
 import { baseOc } from '@/server/contracts/oc.base';
 import { testSchema } from '@/server/schemas/test.schema';
 
-const pathPrefix = '/all-tests'; // ✅ added path prefix
 export const test = baseOc
   .route({
     method: 'GET',
-    path: `${pathPrefix}/test`,
     description: 'Test route',
     summary: 'Test route summary',
     tags: ['Tests'],
@@ -18,7 +16,6 @@ export const test = baseOc
 export const slowTest = baseOc
   .route({
     method: 'POST',
-    path: `${pathPrefix}/slow-test`,
     description: 'Slow test route',
     summary: 'Slow test route summary',
     tags: ['Tests'],
