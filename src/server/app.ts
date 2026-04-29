@@ -22,17 +22,17 @@ app.use(
     origin: [envServer.PUBLIC_URL],
     credentials: true,
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
-    exposeHeaders: ['Content-Length'],
+    allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+    exposeHeaders: ['Content-Length', 'Content-Type', 'Content-Disposition'],
     maxAge: 600,
   })
 );
 
 app.use(prettyLogger);
 
-// ─── oRPC handler ─────────────────────────────────────────────────────────────
+// ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', async (c, next) => {
-  // ✅ get signal directly from the incoming request
+  // ─── RPC handler ───────────────────────────────────────────────────────────
   const res = await rpcHandler.handle(c.req.raw, {
     prefix: rpcBasePath,
     context: { env: c.env },
@@ -41,7 +41,6 @@ app.use('/*', async (c, next) => {
     return c.newResponse(res.response.body, res.response);
   }
 
-  // ─── OpenAPI handler ─────────────────────────────────────────────────────────────
   const context = {
     request: c.req.raw,
     response: c.res,
@@ -50,6 +49,30 @@ app.use('/*', async (c, next) => {
     env: c.env,
   };
 
+  // ─── HEAD handler — call oRPC directly, strip body ─────────────────────────
+  if (c.req.method === 'HEAD') {
+    const getRequest = new Request(c.req.url, {
+      method: 'GET',
+      headers: c.req.raw.headers,
+    });
+
+    const apiRes = await openApiHandler.handle(getRequest, {
+      prefix: openApiBasePath,
+      context: {
+        ...context,
+        request: getRequest,
+        signal: getRequest.signal,
+      },
+    });
+
+    if (apiRes.matched) {
+      return c.body(null, apiRes.response.status as any, {
+        ...Object.fromEntries(apiRes.response.headers),
+      });
+    }
+  }
+
+  // ─── OpenAPI handler ───────────────────────────────────────────────────────
   const apiRes = await openApiHandler.handle(c.req.raw, {
     prefix: openApiBasePath,
     context,
@@ -61,7 +84,7 @@ app.use('/*', async (c, next) => {
   await next();
 });
 
-// ─── Scalar docs (all APIs in one UI) ────────────────────────────────────────
+// ─── Scalar docs ─────────────────────────────────────────────────────────────
 app.get(
   '/docs',
   Scalar({
@@ -72,7 +95,7 @@ app.get(
   })
 );
 
-//LLMS, Markdown, TXT ──────────────────────────────────────────────────────────────────────────────
+// ─── SEO / LLM routes ────────────────────────────────────────────────────────
 app.route('/', llmsTxt);
 app.route('/', llmsHtml);
 app.route('/', og);
@@ -80,7 +103,7 @@ app.route('/', og);
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
-// ✅ 404 handler
+// ─── 404 handler ──────────────────────────────────────────────────────────────
 app.notFound((c) => {
   return c.json({ error: 'Not Found', path: c.req.path }, 404);
 });

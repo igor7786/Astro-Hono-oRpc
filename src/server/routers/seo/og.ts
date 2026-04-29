@@ -4,7 +4,6 @@ import { generateOgImage } from '@/server/seo/og/Generate';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
   const { title, description, author, date } = input;
-
   const accept = context.request?.headers.get('accept') ?? '';
   // webp unless it's a bot/crawler that doesn't support it
   const format =
@@ -28,9 +27,11 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     body: new File([image as Uint8Array<ArrayBuffer>], 'og-image', { type: contentType }),
 
     headers: {
+      Vary: 'Accept',
       'Content-Type': contentType,
       'Cache-Control': 'public, max-age=31536000, immutable',
-      'Content-Disposition': 'inline; filename="og-image.' + format + '"',
+      'Content-Disposition': `inline; filename="og-image.${format}"`,
+      'Content-Length': (image as Uint8Array<ArrayBuffer>).byteLength.toString(),
     },
   };
 });
