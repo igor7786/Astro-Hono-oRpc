@@ -3,9 +3,11 @@ import { z } from 'zod';
 import { seoQuerySchema } from '@/lib/shared/schemas/seo.schema';
 import { baseOc } from '@/server/contracts/oc.base';
 
+const pathPrefix = '/seo'; // ✅ added path prefix
 export const og = baseOc
   .route({
     method: 'GET',
+    path: `${pathPrefix}/og`, // ✅ added path
     description: 'Og image',
     summary: 'Generates og images',
     tags: ['SEO'],
@@ -28,6 +30,7 @@ export const og = baseOc
 export const llmsHtml = baseOc
   .route({
     method: 'GET',
+    path: `${pathPrefix}/llms.html`,
     description: 'LLMs Html',
     summary: 'Generates LLMs Html',
     tags: ['SEO'],
@@ -35,7 +38,6 @@ export const llmsHtml = baseOc
     successStatus: 200,
     outputStructure: 'detailed',
   })
-  .input(seoQuerySchema)
   .output(
     z.object({
       body: z.instanceof(Blob),
