@@ -48,6 +48,8 @@ cp .example.env .env
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret | ✅ |
 | `RESEND_EMAIL` | Resend API key | ✅ |
 | `ARCJET_KEY` | Arcjet security API key | ✅ |
+| `ARCJET_ENV` | Arcjet environment (e.g., `development`, `production`) | ✅ |
+| `CLOUD_TOKEN` | Cloudflare or similar cloud provider token | ✅ |
 | `QWEN_API_KEY` | Qwen API key for AI features | ✅ |
 
 ### Production Build
@@ -84,15 +86,30 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │       ├── ui/           # shadcn/ui generated components
 │   │       └── nanostores/   # Components using shared reactive state
 │   ├── layouts/              # Main page layouts
-│   ├── lib/
+│   ├── lib/                  # Shared utilities and configurations
 │   │   ├── env/              # Zod-validated environment configurations
 │   │   ├── helpers/          # Logger, path utilities, and theme checkers
 │   │   ├── stores/           # Nanostores (online status, SSR data)
-│   │   └── server/           # Server-side logic (Hono, oRPC, SEO)
-│   ├── pages/
-│   │   ├── api/              # Hono API catch-all route
+│   │   ├── queues/           # Redis queue configurations
+│   │   ├── shared/           # Shared schemas and types
+│   │   └── tanstack-query/   # TanStack Query setup and devtools
+│   ├── server/               # Hono and oRPC server-side logic
+│   │   ├── app.ts            # Main Hono application entry point
+│   │   ├── clients/          # API clients (server and web)
+│   │   ├── contracts/        # oRPC contracts and JSON generators
+│   │   ├── handlers/         # RPC and OpenAPI request handlers
+│   │   ├── middlewares/      # Hono middlewares (errors, validation)
+│   │   ├── procedures/       # Base oRPC procedure definitions
+│   │   ├── routers/          # oRPC router definitions
+│   │   ├── schemas/          # Zod schemas for API validation
+│   │   └── seo/              # SEO, OG images, and LLM documentation handlers
+│   ├── pages/                # Astro page routes and API catch-all
+│   │   ├── api/              # Hono API catch-all route ([...path].ts)
 │   │   └── playground/       # Component tests and interactive demos
-│   ├── styles/               # Global Tailwind CSS and shadcn variables
+│   ├── data/                 # Static data (e.g., blog posts in markdown)
+│   ├── plugins/              # Remark/Rehype plugins for Astro
+│   ├── styles/               # Global CSS and Tailwind configuration
+│   ├── env.d.ts              # Global TypeScript ambient declarations
 │   └── middleware.ts         # Astro middleware for session management
 ├── boneyard.config.json      # Boneyard skeleton loading configuration
 ├── components.json           # shadcn/ui configuration
@@ -129,21 +146,23 @@ All API routes are prefixed with `/api/`.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/health` | Health check (`{ status: 'ok' }`) |
+| `GET`  | `/api/health` | Health check (`{ status: 'ok' }`) |
 | `POST` | `/api/rpc/*` | oRPC procedure calls (type-safe RPC) |
-| `GET` | `/api/docs` | Combined Scalar API documentation |
-| `GET` | `/api/rpc/orpc-docs` | Scalar documentation for oRPC only |
-| `GET` | `/api/rpc/generate-schema` | Raw OpenAPI JSON spec for oRPC |
-| `GET` | `/api/llms.txt` | AI-optimized documentation (Markdown) |
-| `GET` | `/api/llms.html` | Human-readable documentation (PicoCSS) |
-| `GET` | `/api/og` | Dynamic OG image generation |
+| `GET`  | `/api/docs` | Combined Scalar API documentation (all APIs) |
+| `GET`  | `/api/openapi/orpc-docs` | Scalar documentation for oRPC only |
+| `GET`  | `/api/openapi/generate-schema` | Raw OpenAPI JSON spec for oRPC |
+| `GET`  | `/api/llms.txt` | AI-optimized documentation (Markdown) |
+| `GET`  | `/api/llms.html` | Human-readable documentation (PicoCSS) |
+| `GET`  | `/api/og` | Dynamic OG image generation |
 
 ### oRPC Procedures
 
 Procedures are defined in `src/server/routers/`. Example endpoints:
 - `tests.test`: Basic connectivity and validation test.
 - `tests.slowTest`: Long-running task to test cancellation and loading states.
-- `seo.og`: Manual triggering of social image generation.
+- `seo.ogRoute`: Manual triggering of social image generation.
+- `seo.llmsRoute`: LLM HTML documentation route.
+- `seo.llmsTxtRoute`: LLM text documentation route.
 
 ---
 
@@ -163,6 +182,15 @@ The project exports its API surface area in formats optimized for Large Language
 - **Endpoint**: `/api/llms.txt`.
 - **Tooling**: Uses `openapi-to-markdown` to convert contracts into structured prompts.
 - **Context**: Ideal for use with Cursor, Claude, or ChatGPT to provide full API awareness.
+
+---
+
+## 🧩 Agent Skills
+
+This project is built to be "agent-aware," featuring a modular skills system for AI assistants.
+- **Location**: `.agents/skills/`.
+- **Pre-installed**: Includes `qwen-coder-docs` for high-quality code generation and documentation.
+- **Extensible**: Add your own skills by creating a new folder with a `SKILL.md` file to teach agents new workflows or project-specific logic.
 
 ---
 
