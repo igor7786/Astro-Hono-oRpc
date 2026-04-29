@@ -12,9 +12,6 @@ export const testRoute = base.tests.test.handler(async ({ input, context, errors
       httpOnly: true,
       path: '/',
     });
-    console.log('Request called on Client');
-  } else {
-    console.log('Request called on Server');
   }
   // ✅ This now actually works
   if (input.name === 'admin') {

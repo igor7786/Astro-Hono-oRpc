@@ -1,8 +1,13 @@
 ---
+import { openApiBasePath } from '@/lib/helpers/paths';
 import { allRouters } from '@/server/routers/all.routers';
-export const openApiBasePath = '/api/openapi';
-export const llmsTxtPath = allRouters.seo.llmsTxtRoute['~orpc'].route.path as string;
+
+const llmsTxtPath = (allRouters.seo.llmsTxtRoute as any)['~orpc'].route.path as string;
+
 const redirectPath = openApiBasePath + llmsTxtPath;
+
+// convince TS it's used
+void redirectPath;
 
 return Astro.redirect(redirectPath, 302);
 ---

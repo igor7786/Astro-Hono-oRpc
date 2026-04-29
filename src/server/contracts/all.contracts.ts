@@ -7,9 +7,9 @@ export const appContract = {
     slowTest,
   },
   seo: {
-    og, // ✅ fixed
-    llmsHtml, // ✅ fixed
-    llmsTxt, // ✅ fixed
+    og,
+    llmsHtml,
+    llmsTxt,
   },
 };
 

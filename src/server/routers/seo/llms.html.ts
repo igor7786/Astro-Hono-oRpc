@@ -2,10 +2,7 @@ import { base } from '@/server/procedures/base';
 import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
 import { generateLLMsMarkdown } from '@/server/seo/llms';
 
-export const llmsRoute = base.seo.llmsHtml.handler(async ({ context, errors }) => {
-  const req = context.request;
-  console.error('Request Method:', req?.method);
-
+export const llmsRoute = base.seo.llmsHtml.handler(async ({ errors }) => {
   const html = await htmlLlmsHandler().catch((_err) => {
     throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to parse HTML' });
   });

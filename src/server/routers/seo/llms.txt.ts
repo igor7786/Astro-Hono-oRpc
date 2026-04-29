@@ -2,7 +2,7 @@ import { base } from '@/server/procedures/base';
 import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
 import { generateLLMsMarkdown } from '@/server/seo/llms';
 
-export const llmsTxtRoute = base.seo.llmsTxt.handler(async ({ context, errors }) => {
+export const llmsTxtRoute = base.seo.llmsTxt.handler(async ({ errors }) => {
   const openApiDoc = await generateOpenApiSchema().catch((_err) => {
     errors.BAD_REQUEST({ message: 'Failed to generate OpenAPI schema' });
   });
