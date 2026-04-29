@@ -1,11 +1,8 @@
 ---
-import { generateLLMsMarkdown } from '@/server/seo/llms';
-import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
+import { allRouters } from '@/server/routers/all.routers';
+export const openApiBasePath = '/api/openapi';
+export const llmsTxtPath = allRouters.seo.llmsTxtRoute['~orpc'].route.path as string;
+const redirectPath = openApiBasePath + llmsTxtPath;
 
-const openApiDoc = await generateOpenApiSchema();
-const markdown = await generateLLMsMarkdown(openApiDoc);
-
-Astro.response.headers.set('Content-Type', 'text/plain; charset=utf-8');
+return Astro.redirect(redirectPath, 302);
 ---
-
-{markdown}

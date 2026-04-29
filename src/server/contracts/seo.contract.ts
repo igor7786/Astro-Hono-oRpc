@@ -48,3 +48,24 @@ export const llmsHtml = baseOc
       }),
     })
   );
+export const llmsTxt = baseOc
+  .route({
+    method: 'GET',
+    path: `${pathPrefix}/llms.txt`,
+    description: 'LLMs Text',
+    summary: 'Generates LLMs Text',
+    tags: ['SEO'],
+    successDescription: 'LLMs Text generated successfully',
+    successStatus: 200,
+    outputStructure: 'detailed',
+  })
+  .output(
+    z.object({
+      body: z.file(),
+      headers: z.object({
+        'Content-Type': z.string(),
+        'Cache-Control': z.string(),
+        'Content-Disposition': z.string(),
+      }),
+    })
+  );
