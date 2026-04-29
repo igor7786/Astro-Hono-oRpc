@@ -25,7 +25,7 @@ export default defineConfig({
   server: {
     host: 'localhost', // ← Bind the interfaces
     port: 4321, // ← Explicit port
-    allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
+    // allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
     allowedHosts: [
       'fast-web-tech.co.uk',
       'www.fast-web-tech.co.uk',

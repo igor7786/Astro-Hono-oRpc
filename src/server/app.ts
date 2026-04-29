@@ -29,6 +29,20 @@ app.use(
 );
 
 app.use(prettyLogger);
+// Handle HEAD requests globally to ensure they are processed correctly by all handlers
+app.use('*', async (c, next) => {
+  if (c.req.method !== 'HEAD') return next();
+
+  const getRequest = new Request(c.req.url, {
+    method: 'GET',
+    headers: c.req.raw.headers,
+    signal: c.req.raw.signal, // ✅ pass signal for abort support
+  });
+  const getResponse = await app.fetch(getRequest, c.env);
+  return c.body(null, getResponse.status as any, {
+    ...Object.fromEntries(getResponse.headers),
+  });
+});
 
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', async (c, next) => {
@@ -48,30 +62,6 @@ app.use('/*', async (c, next) => {
     signal: c.req.raw.signal,
     env: c.env,
   };
-
-  // ─── HEAD handler — call oRPC directly, strip body ─────────────────────────
-  if (c.req.method === 'HEAD') {
-    const getRequest = new Request(c.req.url, {
-      method: 'GET',
-      headers: c.req.raw.headers,
-    });
-
-    const apiRes = await openApiHandler.handle(getRequest, {
-      prefix: openApiBasePath,
-      context: {
-        ...context,
-        request: getRequest,
-        signal: getRequest.signal,
-      },
-    });
-
-    if (apiRes.matched) {
-      return c.body(null, apiRes.response.status as any, {
-        ...Object.fromEntries(apiRes.response.headers),
-      });
-    }
-  }
-
   // ─── OpenAPI handler ───────────────────────────────────────────────────────
   const apiRes = await openApiHandler.handle(c.req.raw, {
     prefix: openApiBasePath,
