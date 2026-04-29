@@ -264,9 +264,9 @@ All API routes prefixed with `/api/`.
 
 ### oRPC Procedures
 
-#### GET `/api/rpc/test`
+#### GET `/api/rpc/tests/test`
 
-Test procedure for oRPC configuration.
+Test procedure for oRPC configuration. Note: routes have explicit path prefixes (`/tests`, `/seo`) for contract organization.
 
 **Input:**
 ```typescript
@@ -284,7 +284,7 @@ Test procedure for oRPC configuration.
 | 403 | `FORBIDDEN` | If name is "admin" |
 | 422 | `INPUT_VALIDATION_FAILED` | Invalid input |
 
-#### POST `/api/rpc/testSlow`
+#### POST `/api/rpc/tests/slow-test`
 
 Simulates slow operation (3s delay) to test cancellation.
 
@@ -297,7 +297,7 @@ Simulates slow operation (3s delay) to test cancellation.
 ```typescript
 import { client } from '@/lib/server/web.client';
 
-const result = await client.testSlow({ name: 'World' });
+const result = await client.tests.slowTest({ name: 'World' });
 // Returns after ~3 seconds
 ```
 
@@ -460,7 +460,7 @@ query.ts      →  Server QueryClient (SSR only)
 ```typescript
 ---
 import { serverClient } from '@server/server.client';
-const data = await serverClient.test({ name: 'SSR' });
+const data = await serverClient.tests.test({ name: 'SSR' });
 ---
 ```
 
@@ -470,9 +470,9 @@ import { useQuery } from '@tanstack/react-query';
 import { clientOrpc as orpc } from '@server/web.client';
 
 const { data } = useQuery(
-  orpc.test.queryOptions({
+  orpc.tests.test.queryOptions({
     input: { name: 'test' },
-    queryKey: ['test', { name }],
+    queryKey: ['tests', 'test', { name }],
     initialData: serverData, // SSR hydration
   }),
   client
@@ -482,13 +482,13 @@ const { data } = useQuery(
 **Request Cancellation:**
 ```tsx
 // Cancel running queries
-client.cancelQueries({ queryKey: ['slow-test'] });
+client.cancelQueries({ queryKey: ['tests', 'slow-test'] });
 
 // Prefetch on hover
 client.prefetchQuery(
-  orpc.testSlow.queryOptions({
+  orpc.tests.slowTest.queryOptions({
     input: { name: 'test' },
-    queryKey: ['slow-test'],
+    queryKey: ['tests', 'slow-test'],
   })
 );
 ```
@@ -590,6 +590,8 @@ contracts/
 ```
 
 ### Example
+
+Contracts use explicit path prefixes for organization (e.g., `/tests`, `/seo`). This helps namespace related endpoints.
 
 ```typescript
 // Define contract
