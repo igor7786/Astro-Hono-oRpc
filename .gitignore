@@ -717,6 +717,8 @@ QWEN.md
 ### GEMINI ###
 .gemini
 GEMINI.md
+skills-lock.json
+.agents
 ### GIT.txt ###
 GIT.txt
 
