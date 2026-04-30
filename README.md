@@ -138,7 +138,7 @@ Production builds output to `./dist/` and run as a Node.js standalone server.
 │   │   │   └── seo/                # SEO procedures
 │   │   ├── schemas/          # Zod validation schemas
 │   │   │   ├── test.schema.ts      # Test input schemas
-│   │   │   └── oenapi.schema.generator.ts
+│   │   │   └── openapi.schema.generator.ts
 │   │   └── seo/              # SEO, OG images, LLM documentation
 │   │       ├── og/           # OG image generation components
 │   │       ├── html.handler.ts     # LLM HTML documentation

@@ -1,13 +1,13 @@
 import { generateLLMsMarkdown } from '@/lib/helpers/llms';
 import { base } from '@/server/procedures/base';
-import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
+import { generateOpenApiSchema } from '@/server/schemas/openapi.schema.generator';
 
 export const llmsTxtRoute = base.seo.llmsTxt.handler(async ({ errors }) => {
   const openApiDoc = await generateOpenApiSchema().catch((_err) => {
-    errors.BAD_REQUEST({ message: 'Failed to generate OpenAPI schema' });
+    throw errors.BAD_REQUEST({ message: 'Failed to generate OpenAPI schema' });
   });
   const markdown = await generateLLMsMarkdown(openApiDoc).catch((_err) => {
-    errors.BAD_REQUEST({ message: 'Failed to generate LLMs Markdown' });
+    throw errors.BAD_REQUEST({ message: 'Failed to generate LLMs Markdown' });
   });
 
   return {
