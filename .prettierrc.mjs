@@ -5,9 +5,11 @@ export default {
     'prettier-plugin-classnames',
     'prettier-plugin-merge',
     'prettier-plugin-tailwindcss',
+    '@trivago/prettier-plugin-sort-imports',
   ],
-  printWidth: 105, // Use this to limit line length globally, including classes
-  proseWrap: 'always',
+
+  printWidth: 105,
+  proseWrap: 'preserve',
   tabWidth: 2,
   useTabs: false,
   semi: true,
@@ -15,11 +17,48 @@ export default {
   trailingComma: 'es5',
   bracketSpacing: true,
   arrowParens: 'always',
-  // tailwindConfig: './tailwind.config.mjs',
+  jsxSingleQuote: false,
+
+  // ✅ Astro-specific:
+  astroAllowShorthand: true,
+  htmlWhitespaceSensitivity: 'ignore',
+
+  // 👇 better import structure
+  importOrder: [
+    '<BUILTIN_MODULES>',
+
+    // Bun
+    '^bun$',
+    // React ecosystem (UI state + query libs)
+    '^react$',
+    '^react-dom$',
+    // Other UI state libs (TanStack, Jotai, Zustand, etc.)
+    '^@tanstack/(.*)$',
+
+    // UI libraries (ALL component systems)
+    '^@acomp/(.*)$',
+    '^@rcomp/(.*)$',
+
+    // Astro
+    '^astro:(.*)$',
+
+    // App code (everything internal)
+    '^@/(.*)$',
+
+    // Relative imports last
+    '^[./]',
+  ],
+
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
+  importOrderCaseInsensitive: true,
+
   overrides: [
     {
       files: '*.astro',
-      options: { parser: 'astro' },
+      options: {
+        parser: 'astro',
+      },
     },
   ],
 };

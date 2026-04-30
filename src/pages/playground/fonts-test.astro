@@ -1,0 +1,49 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { createSeo } from '@/lib/shared/schemas/seo.schema';
+import IconButtonNotificationDotDemo from '@rcomp/shadcn-studio/button-38';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return [{ params: {} }];
+}
+
+const seo = createSeo({
+  title: 'Font Test',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
+---
+
+<Layout {...seo}>
+  <div slot="main" class="flex flex-col gap-8 p-16">
+    <IconButtonNotificationDotDemo client:load />
+    <!-- Inter — body -->
+    <div>
+      <p class="text-muted-foreground mb-2 text-sm">font-sans (Inter)</p>
+      <p class="font-sans text-2xl">The quick brown fox jumps over the lazy dog</p>
+    </div>
+
+    <!-- Playfair Display — headings -->
+    <div>
+      <p class="text-muted-foreground mb-2 text-sm">font-heading (Playfair Display)</p>
+      <h1 class="font-heading text-5xl font-bold">The quick brown fox jumps over the lazy dog</h1>
+    </div>
+
+    <!-- JetBrains Mono — code -->
+    <div>
+      <p class="text-muted-foreground mb-2 text-sm">font-mono (JetBrains Mono)</p>
+      <code class="font-mono text-2xl">const hello = 'world';</code>
+    </div>
+
+    <!-- weights -->
+    <div class="font-heading flex flex-col gap-2">
+      <p class="text-muted-foreground mb-2 text-sm">Playfair Display weights</p>
+      <p class="text-3xl font-normal">Normal 400</p>
+      <p class="text-3xl font-medium">Medium 500</p>
+      <p class="text-3xl font-semibold">Semibold 600</p>
+      <p class="text-3xl font-bold">Bold 700</p>
+      <p class="text-3xl font-black">Black 900</p>
+    </div>
+  </div>
+</Layout>

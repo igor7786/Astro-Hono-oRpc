@@ -1,24 +1,31 @@
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-// @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
-import node from '@astrojs/node';
+// @ts-check
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
+import bun from '@wyattjoh/astro-bun-adapter';
+import { defineConfig, fontProviders } from 'astro/config';
+
+import fs from 'fs';
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+import { remarkReadingTime } from './src/plugins/remark.reading.time.mjs';
+
+// import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  ssr: { resolve: { externalConditions: ['bun', 'node'] } },
+  ssr: {
+    resolve: { externalConditions: ['bun', 'node'] },
+  },
   site: 'http://localhost:4321/',
   server: {
     host: 'localhost', // ← Bind the interfaces
     port: 4321, // ← Explicit port
-    allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
+    // allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
     allowedHosts: [
       'fast-web-tech.co.uk',
       'www.fast-web-tech.co.uk',
@@ -33,9 +40,7 @@ export default defineConfig({
     enabled: false,
   },
   output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: bun({ isr: true }),
 
   vite: {
     resolve: {
@@ -44,10 +49,12 @@ export default defineConfig({
         '@db': path.resolve(__dirname, './db'),
         '@rcomp': path.resolve(__dirname, './src/components/reactcomp'),
         '@acomp': path.resolve(__dirname, './src/components/astrocomp'),
-        '@server': path.resolve(__dirname, './src/lib/server'),
       },
     },
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      // bunx boneyard-js build http://localhost:4321/notifications
+    ],
   },
 
   fonts: [
@@ -86,11 +93,11 @@ export default defineConfig({
     },
   ],
   markdown: {
+    remarkPlugins: [remarkReadingTime],
     shikiConfig: {
       theme: 'dracula',
     },
   },
-
   integrations: [
     react({ include: ['**/reactcomp/**/*'] }),
     sitemap({

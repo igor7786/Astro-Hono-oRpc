@@ -11,8 +11,7 @@
       "@/*": ["./src/*"],
       "@db/*": ["./db/*"],
       "@rcomp/*": ["./src/components/reactcomp/*"],
-      "@acomp/*": ["./src/components/astrocomp/*"],
-      "@server/*": ["./src/lib/server/*"]
+      "@acomp/*": ["./src/components/astrocomp/*"]
     },
     "strict": true,
     // "composite": true,

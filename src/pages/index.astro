@@ -1,58 +1,83 @@
 ---
+import { createSeo } from '@/lib/shared/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
-import { createSeo } from '@server/schemas/seo.schema';
-import { serverClient } from '@server/server.client';
-import { TestClient } from '@rcomp/TestClient';
-import UserProfile from '@/components/reactcomp/TestTanstackQuery';
-import SlowRequest from '@rcomp/SlowRequest';
-let data: { name: string } = { name: '' };
-try {
-  data = await serverClient.test({ name: 'test' });
-} catch (error: any) {
-  data = { name: error.message };
+import { discoverRoutes } from '@/lib/helpers/paths';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return [{ params: {} }];
 }
-const names = ['curt', 'bob', 'charlie'];
-const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
 
-const profiles = await Promise.all(
-  names.map(async (name, index) => {
-    try {
-      const initialData = await serverClient.test({ name });
-      return {
-        name,
-        initialData,
-        className: `text-3xl font-bold underline ${colors[index]}`,
-      };
-    } catch {
-      return {
-        name,
-        initialData: undefined,
-        className: `text-3xl font-bold underline ${colors[index]}`,
-      };
-    }
-  })
-);
-
-const props = {
-  name: 'tanstack query with oRPC',
-  className: 'text-3xl font-bold text-green-700 underline',
-};
+const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
+  eager: true,
+});
+const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles);
 
 const seo = createSeo({
-  title: 'Home | My App',
+  title: 'Playground | Home',
   description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
 });
 ---
 
 <Layout {...seo}>
-  # oRPC Server
-  <h1 slot="main" class="text-3xl font-bold text-indigo-700 underline">{data.name}</h1>
-  # oRPC Client
-  <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
-  # Tanstack Query with oRPC
-  {profiles.map((props) => <UserProfile {...props} slot="main" client:load />)}
+  <div
+    class="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-16 text-center"
+    slot="main"
+  >
+    <h1 class="text-foreground mx-auto mb-2 text-6xl font-bold">Welcome</h1>
+    <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
 
-  <UserProfile {...props} slot="main" client:only="react" />
-  # Slow Request Test
-  <SlowRequest slot="main" client:only="react" />
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <!-- SSR -->
+      <div>
+        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
+          <span class="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs">SSR</span>
+          Server Pages
+          <span class="text-muted-foreground text-sm font-normal">({ssrRoutes.length})</span>
+        </h2>
+        <ul class="space-y-2">
+          {
+            ssrRoutes.map(({ route, label }) => (
+              <li>
+                <a
+                  href={route}
+                  class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
+                >
+                  <span class="text-muted-foreground font-mono text-xs">{route}</span>
+                  <span class="ml-auto">{label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Static -->
+      <div>
+        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
+          <span class="rounded bg-green-500/10 px-2 py-0.5 text-xs text-green-600 dark:text-green-400">
+            Static
+          </span>
+          Static Pages
+          <span class="text-muted-foreground text-sm font-normal">({staticRoutes.length})</span>
+        </h2>
+        <ul class="space-y-2">
+          {
+            staticRoutes.map(({ route, label }) => (
+              <li>
+                <a
+                  href={route}
+                  class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
+                >
+                  <span class="font-mono text-xs text-green-600 dark:text-green-400">{route}</span>
+                  <span class="ml-auto">{label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
 </Layout>

@@ -1,0 +1,69 @@
+---
+import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
+import { createSeo } from '@/lib/shared/schemas/seo.schema';
+import Layout from '@/layouts/Layout.astro';
+import { serverClient } from '@/server/clients/server.client';
+const inputData = {
+  name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
+};
+import cardImage from '@/assets/card.webp';
+import { getImage } from 'astro:assets';
+const optimizedImage = await getImage({ src: cardImage, format: 'avif' });
+let data: { name: string } | null = null;
+
+try {
+  data = await Promise.race([
+    serverClient.tests.slowTest(inputData),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 300)),
+  ]);
+} catch (e) {
+  // server fetch failed → fall back to client-side fetch
+  if (e instanceof Error) {
+    console.error('prefetch failed:', e.message);
+  } else {
+    console.error('prefetch failed:', e);
+  }
+}
+const name = data?.name ?? null;
+const seo = createSeo({
+  title: 'Skeleton Test',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
+---
+
+<Layout {...seo}>
+  <div class="flex min-h-screen flex-col items-center justify-center gap-4" slot="main">
+    <CardTopImageDemo
+      client:load
+      initialData={name}
+      input={inputData.name + '(client:load)'}
+      imageSrc={optimizedImage.src}
+      slot="main"
+    />
+    <CardTopImageDemo
+      client:only="react"
+      initialData={name}
+      input={inputData.name + '(client:only="react")'}
+      imageSrc={optimizedImage.src}
+      slot="main"
+    />
+    <CardTopImageDemo
+      client:idle={{ timeout: 2000 }}
+      initialData={name}
+      input={inputData.name + '(client:idle:max-delay-2s)'}
+      imageSrc={optimizedImage.src}
+      slot="main"
+    />
+    <div class="h-[150vh]" slot="main">Offset 150vh starts</div>
+
+    <CardTopImageDemo
+      client:visible={{ rootMargin: '75px' }}
+      initialData={name}
+      input={inputData.name + '(client:visible:offset-75px)'}
+      imageSrc={optimizedImage.src}
+      slot="main"
+    />
+    <div class="mb-32" slot="main">Offset 150vh ends</div>
+  </div>
+</Layout>

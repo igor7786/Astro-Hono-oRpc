@@ -1,0 +1,59 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { createSeo } from '@/lib/shared/schemas/seo.schema';
+import { serverClient } from '@/server/clients/server.client';
+import { TestClient } from '@rcomp/playground/TestClient';
+import UserProfile from '@rcomp/playground/TestTanstackQuery';
+import SlowRequest from '@rcomp/playground/SlowRequest';
+let data: { name: string } = { name: '' };
+try {
+  data = await serverClient.tests.test({ name: 'test' });
+} catch (error: any) {
+  data = { name: error.message };
+}
+const names = ['curt', 'bob', 'charlie'];
+const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
+
+const profiles = await Promise.all(
+  names.map(async (name, index) => {
+    try {
+      const initialData = await serverClient.tests.test({ name });
+      return {
+        name,
+        initialData,
+        className: `text-3xl font-bold underline ${colors[index]}`,
+      };
+    } catch {
+      return {
+        name,
+        initialData: undefined,
+        className: `text-3xl font-bold underline ${colors[index]}`,
+      };
+    }
+  })
+);
+
+const props = {
+  name: 'tanstack query with oRPC',
+  className: 'text-3xl font-bold text-green-700 underline',
+};
+
+const seo = createSeo({
+  title: 'Playground',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+});
+---
+
+<Layout {...seo}>
+  # oRPC Server
+  <h1 slot="main" class="text-3xl font-bold text-indigo-700 underline">{data.name}</h1>
+  # oRPC Client
+  <TestClient slot="main" className="text-3xl font-bold text-sky-700 underline" client:load />
+  # Tanstack Query with oRPC
+  {profiles.map((props) => <UserProfile {...props} slot="main" client:load />)}
+
+  <UserProfile {...props} slot="main" client:only="react" />
+  # Slow Request Test
+  <SlowRequest slot="main" client:only="react" />
+</Layout>

@@ -1,0 +1,21 @@
+import { createRouterClient, onError, ORPCError } from '@orpc/server';
+import type { RouterClient } from '@orpc/server';
+import { createTanstackQueryUtils } from '@orpc/tanstack-query';
+
+import type { AppRouter } from '@/server/routers/all.routers';
+import { allRouters } from '@/server/routers/all.routers';
+
+export const serverClient: RouterClient<AppRouter> = createRouterClient(allRouters, {
+  interceptors: [
+    onError((error) => {
+      if (!(error instanceof ORPCError)) {
+        console.error('[oRPC Server] Unexpected error', error);
+        return;
+      }
+      console.error(`[oRPC Server] ${error.code} - ${error.message}`);
+      return;
+    }),
+  ],
+});
+
+export const serverOrpc = createTanstackQueryUtils(serverClient);

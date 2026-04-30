@@ -1,0 +1,37 @@
+import { setCookie } from '@orpc/server/helpers';
+
+import { base } from '@/server/procedures/base';
+
+export const testRoute = base.tests.test.handler(async ({ input, context, errors }) => {
+  if (context.request) {
+    context.resHeaders?.set('x-custom-header', 'Hello from oRPC!');
+    setCookie(context.resHeaders, 'test', 'abc123', {
+      secure: true,
+      maxAge: 3600,
+      sameSite: 'lax',
+      httpOnly: true,
+      path: '/',
+    });
+  }
+  // ✅ This now actually works
+  if (input.name === 'admin') {
+    throw errors.FORBIDDEN(); // uses default message
+  }
+  return { name: `Hello, ${input.name}!` };
+});
+
+export const slowTestRoute = base.tests.slowTest.handler(async ({ input, context, errors }) => {
+  const signal = context.signal; // ← fallback
+  // Not working as expected in Bun
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => resolve(), 6_000);
+
+    signal?.addEventListener('abort', () => {
+      console.log('🛑 abort fired!');
+      clearTimeout(timeout);
+      reject(errors.CLIENT_CLOSED_REQUEST());
+    });
+  });
+
+  return { name: `Hello, ${input.name}!` };
+});

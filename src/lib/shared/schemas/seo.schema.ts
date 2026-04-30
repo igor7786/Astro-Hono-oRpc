@@ -1,0 +1,53 @@
+import { z } from 'zod';
+
+import { envClient } from '@/lib/env/client.env';
+
+export const seoSchema = z.object({
+  title: z.string().default('Fast Web Tech'),
+  description: z.string().default('My awesome app'),
+  author: z.string().optional(),
+  date: z.string().default(() => new Date().toISOString()),
+  type: z.enum(['website', 'article']).default('website'),
+  siteName: z.string().default('Fast Web Tech'),
+  siteUrl: z.string().default(envClient.PUBLIC_URL),
+  url: z.string().optional(),
+});
+
+export type SEO = z.infer<typeof seoSchema>;
+
+export const baseSeo = {
+  siteName: 'Fast Web Tech',
+  siteUrl: envClient.PUBLIC_URL,
+  author: 'Igor',
+  type: 'website' as const,
+};
+
+export function createSeo(input: Partial<SEO>): SEO {
+  return seoSchema.parse({
+    ...baseSeo,
+    ...input,
+  });
+}
+
+export function formatDate(date?: string) {
+  if (!date) return undefined;
+
+  return new Date(date).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+export const seoQuerySchema = z
+  .object({
+    title: z.string().nonempty('Title must not be empty').default('Fast Web Tech'),
+    description: z.string().nonempty('Description must not be empty').default('My awesome app'),
+    author: z.string().nonempty('Author must not be empty').default('Alberto'),
+    date: z
+      .string()
+      .nonempty()
+      .default(new Date(2026, 3, 15).toISOString())
+      .transform((val) => (val ? formatDate(val) : undefined)),
+  })
+  .strict();

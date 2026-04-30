@@ -1,0 +1,44 @@
+---
+import { formatDate } from '@/lib/shared/schemas/seo.schema';
+import type { CollectionEntry } from 'astro:content';
+
+type Props = {
+  post: CollectionEntry<'blog'>;
+  readingTime: string;
+};
+const { post, readingTime } = Astro.props as Props;
+const { id } = post;
+const { title, description, author, date, tags } = post.data;
+
+const formattedDate = formatDate(date?.toISOString());
+---
+
+<a href={`/playground/blog/${id}`} class="group">
+  <article class="border-border flex flex-col gap-3 border-b pb-10">
+    {
+      tags && (
+        <div class="flex gap-2">
+          {tags.map((tag) => (
+            <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+          ))}
+        </div>
+      )
+    }
+
+    <h2 class="font-heading group-hover:text-primary text-3xl font-bold transition-colors">
+      {title}
+    </h2>
+
+    {description && <p class="text-muted-foreground text-lg">{description}</p>}
+
+    <div class="text-muted-foreground flex items-center gap-3 text-sm">
+      {author && <span>👤 {author}</span>}
+      {author && date && <span>• 📅</span>}
+      {formattedDate && <span>{formattedDate}</span>}
+      {readingTime && <span>•</span>}
+      {readingTime && <span>⚡ {readingTime}</span>}
+    </div>
+
+    <span class="text-primary text-sm font-medium group-hover:underline">Read more →</span>
+  </article>
+</a>

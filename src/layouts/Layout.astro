@@ -1,45 +1,31 @@
 ---
-import SEO from '@acomp/SEO.astro';
 import DevTools from '@/lib/tanstack-query/QueryDevTools';
-import themeScript from '@/scripts/theme-checker.js?raw';
 import '@/styles/global.css';
-import { Font } from 'astro:assets';
 import { Toaster } from '@rcomp/ui/sonner';
+import HEAD from '@/components/astrocomp/layout/HEAD.astro';
+import type { SEO } from '@/lib/shared/schemas/seo.schema';
 
-interface Props {
-  title?: string;
-  description?: string;
-  author?: string;
-  date?: string;
-  type?: string;
-  siteName?: string;
-  siteUrl?: string;
-  url?: string;
-}
+const props = Astro.props as Partial<SEO>;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <SEO {...Astro.props} />
+  <!-- METADATA, CSS, JS, etc -->
+  <HEAD {...props} />
 
-    <!-- ✅ font preloads -->
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-heading" preload />
-    <Font cssVariable="--font-mono" preload />
-    <script set:html={themeScript} />
-  </head>
+  <!-- BODY, CONTENT, FOOTER -->
   <body>
     <div class="bg-background min-h-screen">
+      <!-- Content -->
       <slot name="header" />
       <slot name="main" />
       <slot name="footer" />
+
+      <!-- Toaster for sonner -->
       <Toaster client:load position="top-right" />
     </div>
+
+    <!-- Tanstack Query DevTools -->
     <DevTools client:only="react" />
   </body>
 </html>

@@ -1,10 +1,9 @@
-// src/lib/tanstack-query/mainQuery.ts
-// src/lib/tanstack-query/mainQuery.ts
+import { del, get, set } from 'idb-keyval';
+import superjson from 'superjson';
+
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { get, set, del } from 'idb-keyval';
-import superjson from 'superjson';
 
 let queryClient: QueryClient | null = null;
 

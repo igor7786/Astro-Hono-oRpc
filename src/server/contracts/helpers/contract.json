@@ -1,0 +1,84 @@
+{
+  "tests": {
+    "test": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/tests/test",
+          "description": "Test route",
+          "summary": "Test route summary",
+          "tags": ["Tests"],
+          "successDescription": "Test route successful",
+          "successStatus": 200
+        }
+      }
+    },
+    "slowTest": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "POST",
+          "path": "/tests/slow-test",
+          "description": "Slow test route",
+          "summary": "Slow test route summary",
+          "tags": ["Tests"],
+          "successDescription": "Slow test route successful",
+          "successStatus": 200
+        }
+      }
+    }
+  },
+  "seo": {
+    "ogRoute": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/seo/og",
+          "description": "Og image",
+          "summary": "Generates og images",
+          "tags": ["SEO"],
+          "successDescription": "Og image generated successfully",
+          "successStatus": 200,
+          "outputStructure": "detailed"
+        }
+      }
+    },
+    "llmsRoute": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/seo/llms.html",
+          "description": "LLMs Html",
+          "summary": "Generates LLMs Html",
+          "tags": ["SEO"],
+          "successDescription": "LLMs Html generated successfully",
+          "successStatus": 200,
+          "outputStructure": "detailed"
+        }
+      }
+    },
+    "llmsTxtRoute": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET",
+          "path": "/seo/llms.txt",
+          "description": "LLMs Text",
+          "summary": "Generates LLMs Text",
+          "tags": ["SEO"],
+          "successDescription": "LLMs Text generated successfully",
+          "successStatus": 200,
+          "outputStructure": "detailed"
+        }
+      }
+    }
+  }
+}

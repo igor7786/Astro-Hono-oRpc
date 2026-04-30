@@ -1,0 +1,37 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { openApiBasePath, ogPath } from '@/lib/helpers/paths';
+const cases = [
+  { title: 'Hello World', description: 'Test description', author: 'Igor', date: 'Apr 10, 2026' },
+  { title: 'No Description Yet', author: 'Igor' },
+  { title: 'With Author Only', author: 'Hassan', date: 'Apr 12, 2026' },
+];
+
+const seo = {
+  title: 'Test OG Image Builder',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 3, 15).toISOString(),
+};
+---
+
+<Layout {...seo}>
+  <div slot="main" class="mx-auto flex min-h-screen flex-col items-center justify-center gap-4">
+    {
+      cases.map(({ title, description, author, date }) => {
+        const params = new URLSearchParams();
+
+        if (title) params.set('title', title);
+        if (description) params.set('description', description);
+        if (author) params.set('author', author);
+        if (date) params.set('date', date);
+
+        return (
+          <img
+            src={`${openApiBasePath}${ogPath}?${params.toString()}`}
+            style="width: 600px; border-radius: 8px;"
+          />
+        );
+      })
+    }
+  </div>
+</Layout>

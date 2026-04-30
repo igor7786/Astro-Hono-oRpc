@@ -1,8 +1,21 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+/* src/styles/global.css */
+
+/* Fonts */
 @import '@fontsource-variable/inter';
 
+/* Tailwind */
+@import 'tailwindcss';
+
+/* Plugins */
+@plugin '@tailwindcss/typography';
+
+/* Animations */
+@import 'tw-animate-css';
+
+/* Custom (shadcn tokens, overrides) */
+@import 'shadcn/tailwind.css';
+
+/* Theme (dark) */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

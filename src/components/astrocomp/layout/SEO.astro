@@ -1,0 +1,87 @@
+---
+import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
+import z from 'zod';
+import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
+// ✅ Safe parse (no crash in production)
+const result = seoSchema.safeParse({
+  ...baseSeo,
+  ...Astro.props,
+  url: Astro.props.url ?? Astro.url.href,
+});
+
+if (!result.success) {
+  console.error('[SEO] Invalid props:', z.treeifyError(result.error));
+}
+
+// ✅ fallback to safe defaults
+const seo = result.success ? result.data : seoSchema.parse(baseSeo);
+
+const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
+
+// 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
+
+const fullPath = openApiBasePath + ogPath;
+const ogUrl = new URL(fullPath, Astro.site);
+
+ogUrl.searchParams.set('title', title);
+ogUrl.searchParams.set('description', description);
+
+if (author) ogUrl.searchParams.set('author', author);
+if (date) ogUrl.searchParams.set('date', date);
+const ogImageUrl = ogUrl.toString();
+---
+
+<!-- BASIC SEO -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0f172a" />
+<link rel="canonical" href={url} />
+
+<!-- OPEN GRAPH -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<Fragment set:html={`<meta property="og:image" content="${ogImageUrl}" />`} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- TWITTER -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@yourhandle" />
+<meta name="twitter:creator" content="@yourhandle" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<Fragment set:html={`<meta name="twitter:image" content="${ogImageUrl}" />`} />
+<!-- SITEMAP -->
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- JSON-LD STRUCTURED DATA -->
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': type === 'article' ? 'Article' : 'WebSite',
+    '@id': url ?? siteUrl,
+    name: title,
+    url: url ?? siteUrl,
+    description,
+    ...(author && {
+      author: {
+        '@type': 'Person',
+        name: author,
+      },
+    }),
+    ...(date && {
+      datePublished: date,
+    }),
+  })}
+/>

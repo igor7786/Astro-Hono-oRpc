@@ -33,6 +33,9 @@ pkg/
 */pnpm-debug.log*
 src/assets/*
 /public/fonts
+/public/images
+/public/videos
+/public/llms.css
 ### CompressedArchive ###
 
 ### Mostly from https://en.wikipedia.org/wiki/List_of_archive_formats
@@ -714,6 +717,8 @@ QWEN.md
 ### GEMINI ###
 .gemini
 GEMINI.md
+skills-lock.json
+.agents
 ### GIT.txt ###
 GIT.txt
 

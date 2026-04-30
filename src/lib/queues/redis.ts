@@ -1,5 +1,6 @@
 // src/lib/server/redis.ts
 import Redis from 'ioredis';
+
 import { envServer } from '@/lib/env/server.env';
 
 export const redis = new Redis(envServer.UPSTASH_REDIS_URL, {
