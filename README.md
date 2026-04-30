@@ -19,11 +19,33 @@ bun install
 cp .example.env .env
 # Edit .env with your values
 
-# Generate oRPC contracts
+# Generate oRPC contract JSON
 bun run generate:contract
 
 # Start development server
-bun dev
+bun run bun:dev
+```
+
+### Other useful commands
+
+```bash
+# Type check
+bun run ts:check
+
+# Format code
+bun run format
+
+# Build for production
+bun run bun:build
+
+# Preview production build
+bun run bun:preview
+
+# Find unused exports/imports
+bun run knip
+
+# Test OG image generation
+bun run og:test
 ```
 
 The dev server runs at `http://localhost:4321`.
