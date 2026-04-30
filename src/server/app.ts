@@ -7,9 +7,6 @@ import { prettyLogger } from '@/lib/helpers/logger';
 import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
-import { llmsHtml } from '@/server/seo/html.handler';
-import { og } from '@/server/seo/og.handler';
-import { llmsTxt } from '@/server/seo/txt.handler';
 
 type Env = { Bindings: EnvServer };
 
@@ -84,11 +81,6 @@ app.get(
     ],
   })
 );
-
-// ─── SEO / LLM routes ────────────────────────────────────────────────────────
-app.route('/', llmsTxt);
-app.route('/', llmsHtml);
-app.route('/', og);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));

@@ -1,6 +1,6 @@
+import { generateLLMsMarkdown } from '@/lib/helpers/llms';
 import { base } from '@/server/procedures/base';
 import { generateOpenApiSchema } from '@/server/schemas/oenapi.schema.generator';
-import { generateLLMsMarkdown } from '@/server/seo/llms';
 
 export const llmsTxtRoute = base.seo.llmsTxt.handler(async ({ errors }) => {
   const openApiDoc = await generateOpenApiSchema().catch((_err) => {
