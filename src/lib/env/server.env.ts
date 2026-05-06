@@ -8,6 +8,7 @@ const EnvSchema = z.object({
   UPSTASH_REDIS_URL: z
     .string()
     .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
+  VPS_REDIS_URL: z.string().min(1, 'ENV: VPS_REDIS_URL is required and must be a non-empty string'),
   // BetterAuth
   BETTER_AUTH_SECRET: z
     .string()
