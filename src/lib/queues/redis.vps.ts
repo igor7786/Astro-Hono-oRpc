@@ -13,7 +13,7 @@ export const redisVps = new Redis(envServer.VPS_REDIS_URL, {
   lazyConnect: true, // ✅ don't connect until first command
 });
 redisVps.on('connect', () => console.log('✅ Connected to DragonflyDB!'));
-redisVps.on('error', (err) => console.error('❌ Redis error:', err));
+redisVps.on('error', (err) => console.error('❌ Redis error:', err.message));
 
 const ping = await redisVps.ping();
 console.log('PING:', ping);
@@ -27,7 +27,7 @@ console.log('GET og:test:', value);
 try {
   await redisVps.get('unauthorized:key');
 } catch (err: any) {
-  console.error('GET unauthorized:', err?.message || err);
+  console.error('GET unauthorized:', err?.message);
 }
 
 process.exit(0);
