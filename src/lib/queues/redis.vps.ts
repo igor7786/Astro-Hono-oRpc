@@ -4,7 +4,13 @@ import { envServer } from '@/lib/env/server.env';
 
 export const redisVps = new Redis(envServer.VPS_REDIS_URL, {
   enableReadyCheck: false,
-  tls: { servername: envServer.VPS_TLS_SERVER }, // ✅ required for rediss:// Upstash TLS
+  tls: {
+    servername: envServer.VPS_TLS_SERVER,
+    ca: await Bun.file(envServer.VPS_CA_CERT).text(),
+    cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
+    key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
+    rejectUnauthorized: true,
+  }, // ✅ required for rediss:// Upstash TLS
   maxRetriesPerRequest: 3,
   retryStrategy: (times) => {
     if (times > 3) return null;

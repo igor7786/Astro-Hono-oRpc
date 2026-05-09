@@ -10,6 +10,9 @@ const EnvSchema = z.object({
     .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
   VPS_REDIS_URL: z.string().min(1, 'ENV: VPS_REDIS_URL is required and must be a non-empty string'),
   VPS_TLS_SERVER: z.string().min(1, 'ENV: VPS_TLS_SERVER is required and must be a non-empty string'),
+  VPS_CA_CERT: z.string().min(1, 'ENV: VPS_CA_CERT is required and must be a non-empty string'),
+  VPS_CLIENT_CERT: z.string().min(1, 'ENV: VPS_CLIENT_CERT is required and must be a non-empty string'),
+  VPS_CLIENT_KEY: z.string().min(1, 'ENV: VPS_CLIENT_KEY is required and must be a non-empty string'),
   // BetterAuth
   BETTER_AUTH_SECRET: z
     .string()
