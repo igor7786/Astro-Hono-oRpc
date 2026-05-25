@@ -18,11 +18,11 @@ if (!result.success) {
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
 const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
-
+const canonicalURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 
 const fullPath = openApiBasePath + ogPath;
-const ogUrl = new URL(fullPath, Astro.site);
+const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 
 ogUrl.searchParams.set('title', title);
 ogUrl.searchParams.set('description', description);
@@ -41,7 +41,7 @@ const ogImageUrl = ogUrl.toString();
 <meta name="description" content={description} />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#0f172a" />
-<link rel="canonical" href={url} />
+<link rel="canonical" href={canonicalURL} />
 
 <!-- OPEN GRAPH -->
 <meta property="og:type" content={type} />
