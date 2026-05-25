@@ -2,11 +2,12 @@
 import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
 import z from 'zod';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
+import { envServer } from '@/lib/env/server.env';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
   ...Astro.props,
-  url: Astro.props.url ?? Astro.url.href,
+  url: envServer.PUBLIC_URL,
 });
 
 if (!result.success) {
