@@ -15,6 +15,7 @@
     "bun:preview": "HOST=0.0.0.0 PORT=4322 bun run --bun ./dist/server/entry.mjs",
     "ts:check": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
     "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
+    "redis:vps:connect": "bun run ./src/lib/queues/redis.vps.ts",
     "og:test": "bun run src/lib/server/seo/og/test-simple-og.ts",
     "knip": "knip --no-exit-code",
     "knip:fix": "knip --fix --no-exit-code",

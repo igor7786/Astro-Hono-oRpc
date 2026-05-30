@@ -36,4 +36,5 @@ try {
   console.error('GET unauthorized:', err?.message);
 }
 
-process.exit(0);
+redisVps.on('connect', () => console.log('✅ Connected to DragonflyDB!'));
+redisVps.on('error', (err) => console.error('❌ Redis error:', err.message));

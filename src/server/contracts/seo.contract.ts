@@ -23,6 +23,7 @@ export const og = baseOc
         'Content-Type': z.string(),
         'Cache-Control': z.string(),
         'Content-Disposition': z.string(),
+        'X-Cache': z.string(),
       }),
     })
   );

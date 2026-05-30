@@ -18,9 +18,9 @@ if (!result.success) {
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
 const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
+// 🚀 SAFE CANONICAL URL BUILDER
 const canonicalURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
-
 const fullPath = openApiBasePath + ogPath;
 const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 
