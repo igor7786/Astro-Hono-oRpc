@@ -1,6 +1,5 @@
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
-import { buildCacheKey, getCachedOgImage, setCachedOgImage } from '@/server/seo/og/cache.redis';
 import { generateOgImage } from '@/server/seo/og/Generate';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
@@ -9,10 +8,13 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   const format =
     accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png';
 
-  const cacheKey = buildCacheKey({ title, description, author, date, format });
+  // ✅ dynamic import — never runs at build time, only at request time
+  const { getCachedOgImage, setCachedOgImage, buildCacheKey } =
+    await import('@/server/seo/og/cache.redis');
 
-  // ✅ Cache hit
-  const cached = await getCachedOgImage(cacheKey).catch(() => null); // don't let Redis failure kill the request
+  const cacheKey = buildCacheKey({ title, description, author, date, format });
+  const cached = await getCachedOgImage(cacheKey).catch(() => null);
+
   if (cached) {
     const contentType = format === 'webp' ? 'image/webp' : 'image/png';
     return {
@@ -23,12 +25,11 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
         'Cache-Control': 'public, max-age=31536000, immutable',
         'Content-Disposition': `inline; filename="og-image.${format}"`,
         'Content-Length': cached.byteLength.toString(),
-        'X-Cache': 'HIT', // useful for debugging
+        'X-Cache': 'HIT',
       },
     };
   }
 
-  // ✅ Cache miss — generate
   const image = await generateOgImage(
     { title: title ?? 'Fast Web Tech', description, author, date },
     format
@@ -36,7 +37,6 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
   });
 
-  // fire-and-forget — don't await, don't block the response
   setCachedOgImage(cacheKey, image as Uint8Array<ArrayBuffer>).catch((err) =>
     console.error('Failed to cache OG image:', err.message)
   );
