@@ -18,14 +18,15 @@ if (!result.success) {
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
 const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
-// 🚀 SAFE CANONICAL URL BUILDER
-const canonicalURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
+// 🚀 SAFE Page URL BUILDER
+const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 const fullPath = openApiBasePath + ogPath;
 const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 
 ogUrl.searchParams.set('title', title);
 ogUrl.searchParams.set('description', description);
+ogUrl.searchParams.set('format', 'png');
 
 if (author) ogUrl.searchParams.set('author', author);
 if (date) ogUrl.searchParams.set('date', date);
@@ -41,23 +42,25 @@ const ogImageUrl = ogUrl.toString();
 <meta name="description" content={description} />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#0f172a" />
-<link rel="canonical" href={canonicalURL} />
+<link rel="canonical" href={pageURL} />
 
 <!-- OPEN GRAPH -->
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={url} />
+<meta property="og:url" content={pageURL} />
 <Fragment set:html={`<meta property="og:image" content="${ogImageUrl}" />`} />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+{type === 'article' && <meta property="article:published_time" content={date} />}
+{type === 'article' && <meta property="article:author" content={author} />}
 
 <!-- TWITTER -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@yourhandle" />
-<meta name="twitter:creator" content="@yourhandle" />
+<meta name="twitter:site" content="@IGrimuta" />
+<meta name="twitter:creator" content="@IGrimuta" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <Fragment set:html={`<meta name="twitter:image" content="${ogImageUrl}" />`} />
@@ -71,9 +74,9 @@ const ogImageUrl = ogUrl.toString();
   set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': type === 'article' ? 'Article' : 'WebSite',
-    '@id': url ?? siteUrl,
+    '@id': pageURL,
     name: title,
-    url: url ?? siteUrl,
+    url: pageURL,
     description,
     ...(author && {
       author: {

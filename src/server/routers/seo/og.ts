@@ -6,7 +6,8 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   const { title, description, author, date } = input;
   const accept = context.request?.headers.get('accept') ?? '';
   const format =
-    accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png';
+    input.format ?? // 👈 explicit param wins
+    (accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png');
 
   // ✅ dynamic import — never runs at build time, only at request time
   const { getCachedOgImage, setCachedOgImage, buildCacheKey } =

@@ -44,6 +44,7 @@ export const seoQuerySchema = z
     title: z.string().nonempty('Title must not be empty').default('Fast Web Tech'),
     description: z.string().nonempty('Description must not be empty').default('My awesome app'),
     author: z.string().nonempty('Author must not be empty').default('Alberto'),
+    format: z.enum(['webp', 'png']).optional(),
     date: z
       .string()
       .nonempty()
