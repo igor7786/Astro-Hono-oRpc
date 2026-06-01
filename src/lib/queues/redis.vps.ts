@@ -49,7 +49,7 @@ try {
 
   await redisVps.get('unauthorized:key');
 } catch (err: any) {
-  console.error('GET unauthorized:', err?.message);
+  console.error('❌ Redis error ❌:', err?.message);
 }
 
 redisVps.on('connect', () => console.log('✅ Connected to DragonflyDB!'));
