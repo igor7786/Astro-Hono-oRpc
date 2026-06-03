@@ -21,7 +21,7 @@ export default defineConfig({
   ssr: {
     resolve: { externalConditions: ['bun', 'node'] },
   },
-  site: 'http://localhost:4321/',
+  site: 'https://fast-web-tech.co.uk/',
   server: {
     host: 'localhost', // ← Bind the interfaces
     port: 4321, // ← Explicit port
