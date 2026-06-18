@@ -33,7 +33,7 @@ export default defineConfig({
       'localhost',
     ], // ✅ dev only
   },
-  trailingSlash: 'ignore',
+  trailingSlash: 'never',
   compressHTML: false,
 
   devToolbar: {
