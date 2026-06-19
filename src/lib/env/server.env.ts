@@ -47,6 +47,14 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test', 'preview']).default('development'),
   // AI
   QWEN_API_KEY: z.string().min(1, 'ENV: QWEN_API_KEY is required and must be a non-empty string'),
+  // RustFS
+  RUSTFS_ACCESS_KEY: z
+    .string()
+    .min(1, 'ENV: RUSTFS_ACCESS_KEY is required and must be a non-empty string'),
+  RUSTFS_SECRET_KEY: z
+    .string()
+    .min(1, 'ENV: RUSTFS_SECRET_KEY is required and must be a non-empty string'),
+  RUSTFS_ENDPOINT: z.string().min(1, 'ENV: RUSTFS_ENDPOINT is required and must be a non-empty string'),
 });
 
 // Type inferred from schema
