@@ -55,6 +55,15 @@ const EnvSchema = z.object({
     .string()
     .min(1, 'ENV: RUSTFS_SECRET_KEY is required and must be a non-empty string'),
   RUSTFS_ENDPOINT: z.string().min(1, 'ENV: RUSTFS_ENDPOINT is required and must be a non-empty string'),
+  // Red-panda,Kafka
+  VPS_KAFKA_BROKERS_DEV: z
+    .string()
+    .min(1, 'ENV: VPS_KAFKA_BROKERS_DEV is required and must be a non-empty string'),
+  VPS_KAFKA_BROKERS_PROD: z
+    .string()
+    .min(1, 'ENV: VPS_KAFKA_BROKERS_PROD is required and must be a non-empty string'),
+  KAFKA_USERNAME: z.string().min(1, 'ENV: KAFKA_USERNAME is required and must be a non-empty string'),
+  KAFKA_PASSWORD: z.string().min(1, 'ENV: KAFKA_PASSWORD is required and must be a non-empty string'),
 });
 
 // Type inferred from schema

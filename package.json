@@ -47,6 +47,7 @@
     "@orpc/server": "^1.13.9",
     "@orpc/tanstack-query": "^1.13.9",
     "@orpc/zod": "^1.13.8",
+    "@platformatic/kafka": "^2.4.0",
     "@scalar/hono-api-reference": "^0.10.13",
     "@scalar/openapi-to-markdown": "^0.5.12",
     "@smithy/node-http-handler": "^4.8.1",
