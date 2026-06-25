@@ -1,8 +1,9 @@
+import { satteri } from '@astrojs/markdown-satteri';
+import node from '@astrojs/node';
 import react from '@astrojs/react';
 // @ts-check
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import bun from '@wyattjoh/astro-bun-adapter';
 import { defineConfig, fontProviders } from 'astro/config';
 
 import fs from 'fs';
@@ -10,17 +11,12 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { remarkReadingTime } from './src/plugins/remark.reading.time.mjs';
-
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  ssr: {
-    resolve: { externalConditions: ['bun', 'node'] },
-  },
   site: 'https://fast-web-tech.co.uk/',
   server: {
     host: 'localhost', // ← Bind the interfaces
@@ -40,9 +36,14 @@ export default defineConfig({
     enabled: false,
   },
   output: 'server',
-  adapter: bun({ isr: true }),
+  adapter: node({
+    mode: 'standalone',
+  }),
 
   vite: {
+    ssr: {
+      resolve: { externalConditions: ['bun', 'node'] },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -93,13 +94,19 @@ export default defineConfig({
     },
   ],
   markdown: {
-    remarkPlugins: [remarkReadingTime],
+    // readingTime: true, // ← built-in, no remark plugin needed
     shikiConfig: {
       theme: 'dracula',
     },
+    // Pass your custom options into the native Sätteri compiler
+    processor: satteri({
+      features: {
+        directive: true,
+      },
+    }),
   },
   integrations: [
-    react({ include: ['**/reactcomp/**/*'] }),
+    react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     sitemap({
       // 1️⃣ Filter out pages that shouldn't be indexed
       filter(page) {
