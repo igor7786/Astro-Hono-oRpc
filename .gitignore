@@ -711,6 +711,8 @@ pip-selfcheck.json
 **/data_redis
 ### react ###
 
+### understand-ai ###
+**/.understand-anything
 ### qwen ###
 .qwen
 QWEN.md
