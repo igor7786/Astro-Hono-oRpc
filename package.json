@@ -21,6 +21,7 @@
     "pg:vps:test": "bun run --bun ./src/lib/drizzle/test.client.pg.db.ts",
     "env:test": "bun run --bun ./src/lib/env/test.env.ts",
     "redpanda:vps:test": "bun run --bun ./src/lib/redpanda-kafka/test.redpanda.vps.ts",
+    "tinybird:vps:test": "bun run --bun ./src/lib/tinybird/redpanda.test.tinybird.ts",
     "og:test": "bun run --bun ./src/server/seo/og/test-simple-og.ts",
     "knip": "knip --no-exit-code",
     "knip:fix": "knip --fix --no-exit-code",
