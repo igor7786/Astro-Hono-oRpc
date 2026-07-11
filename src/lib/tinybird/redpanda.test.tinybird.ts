@@ -46,7 +46,7 @@ const consumer = new Consumer({
   },
 });
 
-const TINYBIRD_HOST = envServer.TINYBIRD_HOST;
+const TINYBIRD_HOST = envServer.TINYBIRD_URL;
 const TINYBIRD_TOKEN = envServer.TINYBIRD_TOKEN;
 
 // --- Batching Tuning Parameters ---
