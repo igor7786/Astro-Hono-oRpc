@@ -59,7 +59,7 @@ async function safeCreateTopics() {
     console.log('📦 Creating topics...');
 
     await admin.createTopics({
-      topics: ['users', 'events', 'logs'],
+      topics: ['users', 'events', 'logs', 'test'],
       partitions: 3,
       replicas: 1,
     });
@@ -115,7 +115,7 @@ async function sendTestMessage() {
     await producer.send({
       messages: [
         {
-          topic: 'logs',
+          topic: 'test',
           key: 'user-123',
           value: JSON.stringify({
             event: 'USER_LOGIN',

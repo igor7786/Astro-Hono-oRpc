@@ -70,6 +70,9 @@ const EnvSchema = z.object({
     .min(1, 'ENV: VPS_KAFKA_BROKERS_PROD is required and must be a non-empty string'),
   KAFKA_USERNAME: z.string().min(1, 'ENV: KAFKA_USERNAME is required and must be a non-empty string'),
   KAFKA_PASSWORD: z.string().min(1, 'ENV: KAFKA_PASSWORD is required and must be a non-empty string'),
+  // Tinybird
+  TINYBIRD_HOST: z.string().min(1, 'ENV: TINYBIRD_HOST is required and must be a non-empty string'),
+  TINYBIRD_TOKEN: z.string().min(1, 'ENV: TINYBIRD_TOKEN is required and must be a non-empty string'),
 });
 
 // Type inferred from schema
