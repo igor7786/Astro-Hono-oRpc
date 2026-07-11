@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 
 import { envServer } from '@/lib/env/server.env';
+import { tls } from '@/lib/tls/client.tls';
 
 let pgPool: Pool;
 
@@ -13,13 +14,7 @@ if (envServer.PRODUCTION === 'false') {
     user: envServer.VPS_PG_USER,
     password: envServer.VPS_PG_PASS,
     database: envServer.VPS_PG_DB,
-    ssl: {
-      servername: envServer.VPS_TLS_SERVER,
-      ca: await Bun.file(envServer.VPS_CA_CERT).text(),
-      cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
-      key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-      rejectUnauthorized: true,
-    },
+    ssl: tls, // Use the TLS configuration for secure connection
   });
 } else {
   console.log('⚠️ Running in production mode, connecting to local Postgres without TLS...');

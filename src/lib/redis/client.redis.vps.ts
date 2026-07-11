@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 
 import { envServer } from '@/lib/env/server.env';
+import { tls } from '@/lib/tls/client.tls';
 
 let redisVps: Redis;
 if (envServer.PRODUCTION === 'false') {
@@ -8,13 +9,7 @@ if (envServer.PRODUCTION === 'false') {
   redisVps = new Redis(envServer.VPS_REDIS_URL, {
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,
-    tls: {
-      servername: envServer.VPS_TLS_SERVER,
-      ca: await Bun.file(envServer.VPS_CA_CERT).text(),
-      cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
-      key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-      rejectUnauthorized: true,
-    }, // ✅ required for rediss:// Upstash TLS
+    tls,
     retryStrategy: (times) => {
       if (times > 3) return null;
       return Math.min(times * 200, 1000);

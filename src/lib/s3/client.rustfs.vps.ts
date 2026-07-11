@@ -4,6 +4,7 @@ import { NodeHttpHandler } from '@smithy/node-http-handler';
 import https from 'https';
 
 import { envServer } from '@/lib/env/server.env';
+import { tls } from '@/lib/tls/client.tls';
 
 let rustfsClient: S3Client;
 
@@ -19,10 +20,10 @@ if (envServer.PRODUCTION === 'false') {
     forcePathStyle: true,
     requestHandler: new NodeHttpHandler({
       httpsAgent: new https.Agent({
-        ca: await Bun.file(envServer.VPS_CA_CERT).text(),
-        cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
-        key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-        rejectUnauthorized: true,
+        ca: tls.ca,
+        cert: tls.cert,
+        key: tls.key,
+        rejectUnauthorized: tls.rejectUnauthorized,
       }),
       connectionTimeout: 3000,
       socketTimeout: 5000,

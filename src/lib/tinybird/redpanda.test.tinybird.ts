@@ -11,22 +11,9 @@
 import { Consumer, jsonDeserializer, stringDeserializer } from '@platformatic/kafka';
 
 import { envServer } from '@/lib/env/server.env';
+import { tls } from '@/lib/tls/client.tls';
 
-const isProd = envServer.PRODUCTION === 'true';
-
-const brokers = !isProd
-  ? envServer.VPS_KAFKA_BROKERS_DEV.split(',')
-  : envServer.VPS_KAFKA_BROKERS_PROD.split(',');
-
-const tls = !isProd
-  ? {
-      servername: envServer.VPS_TLS_SERVER,
-      ca: await Bun.file(envServer.VPS_CA_CERT).text(),
-      cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
-      key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-      rejectUnauthorized: true,
-    }
-  : undefined;
+const brokers = envServer.VPS_KAFKA_BROKERS_DEV.split(',');
 
 const consumer = new Consumer({
   clientId: 'redpanda-to-tinybird-bridge',
@@ -37,7 +24,7 @@ const consumer = new Consumer({
     username: envServer.KAFKA_USERNAME,
     password: envServer.KAFKA_PASSWORD,
   },
-  ...(tls && { tls }),
+  tls,
   deserializers: {
     key: stringDeserializer,
     value: jsonDeserializer,

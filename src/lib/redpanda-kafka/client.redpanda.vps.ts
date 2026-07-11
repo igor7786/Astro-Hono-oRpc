@@ -1,4 +1,5 @@
 import { envServer } from '@/lib/env/server.env';
+import { tls } from '@/lib/tls/client.tls';
 
 /**
  * =========================
@@ -6,21 +7,7 @@ import { envServer } from '@/lib/env/server.env';
  * =========================
  */
 
-const isProd = envServer.PRODUCTION === 'true';
-
-const brokers = !isProd
-  ? envServer.VPS_KAFKA_BROKERS_DEV.split(',')
-  : envServer.VPS_KAFKA_BROKERS_PROD.split(',');
-
-const tls = !isProd
-  ? {
-      servername: envServer.VPS_TLS_SERVER,
-      ca: await Bun.file(envServer.VPS_CA_CERT).text(),
-      cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
-      key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-      rejectUnauthorized: true,
-    }
-  : undefined;
+const brokers = envServer.VPS_KAFKA_BROKERS_DEV.split(',');
 
 const baseConfig = {
   clientId: 'astro-hono-orpc',
@@ -30,6 +17,6 @@ const baseConfig = {
     username: envServer.KAFKA_USERNAME,
     password: envServer.KAFKA_PASSWORD,
   },
-  ...(tls && { tls }),
+  tls,
 };
 export { baseConfig };
