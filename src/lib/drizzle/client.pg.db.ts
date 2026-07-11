@@ -32,33 +32,9 @@ if (envServer.PRODUCTION === 'false') {
   });
 }
 
+pgPool.on('connect', () => console.log('✅ Connected to PostgreSQL!'));
+pgPool.on('error', (err) => console.error('❌ Postgres error:', err.message));
+
 export const db = drizzle(pgPool);
 export { pgPool };
-
-pgPool.on('connect', () => console.log('✅ Connected to PostgreSQL!'));
-pgPool.on('error', (err) => console.error('❌ Postgres error:', err.message));
-
-try {
-  const ping = await pgPool.query('SELECT 1');
-  console.log('PING:', ping.rows);
-
-  await pgPool.query(`
-    CREATE TABLE IF NOT EXISTS og_test (key TEXT PRIMARY KEY, value TEXT)
-  `);
-  await pgPool.query(
-    'INSERT INTO og_test (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
-    ['og:test', 'hello world']
-  );
-  console.log('INSERT og_test ✅');
-
-  const result = await pgPool.query('SELECT value FROM og_test WHERE key = $1', ['og:test']);
-  console.log('SELECT og_test:', result.rows[0]?.value);
-  await pgPool.end();
-} catch (err: any) {
-  console.error('❌ Postgres error ❌:', err?.message);
-}
-
-pgPool.on('connect', () => console.log('✅ Connected to PostgreSQL!'));
-pgPool.on('error', (err) => console.error('❌ Postgres error:', err.message));
-
 export default db;
