@@ -10,7 +10,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
-import { rustfsClient } from '@/lib/s3/rustfs';
+import { rustfsClient } from '@/lib/s3/client.rustfs.vps';
 
 const BUCKET = 'test-bucket';
 
