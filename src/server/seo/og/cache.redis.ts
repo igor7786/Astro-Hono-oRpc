@@ -1,7 +1,7 @@
 // src/server/seo/og/cache.redis.ts
 import { createHash } from 'node:crypto';
 
-import { redisVps } from '@/lib/queues/redis.vps';
+import { redisVps } from '@/lib/redis/client.redis.vps';
 
 // src/server/seo/og/og.route.ts
 

@@ -19,7 +19,7 @@ try {
   console.log('INSERT og_test ✅');
 
   const result = await db.select().from(ogTest).where(eq(ogTest.key, 'og:test'));
-  console.log('SELECT og_test:', result[0].value);
+  console.log('SELECT og_test:', result[0].value, '✅');
 } catch (err: any) {
   console.error('❌ Postgres error ❌:', err?.message);
 } finally {
