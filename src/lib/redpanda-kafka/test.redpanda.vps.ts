@@ -4,16 +4,31 @@ import { baseConfig } from '@/lib/redpanda-kafka/client.redpanda.vps';
 
 /**
  * =========================
- * CLIENTS
+ * CLIENTS (lazy singletons, long-lived)
  * =========================
  */
 
-const admin = new Admin(baseConfig);
+let admin: Admin | null = null;
+let producer: Producer<string, string, string, string> | null = null;
 
-const producer = new Producer({
-  ...baseConfig,
-  serializers: stringSerializers,
-});
+async function getAdmin(): Promise<Admin> {
+  if (!admin) {
+    const config = await baseConfig;
+    admin = new Admin(config);
+  }
+  return admin;
+}
+
+async function getProducer(): Promise<Producer<string, string, string, string>> {
+  if (!producer) {
+    const config = await baseConfig;
+    producer = new Producer<string, string, string, string>({
+      ...config,
+      serializers: stringSerializers,
+    });
+  }
+  return producer;
+}
 
 /**
  * =========================
@@ -25,7 +40,9 @@ async function safeCreateTopics() {
   try {
     console.log('📦 Creating topics...');
 
-    await admin.createTopics({
+    const adminClient = await getAdmin();
+
+    await adminClient.createTopics({
       topics: ['users', 'events', 'logs', 'test'],
       partitions: 3,
       replicas: 1,
@@ -47,6 +64,7 @@ async function safeCreateTopics() {
 /**
  * =========================
  * BOOTSTRAP
+ * (run manually / once — not per-request)
  * =========================
  */
 
@@ -56,7 +74,8 @@ async function bootstrapKafka() {
 
     await safeCreateTopics();
 
-    const metadata = await admin.metadata({ topics: [] });
+    const adminClient = await getAdmin();
+    const metadata = await adminClient.metadata({ topics: [] });
 
     console.log('📊 Brokers:', metadata.brokers);
     console.log('📊 Topics:', metadata.topics);
@@ -64,7 +83,8 @@ async function bootstrapKafka() {
     console.error('❌ bootstrapKafka failed:', err);
   } finally {
     try {
-      await admin.close();
+      await admin?.close();
+      admin = null;
     } catch {}
   }
 }
@@ -72,14 +92,17 @@ async function bootstrapKafka() {
 /**
  * =========================
  * PRODUCER
+ * (long-lived — do NOT close after every send)
  * =========================
  */
 
-async function sendTestMessage() {
+export async function sendTestMessage() {
   try {
     console.log('📤 Sending message...');
 
-    await producer.send({
+    const producerClient = await getProducer();
+
+    await producerClient.send({
       messages: [
         {
           topic: 'test',
@@ -99,16 +122,50 @@ async function sendTestMessage() {
     console.log('✅ Message sent');
   } catch (err) {
     console.error('❌ Producer error:', err);
-  } finally {
-    try {
-      await producer.close(true);
-    } catch {}
+    throw err;
   }
 }
 
 /**
  * =========================
- * RUN
+ * GRACEFUL SHUTDOWN
+ * Call once at process exit, not per-request.
+ * =========================
+ */
+
+export async function shutdownKafkaClients() {
+  console.log('🛑 Shutting down Kafka clients...');
+
+  try {
+    await producer?.close(true);
+  } catch (err) {
+    console.error('❌ Error closing producer:', err);
+  } finally {
+    producer = null;
+  }
+
+  try {
+    await admin?.close();
+  } catch (err) {
+    console.error('❌ Error closing admin:', err);
+  } finally {
+    admin = null;
+  }
+}
+
+process.on('SIGTERM', async () => {
+  await shutdownKafkaClients();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  await shutdownKafkaClients();
+  process.exit(0);
+});
+
+/**
+ * =========================
+ * RUN (manual script mode only)
  * =========================
  */
 
@@ -117,6 +174,7 @@ if (import.meta.main) {
 
   // await bootstrapKafka();
   await sendTestMessage();
+  await shutdownKafkaClients();
 
   console.log('🏁 Done');
 }

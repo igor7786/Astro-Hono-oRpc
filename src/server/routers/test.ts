@@ -1,8 +1,10 @@
 import { setCookie } from '@orpc/server/helpers';
 
+import { sendTestMessage } from '@/lib/redpanda-kafka/test.redpanda.vps';
 import { base } from '@/server/procedures/base';
 
 export const testRoute = base.tests.test.handler(async ({ input, context, errors }) => {
+  await sendTestMessage();
   if (context.request) {
     context.resHeaders?.set('x-custom-header', 'Hello from oRPC!');
     setCookie(context.resHeaders, 'test', 'abc123', {
