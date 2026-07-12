@@ -13,10 +13,10 @@ export async function generateOgImage(
     throw new Error(`Failed to load fonts for OG image generation: ${err.message}`);
   }); // ✅ CALL IT
 
-  const response = new ImageResponse(<SocialCard {...props} />, {
-    ...satoriOptions, // ✅ includes fonts, width, height
-    format,
-  });
+  const response =
+    format === 'webp'
+      ? new ImageResponse(<SocialCard {...props} />, { ...satoriOptions, format: 'webp' })
+      : new ImageResponse(<SocialCard {...props} />, { ...satoriOptions, format: 'png' });
 
   return new Uint8Array(await response.arrayBuffer());
 }
