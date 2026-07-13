@@ -14,7 +14,7 @@ if (envServer.PRODUCTION === 'false') {
     user: envServer.VPS_PG_USER,
     password: envServer.VPS_PG_PASS,
     database: envServer.VPS_PG_DB,
-    ssl: tls, // Use the TLS configuration for secure connection
+    ssl: await tls(), // Use the TLS configuration for secure connection
   });
 } else {
   console.log('⚠️ Running in production mode, connecting to local Postgres without TLS...');

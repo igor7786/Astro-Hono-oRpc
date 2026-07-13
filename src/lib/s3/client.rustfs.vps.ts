@@ -20,10 +20,10 @@ if (envServer.PRODUCTION === 'false') {
     forcePathStyle: true,
     requestHandler: new NodeHttpHandler({
       httpsAgent: new https.Agent({
-        ca: tls.ca,
-        cert: tls.cert,
-        key: tls.key,
-        rejectUnauthorized: tls.rejectUnauthorized,
+        ca: (await tls()).ca,
+        cert: (await tls()).cert,
+        key: (await tls()).key,
+        rejectUnauthorized: (await tls()).rejectUnauthorized,
       }),
       connectionTimeout: 3000,
       socketTimeout: 5000,

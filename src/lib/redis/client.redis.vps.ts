@@ -9,7 +9,7 @@ if (envServer.PRODUCTION === 'false') {
   redisVps = new Redis(envServer.VPS_REDIS_URL, {
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,
-    tls,
+    tls: await tls(), // Use the TLS configuration for secure connection
     retryStrategy: (times) => {
       if (times > 3) return null;
       return Math.min(times * 200, 1000);

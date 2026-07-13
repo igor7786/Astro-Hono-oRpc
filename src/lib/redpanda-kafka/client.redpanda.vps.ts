@@ -21,7 +21,7 @@ const brokers = isProd
  */
 
 async function getBaseConfig() {
-  const tls = isProd ? undefined : getTls;
+  const tls = isProd ? undefined : await getTls();
 
   return {
     clientId: 'astro-hono-orpc',

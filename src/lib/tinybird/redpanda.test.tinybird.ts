@@ -24,7 +24,7 @@ const consumer = new Consumer({
     username: envServer.KAFKA_USERNAME,
     password: envServer.KAFKA_PASSWORD,
   },
-  tls,
+  tls: await tls(),
   deserializers: {
     key: stringDeserializer,
     value: jsonDeserializer,
