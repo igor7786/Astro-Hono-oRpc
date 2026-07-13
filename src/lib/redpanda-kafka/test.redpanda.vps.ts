@@ -13,7 +13,7 @@ let producer: Producer<string, string, string, string> | null = null;
 
 async function getAdmin(): Promise<Admin> {
   if (!admin) {
-    const config = await baseConfig;
+    const config = await baseConfig();
     admin = new Admin(config);
   }
   return admin;
@@ -21,7 +21,7 @@ async function getAdmin(): Promise<Admin> {
 
 async function getProducer(): Promise<Producer<string, string, string, string>> {
   if (!producer) {
-    const config = await baseConfig;
+    const config = await baseConfig();
     producer = new Producer<string, string, string, string>({
       ...config,
       serializers: stringSerializers,

@@ -30,7 +30,7 @@ if (envServer.PRODUCTION === 'false') {
     }),
   });
 } else {
-  console.log('⚡ Running in production mode, connecting to remote VPS RustFS with mTLS...');
+  console.log('✅ Running in production mode, connecting to local RustFS without mTLS...');
   rustfsClient = new S3Client({
     region: 'us-east-1',
     credentials: {

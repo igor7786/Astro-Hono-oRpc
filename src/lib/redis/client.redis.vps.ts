@@ -17,7 +17,7 @@ if (envServer.PRODUCTION === 'false') {
     lazyConnect: true, // ✅ don't connect until first command
   });
 } else {
-  console.log('⚠️ Running in production mode, connecting to local Redis without TLS...');
+  console.log('✅ Running in production mode, connecting to local Redis without TLS...');
   redisVps = new Redis(envServer.VPS_REDIS_URL, {
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,

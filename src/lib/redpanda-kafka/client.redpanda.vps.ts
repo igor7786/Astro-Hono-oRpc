@@ -21,8 +21,19 @@ const brokers = isProd
  */
 
 async function getBaseConfig() {
-  const tls = isProd ? undefined : await getTls();
-
+  if (isProd) {
+    console.log('✅ Running in production mode, connecting to local Kafka without TLS...');
+    return {
+      clientId: 'astro-hono-orpc',
+      bootstrapBrokers: brokers,
+      sasl: {
+        mechanism: 'SCRAM-SHA-256' as const,
+        username: envServer.KAFKA_USERNAME,
+        password: envServer.KAFKA_PASSWORD,
+      },
+    };
+  }
+  console.log('⚠️ Running in development mode, connecting to remote VPS Kafka with mTLS...');
   return {
     clientId: 'astro-hono-orpc',
     bootstrapBrokers: brokers,
@@ -31,8 +42,7 @@ async function getBaseConfig() {
       username: envServer.KAFKA_USERNAME,
       password: envServer.KAFKA_PASSWORD,
     },
-    tls,
+    tls: await getTls(),
   };
 }
-const baseConfig = getBaseConfig();
-export { baseConfig };
+export { getBaseConfig as baseConfig };

@@ -17,7 +17,7 @@ if (envServer.PRODUCTION === 'false') {
     ssl: await tls(), // Use the TLS configuration for secure connection
   });
 } else {
-  console.log('⚠️ Running in production mode, connecting to local Postgres without TLS...');
+  console.log('✅ Running in production mode, connecting to local Postgres without TLS...');
   pgPool = new Pool({
     host: envServer.VPS_PG_HOST,
     port: envServer.VPS_PG_PORT,

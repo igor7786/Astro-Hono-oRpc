@@ -13,25 +13,52 @@ import { Consumer, jsonDeserializer, stringDeserializer } from '@platformatic/ka
 import { envServer } from '@/lib/env/server.env';
 import { tls } from '@/lib/tls/client.tls';
 
-const brokers = envServer.VPS_KAFKA_BROKERS_DEV.split(',');
+const isProd = envServer.PRODUCTION === 'true';
 
-const consumer = new Consumer({
-  clientId: 'redpanda-to-tinybird-bridge',
-  groupId: 'tinybird-bridge-consumer',
-  bootstrapBrokers: brokers,
-  sasl: {
-    mechanism: 'SCRAM-SHA-256' as const,
-    username: envServer.KAFKA_USERNAME,
-    password: envServer.KAFKA_PASSWORD,
-  },
-  tls: await tls(),
-  deserializers: {
-    key: stringDeserializer,
-    value: jsonDeserializer,
-    headerKey: stringDeserializer,
-    headerValue: stringDeserializer,
-  },
-});
+const brokers = isProd
+  ? envServer.VPS_KAFKA_BROKERS_PROD.split(',')
+  : envServer.VPS_KAFKA_BROKERS_DEV.split(',');
+
+const consumer = async () => {
+  if (isProd) {
+    console.log('✅ Running in production mode, connecting to local Kafka without TLS...');
+    return new Consumer({
+      clientId: 'redpanda-to-tinybird-bridge',
+      groupId: 'tinybird-bridge-consumer',
+      bootstrapBrokers: brokers,
+      sasl: {
+        mechanism: 'SCRAM-SHA-256' as const,
+        username: envServer.KAFKA_USERNAME,
+        password: envServer.KAFKA_PASSWORD,
+      },
+      deserializers: {
+        key: stringDeserializer,
+        value: jsonDeserializer,
+        headerKey: stringDeserializer,
+        headerValue: stringDeserializer,
+      },
+    });
+  } else {
+    console.log('⚠️ Running in development mode, connecting to remote VPS Kafka with mTLS...');
+    return new Consumer({
+      clientId: 'redpanda-to-tinybird-bridge',
+      groupId: 'tinybird-bridge-consumer',
+      bootstrapBrokers: brokers,
+      sasl: {
+        mechanism: 'SCRAM-SHA-256' as const,
+        username: envServer.KAFKA_USERNAME,
+        password: envServer.KAFKA_PASSWORD,
+      },
+      tls: await tls(),
+      deserializers: {
+        key: stringDeserializer,
+        value: jsonDeserializer,
+        headerKey: stringDeserializer,
+        headerValue: stringDeserializer,
+      },
+    });
+  }
+};
 
 const TINYBIRD_HOST = envServer.TINYBIRD_URL;
 const TINYBIRD_TOKEN = envServer.TINYBIRD_TOKEN;
@@ -74,8 +101,8 @@ async function flushToTinybird(datasource: string, events: object[]) {
 
 async function run() {
   console.log('🌉 Bridge started, consuming from "test" topic...');
-
-  const stream = await consumer.consume({ topics: ['test'] });
+  const st = await consumer();
+  const stream = await st.consume({ topics: ['test'] });
 
   // Fallback timer loop to flush stale messages during low traffic intervals
   const flushInterval = setInterval(() => {
@@ -103,7 +130,7 @@ async function run() {
     }
 
     try {
-      await consumer.close();
+      await st.close();
     } catch (err) {
       console.error('Error closing consumer:', err);
     }
