@@ -28,8 +28,8 @@ async function getBaseConfig() {
       bootstrapBrokers: brokers,
       sasl: {
         mechanism: 'SCRAM-SHA-256' as const,
-        username: envServer.KAFKA_USERNAME,
-        password: envServer.KAFKA_PASSWORD,
+        username: envServer.KAFKA_APP_USER,
+        password: envServer.KAFKA_APP_USER_PASSWORD,
       },
     };
   }
@@ -39,8 +39,8 @@ async function getBaseConfig() {
     bootstrapBrokers: brokers,
     sasl: {
       mechanism: 'SCRAM-SHA-256' as const,
-      username: envServer.KAFKA_USERNAME,
-      password: envServer.KAFKA_PASSWORD,
+      username: envServer.KAFKA_APP_USER,
+      password: envServer.KAFKA_APP_USER_PASSWORD,
     },
     tls: await getTls(),
   };

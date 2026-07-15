@@ -39,10 +39,10 @@ export const pageViews = defineDatasource('page_views', {
 export type PageViewsRow = InferRow<typeof pageViews>;
 
 /**
- * Test datasource - receives messages bridged from the Redpanda "test" topic
+ * Test datasource - receives messages bridged from the Redpanda "og_image" topic
  */
-export const test = defineDatasource('test', {
-  description: 'Test topic bridged from Redpanda via Events API',
+export const ogImage = defineDatasource('og_image', {
+  description: 'Image topic bridged from Redpanda via Events API',
   schema: {
     timestamp: t.dateTime(),
     payload: t.string(),
@@ -52,7 +52,7 @@ export const test = defineDatasource('test', {
   }),
 });
 
-export type TestRow = InferRow<typeof test>;
+export type OgImageRow = InferRow<typeof ogImage>;
 
 // ============================================================================
 // Endpoints
@@ -94,10 +94,10 @@ export type TopPagesParams = InferParams<typeof topPages>;
 export type TopPagesOutput = InferOutputRow<typeof topPages>;
 
 /**
- * Recent test events endpoint
+ * Recent og_image events endpoint
  */
-export const recentTestEvents = defineEndpoint('recent_test_events', {
-  description: 'Get recent test events',
+export const recentOgImageEvents = defineEndpoint('recent_og_image_events', {
+  description: 'Get recent og_image events',
   params: {
     start_date: p.dateTime().optional('2020-01-01 00:00:00').describe('Start of date range'),
     end_date: p.dateTime().optional('2030-01-01 00:00:00').describe('End of date range'),
@@ -108,7 +108,7 @@ export const recentTestEvents = defineEndpoint('recent_test_events', {
       name: 'recent',
       sql: `
         SELECT timestamp, payload
-        FROM test
+        FROM og_image
         WHERE timestamp >= {{DateTime(start_date)}}
           AND timestamp <= {{DateTime(end_date)}}
         ORDER BY timestamp DESC
@@ -122,16 +122,16 @@ export const recentTestEvents = defineEndpoint('recent_test_events', {
   },
 });
 
-export type RecentTestEventsParams = InferParams<typeof recentTestEvents>;
-export type RecentTestEventsOutput = InferOutputRow<typeof recentTestEvents>;
+export type RecentOgImageEventsParams = InferParams<typeof recentOgImageEvents>;
+export type RecentOgImageEventsOutput = InferOutputRow<typeof recentOgImageEvents>;
 
 // ============================================================================
 // Client
 // ============================================================================
 
 export const tinybird = new Tinybird({
-  datasources: { pageViews, test },
-  pipes: { topPages, recentTestEvents },
+  datasources: { pageViews, ogImage },
+  pipes: { topPages, recentOgImageEvents },
 });
 
 export type TinybirdClient = typeof tinybird;

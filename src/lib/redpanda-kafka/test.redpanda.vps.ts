@@ -43,9 +43,9 @@ async function safeCreateTopics() {
     const adminClient = await getAdmin();
 
     await adminClient.createTopics({
-      topics: ['users', 'events', 'logs', 'test'],
+      topics: ['og_image'],
       partitions: 3,
-      replicas: 1,
+      replicas: 3,
     });
 
     console.log('📦 Topics created');
@@ -105,7 +105,7 @@ export async function sendTestMessage() {
     await producerClient.send({
       messages: [
         {
-          topic: 'test',
+          topic: 'og_image',
           key: 'user-123',
           value: JSON.stringify({
             event: 'USER_LOGIN',

@@ -1,7 +1,7 @@
 /**
  * Redpanda → Tinybird bridge
  *
- * Consumes from the Redpanda "test" topic (via mTLS + SASL, same as
+ * Consumes from the Redpanda "og_image" topic (via mTLS + SASL, same as
  * the app's existing Kafka client) and forwards messages to Tinybird's
  * Events API over plain HTTPS, batched as NDJSON for efficiency.
  *
@@ -28,8 +28,8 @@ const consumer = async () => {
       bootstrapBrokers: brokers,
       sasl: {
         mechanism: 'SCRAM-SHA-256' as const,
-        username: envServer.KAFKA_USERNAME,
-        password: envServer.KAFKA_PASSWORD,
+        username: envServer.KAFKA_APP_USER,
+        password: envServer.KAFKA_APP_USER_PASSWORD,
       },
       deserializers: {
         key: stringDeserializer,
@@ -46,8 +46,8 @@ const consumer = async () => {
       bootstrapBrokers: brokers,
       sasl: {
         mechanism: 'SCRAM-SHA-256' as const,
-        username: envServer.KAFKA_USERNAME,
-        password: envServer.KAFKA_PASSWORD,
+        username: envServer.KAFKA_APP_USER,
+        password: envServer.KAFKA_APP_USER_PASSWORD,
       },
       tls: await tls(),
       deserializers: {
@@ -100,9 +100,9 @@ async function flushToTinybird(datasource: string, events: object[]) {
 }
 
 async function run() {
-  console.log('🌉 Bridge started, consuming from "test" topic...');
+  console.log('🌉 Bridge started, consuming from "og_image" topic...');
   const st = await consumer();
-  const stream = await st.consume({ topics: ['test'] });
+  const stream = await st.consume({ topics: ['og_image'] });
 
   // Fallback timer loop to flush stale messages during low traffic intervals
   const flushInterval = setInterval(() => {
@@ -112,7 +112,7 @@ async function run() {
       currentBatch = [];
       lastFlushTime = now;
 
-      flushToTinybird('test', batchToFlush).catch(console.error);
+      flushToTinybird('og_image', batchToFlush).catch(console.error);
     }
   }, 500);
 
@@ -125,7 +125,7 @@ async function run() {
     clearInterval(flushInterval);
 
     if (currentBatch.length > 0) {
-      await flushToTinybird('test', currentBatch);
+      await flushToTinybird('og_image', currentBatch);
       currentBatch = [];
     }
 
@@ -157,7 +157,7 @@ async function run() {
       lastFlushTime = Date.now();
 
       // Fire and forget in the background to avoid blocking the consumer stream
-      flushToTinybird('test', batchToFlush).catch(console.error);
+      flushToTinybird('og_image', batchToFlush).catch(console.error);
     }
   }
 }

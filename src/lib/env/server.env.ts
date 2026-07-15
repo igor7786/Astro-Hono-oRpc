@@ -68,8 +68,16 @@ const EnvSchema = z.object({
   VPS_KAFKA_BROKERS_PROD: z
     .string()
     .min(1, 'ENV: VPS_KAFKA_BROKERS_PROD is required and must be a non-empty string'),
-  KAFKA_USERNAME: z.string().min(1, 'ENV: KAFKA_USERNAME is required and must be a non-empty string'),
-  KAFKA_PASSWORD: z.string().min(1, 'ENV: KAFKA_PASSWORD is required and must be a non-empty string'),
+  KAFKA_ADMIN_USERNAME: z
+    .string()
+    .min(1, 'ENV: KAFKA_ADMIN_USERNAME is required and must be a non-empty string'),
+  KAFKA_ADMIN_PASSWORD: z
+    .string()
+    .min(1, 'ENV: KAFKA_ADMIN_PASSWORD is required and must be a non-empty string'),
+  KAFKA_APP_USER: z.string().min(1, 'ENV: KAFKA_APP_USER is required and must be a non-empty string'),
+  KAFKA_APP_USER_PASSWORD: z
+    .string()
+    .min(1, 'ENV: KAFKA_APP_USER_PASSWORD is required and must be a non-empty string'),
   // Tinybird
   TINYBIRD_URL: z.string().min(1, 'ENV: TINYBIRD_URL is required and must be a non-empty string'),
   TINYBIRD_TOKEN: z.string().min(1, 'ENV: TINYBIRD_TOKEN is required and must be a non-empty string'),
