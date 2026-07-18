@@ -20,7 +20,7 @@ interface TlsConfig {
  */
 
 async function getTls(): Promise<TlsConfig> {
-  console.log('🔐 Loading TLS certs...');
+  console.log('🔐[TLS] Loading certs...');
   const cachedTls = {
     servername: envServer.VPS_TLS_SERVER,
     ca: await Bun.file(envServer.VPS_CA_CERT).text(),

@@ -5,6 +5,8 @@ import { z } from 'zod';
 const EnvSchema = z.object({
   // General
   PRODUCTION: z.string().min(1, 'ENV: PRODUCTION is required and must be a non-empty string'),
+  // Og Secret
+  OG_SECRET: z.string().min(1, 'ENV: OG_SECRET is required and must be a non-empty string'),
   // Database
   DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
   UPSTASH_REDIS_URL: z

@@ -1,5 +1,4 @@
 import { envServer } from '@/lib/env/server.env';
-import { tls as getTls } from '@/lib/tls/client.tls';
 
 /**
  * =========================
@@ -22,7 +21,7 @@ const brokers = isProd
 
 async function getBaseConfig() {
   if (isProd) {
-    console.log('✅ Running in production mode, connecting to local Kafka without TLS...');
+    console.log('✅ [Redpanda] Running in production mode, connecting without TLS...');
     return {
       clientId: 'astro-hono-orpc',
       bootstrapBrokers: brokers,
@@ -33,7 +32,8 @@ async function getBaseConfig() {
       },
     };
   }
-  console.log('⚠️ Running in development mode, connecting to remote VPS Kafka with mTLS...');
+  console.log('⚠️ [Redpanda] Running in development mode, connecting to remote VPS with mTLS...');
+  const { tls } = await import('@/lib/tls/client.tls');
   return {
     clientId: 'astro-hono-orpc',
     bootstrapBrokers: brokers,
@@ -42,7 +42,9 @@ async function getBaseConfig() {
       username: envServer.KAFKA_APP_USER,
       password: envServer.KAFKA_APP_USER_PASSWORD,
     },
-    tls: await getTls(),
+    tls: await tls(),
   };
 }
-export { getBaseConfig as baseConfig };
+const baseConfig = await getBaseConfig();
+
+export { baseConfig };

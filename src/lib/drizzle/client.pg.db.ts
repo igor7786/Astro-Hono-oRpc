@@ -1,35 +1,48 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+// src/lib/drizzle/client.pg.db.ts
+import { drizzle } from 'drizzle-orm/bun-sql';
+
+import { SQL } from 'bun';
 
 import { envServer } from '@/lib/env/server.env';
-import { tls } from '@/lib/tls/client.tls';
 
-let pgPool: Pool;
+async function createDb() {
+  if (envServer.PRODUCTION === 'false') {
+    console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting to remote VPS PostgreSQL with TLS...');
+    const { tls } = await import('@/lib/tls/client.tls');
+    const { ca, cert, key, rejectUnauthorized } = await tls();
+    const client = new SQL({
+      hostname: envServer.VPS_PG_HOST,
+      port: envServer.VPS_PG_PORT,
+      username: envServer.VPS_PG_USER,
+      password: envServer.VPS_PG_PASS,
+      database: envServer.VPS_PG_DB,
+      tls: { ca, cert, key, rejectUnauthorized },
+      max: 10,
+      idleTimeout: 30, // don't wait forever for a connection
+      connectionTimeout: 10, // fail fast if VPS unreachable
+      maxLifetime: 3600, // recycle connections every hour
+      prepare: true,
+    });
 
-if (envServer.PRODUCTION === 'false') {
-  console.log('⚠️ Running in development mode, connecting to remote VPS Postgres with mTLS...');
-  pgPool = new Pool({
-    host: envServer.VPS_PG_HOST,
+    return drizzle({ client });
+  }
+
+  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting to local PostgreSQL without TLS...');
+  const client = new SQL({
+    hostname: envServer.VPS_PG_HOST,
     port: envServer.VPS_PG_PORT,
-    user: envServer.VPS_PG_USER,
+    username: envServer.VPS_PG_USER,
     password: envServer.VPS_PG_PASS,
     database: envServer.VPS_PG_DB,
-    ssl: await tls(), // Use the TLS configuration for secure connection
+    max: 10,
+    idleTimeout: 30, // don't wait forever for a connection
+    connectionTimeout: 10, // fail fast if VPS unreachable
+    maxLifetime: 3600, // recycle connections every hour
+    prepare: true,
   });
-} else {
-  console.log('✅ Running in production mode, connecting to local Postgres without TLS...');
-  pgPool = new Pool({
-    host: envServer.VPS_PG_HOST,
-    port: envServer.VPS_PG_PORT,
-    user: envServer.VPS_PG_USER,
-    password: envServer.VPS_PG_PASS,
-    database: envServer.VPS_PG_DB,
-  });
+
+  return drizzle({ client });
 }
 
-pgPool.on('connect', () => console.log('✅ Connected to PostgreSQL!'));
-pgPool.on('error', (err) => console.error('❌ Postgres error:', err.message));
-
-export const db = drizzle(pgPool);
-export { pgPool };
-export default db;
+const db = await createDb();
+export { db };

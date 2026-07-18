@@ -1,10 +1,22 @@
 // src/server/seo/og/og.route.ts
+import { redisVps } from '@/lib/redis/client.redis.vps';
+import { ogParamsKey } from '@/lib/redis/ttl';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { generateOgImage } from '@/server/seo/og/Generate';
+import { ogIdTokenServerSchema } from '@/server/seo/og/og.generate.token.id';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
-  const { title, description, author, date } = input;
+  // input already passed Zod shape check from contract
+  // now verify the HMAC token server-side
+  const parsed = ogIdTokenServerSchema.safeParse(input);
+  if (!parsed.success) {
+    throw errors.UNAUTHORIZED({ message: 'Invalid OG token or ID 📛' });
+  }
+  // Redis caching for OG image generation
+  const paramsKey = ogParamsKey(input.id);
+  const params = await redisVps.hgetall(paramsKey);
+  const { title, description, author, date } = params;
 
   // ------------------------------------------------------------------
   // Format negotiation — prefer WebP unless the requester is a crawler
@@ -31,22 +43,16 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   // ------------------------------------------------------------------
   let isHit = true;
 
-  const image = await getOrGenerate(cacheKey, async () => {
-    isHit = false;
-    return generateOgImage(
-      {
-        title: title ?? 'Fast Web Tech',
-        description,
-        author,
-        date,
-      },
-      format
-    ).catch(() => {
-      throw errors.INTERNAL_SERVER_ERROR({
-        message: 'Failed to generate OG image',
-      });
-    });
-  });
+  const { image, tier } = await getOrGenerate(
+    cacheKey,
+    async () =>
+      generateOgImage({ title: title ?? 'Fast Web Tech', description, author, date }, format).catch(
+        () => {
+          throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
+        }
+      ),
+    { format, title }
+  );
 
   // ------------------------------------------------------------------
   // Build the File object once so we use .size for Content-Length

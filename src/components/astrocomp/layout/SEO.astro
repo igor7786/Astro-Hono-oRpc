@@ -3,6 +3,9 @@ import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
 import z from 'zod';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
+import { generateOgParamsId, generateOgToken } from '@/server/seo/og/og.generate.token.id';
+import { redisVps } from '@/lib/redis/client.redis.vps';
+import ttl, { ogParamsKey } from '@/lib/redis/ttl';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
@@ -18,18 +21,37 @@ if (!result.success) {
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
 const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
+let ogAuthor = author;
+if (!ogAuthor) ogAuthor = 'Alberto';
+
+// hex id, token, and other params for OG image generation
+const id = generateOgParamsId({ title, description, author: ogAuthor, date });
+const token = generateOgToken(id);
+// REDIS caching for OG image generation
+const paramsKey = ogParamsKey(id);
+// Check if the OG params already exist in Redis
+const existing = await redisVps.hgetall(paramsKey);
+const isNew = !existing || Object.keys(existing).length === 0;
+if (isNew) {
+  console.log('New OG params, caching in Redis...');
+  await redisVps.hset(paramsKey, {
+    title,
+    description,
+    ...(author && { author }),
+    ...(date && { date }),
+  });
+  await redisVps.expire(paramsKey, ttl['1w']); // Set expiration time for 1 week
+}
+
 // 🚀 SAFE Page URL BUILDER
 const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 const fullPath = openApiBasePath + ogPath;
 const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 
-ogUrl.searchParams.set('title', title);
-ogUrl.searchParams.set('description', description);
+ogUrl.searchParams.set('id', id);
+ogUrl.searchParams.set('token', token);
 ogUrl.searchParams.set('format', 'png');
-
-if (author) ogUrl.searchParams.set('author', author);
-if (date) ogUrl.searchParams.set('date', date);
 const ogImageUrl = ogUrl.toString();
 ---
 

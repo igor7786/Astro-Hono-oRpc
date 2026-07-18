@@ -11,6 +11,8 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import serverStartup from './src/plugins/clients';
+
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -107,6 +109,10 @@ export default defineConfig({
   },
   integrations: [
     react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
+    // Client startup integration [✅ Redis, Env, etc.]
+    serverStartup(),
+    // boneyardPlugin({ /* plugin options */ }),
+    // sitemap integration
     sitemap({
       // 1️⃣ Filter out pages that shouldn't be indexed
       filter(page) {

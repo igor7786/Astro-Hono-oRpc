@@ -1,6 +1,6 @@
 import { Admin, Producer, stringSerializers } from '@platformatic/kafka';
 
-import { baseConfig } from '@/lib/redpanda-kafka/client.redpanda.vps';
+import { baseConfig } from '@/lib/redpanda-kafka/config.redpanda.vps';
 
 /**
  * =========================
@@ -13,7 +13,7 @@ let producer: Producer<string, string, string, string> | null = null;
 
 async function getAdmin(): Promise<Admin> {
   if (!admin) {
-    const config = await baseConfig();
+    const config = baseConfig;
     admin = new Admin(config);
   }
   return admin;
@@ -21,7 +21,7 @@ async function getAdmin(): Promise<Admin> {
 
 async function getProducer(): Promise<Producer<string, string, string, string>> {
   if (!producer) {
-    const config = await baseConfig();
+    const config = baseConfig;
     producer = new Producer<string, string, string, string>({
       ...config,
       serializers: stringSerializers,
@@ -137,7 +137,7 @@ export async function shutdownKafkaClients() {
   console.log('🛑 Shutting down Kafka clients...');
 
   try {
-    await producer?.close(true);
+    producer?.close(true);
   } catch (err) {
     console.error('❌ Error closing producer:', err);
   } finally {

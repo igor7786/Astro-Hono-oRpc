@@ -154,6 +154,7 @@ export async function s3Testings() {
   } catch (err) {
     console.error('❌ Error deleting bucket:', err instanceof Error ? err.message : err);
   }
+  rustfsClient.destroy();
 }
 
 await s3Testings();

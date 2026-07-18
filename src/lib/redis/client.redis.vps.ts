@@ -1,32 +1,35 @@
+// src/lib/redis/client.redis.vps.ts
 import Redis from 'ioredis';
 
 import { envServer } from '@/lib/env/server.env';
-import { tls } from '@/lib/tls/client.tls';
 
-let redisVps: Redis;
-if (envServer.PRODUCTION === 'false') {
-  console.log('⚠️ Running in development mode, connecting to remote VPS Redis with TLS...');
-  redisVps = new Redis(envServer.VPS_REDIS_URL, {
+async function createRedisClient(): Promise<Redis> {
+  if (envServer.PRODUCTION === 'false') {
+    const { tls } = await import('@/lib/tls/client.tls');
+    console.log('⚠️ [Redis] Running in development mode, connecting to remote VPS Redis with TLS...');
+    return new Redis(envServer.VPS_REDIS_URL, {
+      enableReadyCheck: false,
+      maxRetriesPerRequest: 3,
+      tls: await tls(),
+      retryStrategy: (times) => {
+        if (times > 3) return null;
+        return Math.min(times * 200, 1000);
+      },
+      lazyConnect: true,
+    });
+  }
+
+  console.log('✅ [Redis] Running in production mode, connecting to local Redis without TLS...');
+  return new Redis(envServer.VPS_REDIS_URL, {
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,
-    tls: await tls(), // Use the TLS configuration for secure connection
     retryStrategy: (times) => {
       if (times > 3) return null;
       return Math.min(times * 200, 1000);
     },
-    lazyConnect: true, // ✅ don't connect until first command
-  });
-} else {
-  console.log('✅ Running in production mode, connecting to local Redis without TLS...');
-  redisVps = new Redis(envServer.VPS_REDIS_URL, {
-    enableReadyCheck: false,
-    maxRetriesPerRequest: 3,
-    retryStrategy: (times) => {
-      if (times > 3) return null;
-      return Math.min(times * 200, 1000);
-    },
-    lazyConnect: true, // ✅ don't connect until first command
+    lazyConnect: true,
   });
 }
 
-export { redisVps };
+// Single promise — created once, resolved once, reused forever
+export const redisVps = await createRedisClient();

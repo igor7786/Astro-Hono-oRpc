@@ -17,10 +17,10 @@ try {
   console.error('❌ Redis error ❌:', err?.message);
 } finally {
   try {
-    await redisVps.quit();
+    redisVps.quit();
   } catch (quitErr: any) {
     console.error('❌ Redis quit error ❌:', quitErr?.message);
   } finally {
-    await redisVps.disconnect(); // force-close the socket regardless of quit()'s outcome
+    redisVps.disconnect(); // force-close the socket regardless of quit()'s outcome
   }
 }

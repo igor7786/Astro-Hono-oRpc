@@ -38,7 +38,7 @@ export function formatDate(date?: string) {
     year: 'numeric',
   });
 }
-
+// Orpc query schema for SEO route
 export const seoQuerySchema = z
   .object({
     title: z.string().nonempty('Title must not be empty').default('Fast Web Tech'),
@@ -52,3 +52,14 @@ export const seoQuerySchema = z
       .transform((val) => (val ? formatDate(val) : undefined)),
   })
   .strict();
+export type OgParams = z.infer<typeof seoQuerySchema>;
+const hex = /^[0-9a-f]+$/;
+
+export const ogIdTokenSchema = z
+  .object({
+    id: z.string().trim().length(32).regex(hex).default('db28e40583454d1d7c53ad7940395ba6'),
+    token: z.string().trim().length(16).regex(hex).default('d6936f591b358e88'),
+    format: z.enum(['webp', 'png']).optional(),
+  })
+  .strip();
+export type OgIdToken = z.infer<typeof ogIdTokenSchema>;

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { seoQuerySchema } from '@/lib/shared/schemas/seo.schema';
+import { ogIdTokenSchema } from '@/lib/shared/schemas/seo.schema';
 import { baseOc } from '@/server/contracts/oc.base';
 
 const pathPrefix = '/seo'; // ✅ added path prefix
 export const og = baseOc
   .route({
     method: 'GET',
-    path: `${pathPrefix}/og`, // ✅ added path
+    path: `${pathPrefix}/og/v1`, // ✅ added path
     description: 'Og image',
     summary: 'Generates og images',
     tags: ['SEO'],
@@ -15,7 +15,7 @@ export const og = baseOc
     successStatus: 200,
     outputStructure: 'detailed',
   })
-  .input(seoQuerySchema)
+  .input(ogIdTokenSchema)
   .output(
     z.object({
       body: z.file(),
