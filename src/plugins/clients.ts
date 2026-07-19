@@ -2,16 +2,23 @@ import { ListBucketsCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
 import { ogTest } from '@/lib/drizzle/pg/pg.schema';
+import { test } from '@/lib/drizzle/sqlite/schema';
 
 async function loadClients() {
   // Load clients or perform any necessary setup here
   const { envServer } = await import('@/lib/env/server.env.ts');
+  const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
   const { redisVps } = await import('@/lib/redis/client.redis.vps.ts');
   const { producer } = await import('@/lib/redpanda-kafka/producer.ts');
   const { db } = await import('@/lib/drizzle/pg/client.pg.db');
   const { rustfsClient } = await import('@/lib/s3/client.rustfs.vps.ts');
   console.log('[server] PRODUCTION ->', envServer.PRODUCTION === 'true' ? '✅' : '❌');
-
+  try {
+    await sqliteDb.select().from(test).where(eq(test.key, 'ping'));
+    console.log('[server] SQLITE DRIZZLE ->', '✅');
+  } catch (e) {
+    console.error('[error] SQLITE DRIZZLE -> ❌');
+  }
   try {
     await redisVps.ping();
     console.log('[server] REDIS -> ✅');
@@ -43,11 +50,11 @@ async function loadClients() {
   }
 
   try {
-    const result = await db.select().from(ogTest).where(eq(ogTest.key, 'og:test'));
+    await db.select().from(ogTest).where(eq(ogTest.key, 'og:test'));
 
-    console.log('[server] POSTGRES DRIZZLE: -->', '✅');
+    console.log('[server] POSTGRES DRIZZLE ->', '✅');
   } catch (err: any) {
-    console.error('[error] POSTGRES DRIZZLE: --> ❌');
+    console.error('[error] POSTGRES DRIZZLE -> ❌');
   }
 
   try {
@@ -59,7 +66,13 @@ async function loadClients() {
   // all imports scoped here — shutdown can access via closure
   const shutdown = async (signal: string) => {
     console.log(`[server] ${signal} — shutting down...`);
-    await Promise.all([redisVps.quit(), producer.close(), db.$client.end(), rustfsClient.destroy()]);
+    await Promise.all([
+      redisVps.quit(),
+      producer.close(),
+      db.$client.end(),
+      rustfsClient.destroy(),
+      sqliteDb.$client.close(),
+    ]);
 
     console.log(`[server] ${signal} — shutdown complete`);
 

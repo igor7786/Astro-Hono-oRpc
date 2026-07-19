@@ -723,6 +723,8 @@ skills-lock.json
 .agents
 ### GIT.txt ###
 GIT.txt
+### SQLITE ###
+**/src/lib/drizzle/sqlite/migrations
 
 ### exclude ###
 !**/frontend/src/lib
