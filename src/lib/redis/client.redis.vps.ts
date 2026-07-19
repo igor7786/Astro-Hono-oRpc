@@ -33,3 +33,4 @@ async function createRedisClient(): Promise<Redis> {
 
 // Single promise — created once, resolved once, reused forever
 export const redisVps = await createRedisClient();
+redisVps.on('error', (err: Error) => console.error('❌ Redis error: FAILED TO CONNECT', err.message));
