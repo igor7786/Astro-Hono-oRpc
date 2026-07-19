@@ -1,14 +1,14 @@
 import { ListBucketsCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
-import { ogTest } from '@/lib/drizzle/pg.schema';
+import { ogTest } from '@/lib/drizzle/pg/pg.schema';
 
 async function loadClients() {
   // Load clients or perform any necessary setup here
   const { envServer } = await import('@/lib/env/server.env.ts');
   const { redisVps } = await import('@/lib/redis/client.redis.vps.ts');
   const { producer } = await import('@/lib/redpanda-kafka/producer.ts');
-  const { db } = await import('@/lib/drizzle/client.pg.db');
+  const { db } = await import('@/lib/drizzle/pg/client.pg.db');
   const { rustfsClient } = await import('@/lib/s3/client.rustfs.vps.ts');
   console.log('[server] PRODUCTION ->', envServer.PRODUCTION === 'true' ? '✅' : '❌');
 

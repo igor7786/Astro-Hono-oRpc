@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
-import { db } from '@/lib/drizzle/client.pg.db';
-import { ogTest } from '@/lib/drizzle/pg.schema';
+import { db } from '@/lib/drizzle/pg/client.pg.db';
+import { ogTest } from '@/lib/drizzle/pg/pg.schema';
 
 try {
   const result = await db.select().from(ogTest).where(eq(ogTest.key, 'og:test'));
