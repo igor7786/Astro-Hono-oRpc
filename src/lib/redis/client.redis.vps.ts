@@ -8,6 +8,7 @@ async function createRedisClient(): Promise<Redis> {
     const { tls } = await import('@/lib/tls/client.tls');
     console.log('⚠️ [Redis] Running in development mode, connecting to remote VPS Redis with TLS...');
     return new Redis(envServer.VPS_REDIS_URL, {
+      connectTimeout: 200,
       enableReadyCheck: false,
       maxRetriesPerRequest: 3,
       tls: await tls(),
@@ -21,6 +22,7 @@ async function createRedisClient(): Promise<Redis> {
 
   console.log('✅ [Redis] Running in production mode, connecting to local Redis without TLS...');
   return new Redis(envServer.VPS_REDIS_URL, {
+    connectTimeout: 200,
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,
     retryStrategy: (times) => {

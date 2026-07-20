@@ -1,8 +1,12 @@
 // src/server/seo/og/og.route.ts
-import { redisVps } from '@/lib/redis/client.redis.vps';
-import { ogParamsKey } from '@/lib/redis/ttl';
+import { eq } from 'drizzle-orm';
+
+import { sqliteDb } from '@/lib/drizzle/sqlite/client';
+import { ogImages } from '@/lib/drizzle/sqlite/schema';
+import type { OgImage } from '@/lib/drizzle/sqlite/schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
+import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
 import { generateOgImage } from '@/server/seo/og/Generate';
 import { ogIdTokenServerSchema } from '@/server/seo/og/og.generate.token.id';
 
@@ -13,11 +17,28 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   if (!parsed.success) {
     throw errors.UNAUTHORIZED({ message: 'Invalid OG token or ID 📛' });
   }
-  // Redis caching for OG image generation
-  const paramsKey = ogParamsKey(input.id);
-  const params = await redisVps.hgetall(paramsKey);
-  const { title, description, author, date } = params;
 
+  let params: Record<string, string> | OgImage | null = null;
+
+  try {
+    const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1);
+    params = rows[0] ?? null;
+  } catch (err) {
+    console.error('[error] SQLite failed 📛');
+    params = null;
+  }
+  if (!params) {
+    throw errors.INPUT_VALIDATION_FAILED({ message: 'No OG image found 📛' });
+  }
+  const { title, description, author, date: dateStr } = params;
+  console.log('params:', params);
+  const date = dateStr
+    ? new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(dateStr))
+    : undefined;
   // ------------------------------------------------------------------
   // Format negotiation — prefer WebP unless the requester is a crawler
   // that doesn't support it (e.g. Facebook's scraper)
@@ -26,8 +47,6 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   const format =
     input.format ??
     (accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png');
-
-  const { getOrGenerate, buildCacheKey } = await import('@/server/seo/og/cache.redis');
 
   const contentType = format === 'webp' ? 'image/webp' : 'image/png';
 
@@ -40,19 +59,39 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   // Try cache first; generate only on miss.
   // getOrGenerate deduplicates concurrent misses for the same key so
   // only one generateOgImage call runs per unique set of params.
+  //
+  // If the cache layer itself throws (e.g. Redis unreachable and the
+  // failure isn't handled inside getOrGenerate), fall back to generating
+  // directly so the request still succeeds — just without caching.
   // ------------------------------------------------------------------
-  let isHit = true;
+  let image: Uint8Array;
+  let tier: string;
 
-  const { image, tier } = await getOrGenerate(
-    cacheKey,
-    async () =>
-      generateOgImage({ title: title ?? 'Fast Web Tech', description, author, date }, format).catch(
-        () => {
-          throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
-        }
-      ),
-    { format, title }
-  );
+  try {
+    const result = await getOrGenerate(
+      cacheKey,
+      async () =>
+        generateOgImage({ title: title ?? 'Fast Web Tech', description, author, date }, format).catch(
+          () => {
+            throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
+          }
+        ),
+      { format, title }
+    );
+    image = result.image;
+    tier = result.tier;
+  } catch (err: any) {
+    console.error('[error] Cache layer unavailable, generating without cache', err.message);
+    image = await generateOgImage(
+      { title: title ?? 'Fast Web Tech', description, author, date },
+      format
+    ).catch(() => {
+      throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
+    });
+    tier = 'uncached';
+  }
+
+  const isHit = tier !== 'miss' && tier !== 'uncached';
 
   // ------------------------------------------------------------------
   // Build the File object once so we use .size for Content-Length
@@ -70,6 +109,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
       'Content-Disposition': `inline; filename="og-image.${format}"`,
       'Content-Length': file.size.toString(),
       'X-Cache': isHit ? 'HIT' : 'MISS',
+      'X-Cache-Tier': tier,
     },
   };
 });

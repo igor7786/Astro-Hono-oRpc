@@ -11,4 +11,4 @@ const sqliteDb = drizzle({
 });
 
 export { sqliteDb };
-export const closeSqlite = () => sqlite.close();
+export const closeSqlite = async () => sqlite.close();
