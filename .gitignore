@@ -725,7 +725,10 @@ skills-lock.json
 GIT.txt
 ### SQLITE ###
 **/src/lib/drizzle/sqlite/migrations
-
+**/src/lib/drizzle/sqlite/sqlite.db
+**/src/lib/drizzle/sqlite/sqlite.db-wal
+**/src/lib/drizzle/sqlite/sqlite.db-shm
+**/src/lib/drizzle/sqlite/sqlite.db-journal
 ### exclude ###
 !**/frontend/src/lib
 !/src/lib/
