@@ -1,6 +1,6 @@
 import { pgTable, text } from 'drizzle-orm/pg-core';
 
-export const ogTest = pgTable('og_test', {
+export const test = pgTable('test', {
   key: text('key').primaryKey(),
   value: text('value'),
 });

@@ -729,6 +729,8 @@ GIT.txt
 **/src/lib/drizzle/sqlite/sqlite.db-wal
 **/src/lib/drizzle/sqlite/sqlite.db-shm
 **/src/lib/drizzle/sqlite/sqlite.db-journal
+### PG ###
+**/src/lib/drizzle/pg/migrations
 ### exclude ###
 !**/frontend/src/lib
 !/src/lib/
