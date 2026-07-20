@@ -1,7 +1,7 @@
 import { ListBucketsCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
-import { ogTest } from '../lib/drizzle/pg/pg.schema';
+import { test as testPg } from '../lib/drizzle/pg/pg.schema';
 import { test } from '../lib/drizzle/sqlite/schema';
 
 async function loadClients() {
@@ -50,7 +50,7 @@ async function loadClients() {
   }
 
   try {
-    await db.select().from(ogTest).where(eq(ogTest.key, 'og:test'));
+    await db.select().from(testPg).where(eq(testPg.key, 'og:test'));
 
     console.log('[server] POSTGRES DRIZZLE ->', '✅');
   } catch (err: any) {
