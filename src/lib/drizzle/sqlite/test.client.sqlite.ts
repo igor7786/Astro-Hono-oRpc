@@ -19,8 +19,6 @@ await sqliteDb
   });
 
 console.log('✅ Inserted');
-
-// // SELECT
 const rows = await sqliteDb.select().from(test).where(eq(test.key, 'ping'));
 
 console.log('✅ [SQLITE -> DRIZZLE] Rows:', rows[0]?.value);

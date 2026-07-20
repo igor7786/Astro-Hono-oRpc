@@ -1,13 +1,13 @@
 import { ListBucketsCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
-import { ogTest } from '@/lib/drizzle/pg/pg.schema';
-import { test } from '@/lib/drizzle/sqlite/schema';
+import { ogTest } from '../lib/drizzle/pg/pg.schema';
+import { test } from '../lib/drizzle/sqlite/schema';
 
 async function loadClients() {
   // Load clients or perform any necessary setup here
   const { envServer } = await import('@/lib/env/server.env.ts');
-  const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
+  const { sqliteDb, closeSqlite } = await import('@/lib/drizzle/sqlite/client.ts');
   const { redisVps } = await import('@/lib/redis/client.redis.vps.ts');
   const { producer } = await import('@/lib/redpanda-kafka/producer.ts');
   const { db } = await import('@/lib/drizzle/pg/client.pg.db');
@@ -71,7 +71,7 @@ async function loadClients() {
       producer.close(),
       db.$client.end(),
       rustfsClient.destroy(),
-      sqliteDb.$client.close(),
+      closeSqlite(),
     ]);
 
     console.log(`[server] ${signal} — shutdown complete`);
