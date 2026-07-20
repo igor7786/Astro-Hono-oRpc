@@ -6,6 +6,8 @@ import { envServer } from '@/lib/env/server.env';
 import { generateOgParamsId, generateOgToken } from '@/server/seo/og/og.generate.token.id';
 import { redisVps } from '@/lib/redis/client.redis.vps';
 import ttl, { ogParamsKey } from '@/lib/redis/ttl';
+import { sqliteDb } from '@/lib/drizzle/sqlite/client';
+import { ogImages } from '@/lib/drizzle/sqlite/schema';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
@@ -29,18 +31,43 @@ const id = generateOgParamsId({ title, description, author: ogAuthor, date });
 const token = generateOgToken(id);
 // REDIS caching for OG image generation
 const paramsKey = ogParamsKey(id);
+console.log('[paramsKey]', paramsKey);
 // Check if the OG params already exist in Redis
-const existing = await redisVps.hgetall(paramsKey);
-const isNew = !existing || Object.keys(existing).length === 0;
-if (isNew) {
-  console.log('New OG params, caching in Redis...');
-  await redisVps.hset(paramsKey, {
-    title,
-    description,
-    ...(author && { author }),
-    ...(date && { date }),
-  });
-  await redisVps.expire(paramsKey, ttl['1w']); // Set expiration time for 1 week
+try {
+  const existing = await redisVps.hgetall(paramsKey);
+  const isNew = !existing || Object.keys(existing).length === 0;
+  if (isNew) {
+    console.log('New OG params, caching in Redis...');
+    await redisVps.hset(paramsKey, {
+      title,
+      description,
+      ...(author && { author }),
+      ...(date && { date }),
+    });
+    await redisVps.expire(paramsKey, ttl['1w']); // Set expiration time for 1 week
+  }
+} catch (error) {
+  console.error(console.error('[error] Redis unavailable 📛, writing straight to SQLite -> ⏳'));
+  // If Redis is unavailable, write to SQLite
+  try {
+    const db = sqliteDb;
+    await db
+      .insert(ogImages)
+      .values({
+        id,
+        title,
+        description,
+        author,
+        date,
+        format: 'png',
+      })
+      .onConflictDoUpdate({
+        target: ogImages.id,
+        set: { title, description, author, date },
+      });
+  } catch (sqliteErr) {
+    console.error('[error] SQLite write also failed 📛');
+  }
 }
 
 // 🚀 SAFE Page URL BUILDER
