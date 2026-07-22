@@ -8,7 +8,7 @@ const EnvSchema = z.object({
   // Og Secret
   OG_SECRET: z.string().min(1, 'ENV: OG_SECRET is required and must be a non-empty string'),
   // Database
-  DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
+  NEON_DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
   UPSTASH_REDIS_URL: z
     .string()
     .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
@@ -23,6 +23,11 @@ const EnvSchema = z.object({
   VPS_PG_USER: z.string().min(1, 'ENV: VPS_PG_USER is required and must be a non-empty string'),
   VPS_PG_PASS: z.string().min(1, 'ENV: VPS_PG_PASS is required and must be a non-empty string'),
   VPS_PG_DB: z.string().min(1, 'ENV: VPS_PG_DB is required and must be a non-empty string'),
+  VPS_SQLITE_PATH: z.string().min(1, 'ENV: VPS_SQLITE_PATH is required and must be a non-empty string'),
+  LOCAL_SQLITE_PATH: z
+    .string()
+    .min(1, 'ENV: LOCAL_SQLITE_PATH is required and must be a non-empty string'),
+
   // BetterAuth
   BETTER_AUTH_SECRET: z
     .string()

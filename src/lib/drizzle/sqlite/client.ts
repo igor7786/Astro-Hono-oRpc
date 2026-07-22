@@ -3,7 +3,16 @@ import { drizzle } from 'drizzle-orm/bun-sqlite';
 
 import { resolve } from 'node:path';
 
-const sqlitePath = resolve(process.cwd(), './src/lib/drizzle/sqlite/sqlite.db');
+import { envServer } from '@/lib/env/server.env';
+
+function getSqlitePath() {
+  if (envServer.PRODUCTION === 'true') {
+    return resolve(envServer.VPS_SQLITE_PATH);
+  }
+  return resolve(envServer.LOCAL_SQLITE_PATH);
+}
+const sqlitePath = getSqlitePath();
+// const sqlitePath = resolve(process.env.SQLITE_PATH ?? './src/lib/drizzle/sqlite/sqlite.db');
 const sqlite = new Database(sqlitePath);
 sqlite.run('PRAGMA journal_mode = WAL;');
 sqlite.run('PRAGMA synchronous = NORMAL;');
