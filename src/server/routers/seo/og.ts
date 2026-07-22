@@ -1,9 +1,11 @@
 // src/server/seo/og/og.route.ts
 import { eq } from 'drizzle-orm';
 
+import { resolve } from 'node:path';
+
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
-import type { OgImage } from '@/lib/drizzle/sqlite/schema';
+import type { NewOgImage, OgImage } from '@/lib/drizzle/sqlite/schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
@@ -24,8 +26,36 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1);
     params = rows[0] ?? null;
   } catch (err) {
-    console.error('[error] SQLite failed 📛');
-    params = null;
+    const manifestPath = resolve(process.cwd(), 'data/og-fallback', 'manifest.json');
+    const file = Bun.file(manifestPath);
+
+    if (await file.exists()) {
+      const manifest: Record<
+        string,
+        { title: string; description: string; author: string; date: string; format: 'webp' | 'png' }
+      > = await file.json();
+
+      try {
+        // Restore every entry from the manifest back into SQLite
+        for (const [id, entry] of Object.entries(manifest)) {
+          const fallbackData: NewOgImage = { id, ...entry };
+          await sqliteDb
+            .insert(ogImages)
+            .values(fallbackData)
+            .onConflictDoUpdate({ target: ogImages.id, set: fallbackData });
+        }
+
+        // Everything is safely back in SQLite — the manifest file has served its purpose
+        await file.delete();
+
+        const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1);
+        params = rows[0] ?? null;
+      } catch (writeBackErr) {
+        console.error('[error] Failed to write fallback entries back to SQLite: 📛');
+        // SQLite is still unreachable — serve this one entry straight from the manifest instead
+        params = manifest[input.id] ?? null;
+      }
+    }
   }
   if (!params) {
     throw errors.INPUT_VALIDATION_FAILED({ message: 'No OG image found 📛' });

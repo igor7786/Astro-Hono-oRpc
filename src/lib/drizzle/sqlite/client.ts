@@ -12,7 +12,6 @@ function getSqlitePath() {
   return resolve(envServer.LOCAL_SQLITE_PATH);
 }
 const sqlitePath = getSqlitePath();
-// const sqlitePath = resolve(process.env.SQLITE_PATH ?? './src/lib/drizzle/sqlite/sqlite.db');
 const sqlite = new Database(sqlitePath);
 sqlite.run('PRAGMA journal_mode = WAL;');
 sqlite.run('PRAGMA synchronous = NORMAL;');

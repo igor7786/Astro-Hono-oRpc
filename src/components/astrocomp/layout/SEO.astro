@@ -2,6 +2,8 @@
 import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
 import z from 'zod';
 import { eq } from 'drizzle-orm';
+import { resolve } from 'node:path';
+import { mkdir } from 'node:fs/promises';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
 import { generateOgParamsId, generateOgToken } from '@/server/seo/og/og.generate.token.id';
@@ -47,7 +49,24 @@ try {
     });
   }
 } catch (error) {
-  console.error('[error] Sqlite unavailable 📛, something went wrong');
+  console.error('[error] Sqlite unavailable 📛, appending to fallback manifest');
+  try {
+    const fallbackDir = resolve(process.cwd(), 'data/og-fallback');
+    await mkdir(fallbackDir, { recursive: true });
+    const manifestPath = resolve(fallbackDir, 'manifest.json');
+
+    const file = Bun.file(manifestPath);
+    const manifest: Record<
+      string,
+      { title: string; description: string; author: string; date: string; format: string }
+    > = (await file.exists()) ? await file.json() : {};
+
+    manifest[id] = { title, description, author: ogAuthor, date, format: 'png' };
+
+    await Bun.write(manifestPath, JSON.stringify(manifest, null, 2));
+  } catch (err) {
+    console.error('[error] Failed to create fallback manifest');
+  }
 }
 // 🚀 SAFE Page URL BUILDER
 const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
