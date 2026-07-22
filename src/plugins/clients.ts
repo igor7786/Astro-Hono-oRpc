@@ -66,7 +66,8 @@ async function loadClients() {
   // all imports scoped here — shutdown can access via closure
   const shutdown = async (signal: string) => {
     console.log(`[server] ${signal} — shutting down...`);
-    await Promise.all([
+
+    const results = await Promise.allSettled([
       redisVps.quit(),
       producer.close(),
       db.$client.end(),
@@ -74,14 +75,29 @@ async function loadClients() {
       closeSqlite(),
     ]);
 
-    console.log(`[server] ${signal} — shutdown complete`);
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        const names = ['redis', 'kafka producer', 'postgres', 'rustfs', 'sqlite'];
+        console.error(`[error] shutdown of ${names[i]} failed:`, result.reason);
+      }
+    });
 
-    // Let the process exit naturally instead of forcing it
+    console.log(`[server] ${signal} — shutdown complete`);
     process.exit(0);
   };
 
-  process.once('SIGTERM', () => void shutdown('SIGTERM'));
-  process.once('SIGINT', () => void shutdown('SIGINT'));
+  process.once('SIGTERM', () => {
+    shutdown('SIGTERM').catch((err) => {
+      console.error('[error] shutdown itself failed:', err);
+      process.exit(1);
+    });
+  });
+  process.once('SIGINT', () => {
+    shutdown('SIGINT').catch((err) => {
+      console.error('[error] shutdown itself failed:', err);
+      process.exit(1);
+    });
+  });
 }
 
 export default function serverStartup() {
