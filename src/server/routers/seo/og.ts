@@ -61,7 +61,6 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     throw errors.INPUT_VALIDATION_FAILED({ message: 'No OG image found 📛' });
   }
   const { title, description, author, date: dateStr } = params;
-  console.log('params:', params);
   const date = dateStr
     ? new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
