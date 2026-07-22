@@ -17,12 +17,14 @@ const EnvSchema = z.object({
   VPS_CA_CERT: z.string().min(1, 'ENV: VPS_CA_CERT is required and must be a non-empty string'),
   VPS_CLIENT_CERT: z.string().min(1, 'ENV: VPS_CLIENT_CERT is required and must be a non-empty string'),
   VPS_CLIENT_KEY: z.string().min(1, 'ENV: VPS_CLIENT_KEY is required and must be a non-empty string'),
-  // Vps Postgres
+  // Vps Postgres and Local
+  LOCAL_PG_HOST: z.string().min(1, 'ENV: LOCAL_PG_HOST is required and must be a non-empty string'),
   VPS_PG_HOST: z.string().min(1, 'ENV: VPS_PG_HOST is required and must be a non-empty string'),
   VPS_PG_PORT: z.coerce.number().min(1, 'ENV: VPS_PG_PORT is required and must be a non-empty string'),
   VPS_PG_USER: z.string().min(1, 'ENV: VPS_PG_USER is required and must be a non-empty string'),
   VPS_PG_PASS: z.string().min(1, 'ENV: VPS_PG_PASS is required and must be a non-empty string'),
   VPS_PG_DB: z.string().min(1, 'ENV: VPS_PG_DB is required and must be a non-empty string'),
+  // Vps Sqlite and Local
   VPS_SQLITE_PATH: z.string().min(1, 'ENV: VPS_SQLITE_PATH is required and must be a non-empty string'),
   LOCAL_SQLITE_PATH: z
     .string()

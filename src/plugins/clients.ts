@@ -68,36 +68,24 @@ async function loadClients() {
     console.log(`[server] ${signal} — shutting down...`);
 
     const results = await Promise.allSettled([
-      redisVps.quit(),
+      redisVps.disconnect(),
       producer.close(),
       db.$client.end(),
       rustfsClient.destroy(),
       closeSqlite(),
     ]);
-
     results.forEach((result, i) => {
       if (result.status === 'rejected') {
         const names = ['redis', 'kafka producer', 'postgres', 'rustfs', 'sqlite'];
         console.error(`[error] shutdown of ${names[i]} failed:`, result.reason);
       }
     });
-
     console.log(`[server] ${signal} — shutdown complete`);
     process.exit(0);
   };
 
-  process.once('SIGTERM', () => {
-    shutdown('SIGTERM').catch((err) => {
-      console.error('[error] shutdown itself failed:', err);
-      process.exit(1);
-    });
-  });
-  process.once('SIGINT', () => {
-    shutdown('SIGINT').catch((err) => {
-      console.error('[error] shutdown itself failed:', err);
-      process.exit(1);
-    });
-  });
+  process.once('SIGTERM', () => void shutdown('SIGTERM'));
+  process.once('SIGINT', () => void shutdown('SIGINT'));
 }
 
 export default function serverStartup() {

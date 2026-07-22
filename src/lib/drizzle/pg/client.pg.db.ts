@@ -29,7 +29,7 @@ async function createDb() {
 
   console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting to local PostgreSQL without TLS...');
   const client = new SQL({
-    hostname: envServer.VPS_PG_HOST,
+    hostname: envServer.LOCAL_PG_HOST,
     port: envServer.VPS_PG_PORT,
     username: envServer.VPS_PG_USER,
     password: envServer.VPS_PG_PASS,
