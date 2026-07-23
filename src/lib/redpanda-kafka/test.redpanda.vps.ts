@@ -1,4 +1,4 @@
-import { Admin, Producer, stringSerializers } from '@platformatic/kafka';
+import { Admin, ProduceAcks, Producer, stringSerializers } from '@platformatic/kafka';
 
 import { baseConfig } from '@/lib/redpanda-kafka/config.redpanda.vps';
 
@@ -117,6 +117,7 @@ export async function sendTestMessage() {
           },
         },
       ],
+      acks: ProduceAcks.LEADER,
     });
 
     console.log('✅ Message sent');
