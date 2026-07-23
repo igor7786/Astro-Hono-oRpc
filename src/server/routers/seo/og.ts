@@ -28,45 +28,8 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   } catch (err) {
     console.error('[error] SQLite unavailable, will try manifest fallback');
     // params stays null — handled below alongside the "not found" case
-  }
-
-  // Whether SQLite errored, or simply had no row for this id yet,
-  // check the manifest for this specific entry before giving up.
-  if (!params) {
-    const manifestPath = resolve(process.cwd(), 'data/og-fallback', 'manifest.json');
-    const file = Bun.file(manifestPath);
-
-    if (await file.exists()) {
-      const manifest: Record<
-        string,
-        { title: string; description: string; author: string; date: string; format: 'webp' | 'png' }
-      > = await file.json();
-
-      const entry = manifest[input.id];
-
-      if (entry) {
-        try {
-          // Restore every entry from the manifest back into SQLite while we're at it
-          for (const [id, manifestEntry] of Object.entries(manifest)) {
-            const fallbackData: NewOgImage = { id, ...manifestEntry };
-            await sqliteDb
-              .insert(ogImages)
-              .values(fallbackData)
-              .onConflictDoUpdate({ target: ogImages.id, set: fallbackData });
-          }
-
-          // Everything is safely back in SQLite — the manifest has served its purpose
-          await file.delete();
-
-          const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1);
-          params = rows[0] ?? null;
-        } catch (writeBackErr) {
-          console.error('[error] Failed to write fallback entries back to SQLite: 📛');
-          // SQLite is still unreachable — serve this one entry straight from the manifest instead
-          params = entry;
-        }
-      }
-    }
+    params = null;
+    throw errors.INTERNAL_SERVER_ERROR({ message: 'SQLite unavailable 📛' });
   }
 
   if (!params) {

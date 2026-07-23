@@ -29,6 +29,9 @@ const EnvSchema = z.object({
   LOCAL_SQLITE_PATH: z
     .string()
     .min(1, 'ENV: LOCAL_SQLITE_PATH is required and must be a non-empty string'),
+  LOCAL_MANIFEST_DIR: z
+    .string()
+    .min(1, 'ENV: LOCAL_MANIFEST_DIR is required and must be a non-empty string'),
 
   // BetterAuth
   BETTER_AUTH_SECRET: z

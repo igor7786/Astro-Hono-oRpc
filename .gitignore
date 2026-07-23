@@ -729,6 +729,7 @@ GIT.txt
 **/src/lib/drizzle/sqlite/sqlite.db-wal
 **/src/lib/drizzle/sqlite/sqlite.db-shm
 **/src/lib/drizzle/sqlite/sqlite.db-journal
+**src/scripts/manifest.json
 ### PG ###
 **/src/lib/drizzle/pg/migrations
 ### exclude ###
@@ -739,3 +740,4 @@ GIT.txt
 !**/src/scripts
 !src/lib/env
 !.example.env
+
