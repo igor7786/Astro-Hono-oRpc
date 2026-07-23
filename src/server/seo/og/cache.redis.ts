@@ -5,13 +5,14 @@ import { ProduceAcks } from '@platformatic/kafka';
 import { createHash } from 'node:crypto';
 
 import { redisVps } from '@/lib/redis/client.redis.vps';
+import ttl from '@/lib/redis/ttl';
 // your S3-compatible client
 import { producer } from '@/lib/redpanda-kafka/producer';
 import { rustfsClient } from '@/lib/s3/client.rustfs.vps';
 
 // lazy singleton, mirrors your other producers
 
-const OG_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days — Dragonfly hot tier
+const OG_TTL_SECONDS = ttl['1w']; // 7 days — Dragonfly hot tier
 const CACHE_VERSION = 'v1';
 const RUSTFS_BUCKET = 'og-images';
 
