@@ -1,5 +1,6 @@
 // src/server/seo/og/cache.redis.ts
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { ProduceAcks } from '@platformatic/kafka';
 
 import { createHash } from 'node:crypto';
 
@@ -179,6 +180,7 @@ async function emitCacheEvent(
           }),
         },
       ],
+      acks: ProduceAcks.LEADER,
     });
     // await producer.close();
     // no close/disconnect here — producer stays alive for the next request

@@ -1,4 +1,5 @@
 import { ListBucketsCommand } from '@aws-sdk/client-s3';
+import { ProduceAcks } from '@platformatic/kafka';
 import { eq } from 'drizzle-orm';
 
 import { test as testPg } from '../lib/drizzle/pg/pg.schema';
@@ -42,6 +43,7 @@ async function loadClients() {
           },
         },
       ],
+      acks: ProduceAcks.LEADER,
     });
 
     console.log('[server] REDPANDA -> ✅');
