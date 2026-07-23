@@ -1,8 +1,6 @@
 // src/server/seo/og/og.route.ts
 import { eq } from 'drizzle-orm';
 
-import { resolve } from 'node:path';
-
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
 import type { NewOgImage, OgImage } from '@/lib/drizzle/sqlite/schema';
