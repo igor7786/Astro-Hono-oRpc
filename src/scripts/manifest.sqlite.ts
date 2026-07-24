@@ -7,8 +7,6 @@ import { envServer } from '@/lib/env/server.env';
 
 const manifestDir = envServer.SQLITE_MANIFEST_DIR;
 const manifestPath = resolve(process.cwd(), manifestDir, 'manifest.json');
-console.log(manifestPath);
-
 const file = Bun.file(manifestPath);
 
 if (!(await file.exists())) {

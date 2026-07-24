@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 
 import { envServer } from '@/lib/env/server.env';
 
-const sqlitePath = resolve(envServer.SQLITE_PATH);
+const sqlitePath = resolve(process.cwd(), envServer.SQLITE_PATH);
 const sqlite = new Database(sqlitePath, { create: true });
 
 sqlite.run('PRAGMA journal_mode = WAL;');
