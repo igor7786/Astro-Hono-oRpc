@@ -51,17 +51,17 @@ try {
 } catch (error) {
   console.error('[error] Sqlite unavailable 📛, appending to fallback manifest');
   try {
-    const fallbackDir = resolve(process.cwd(), process.env.MANIFEST_DIR!);
+    const fallbackDir = resolve(process.cwd(), envServer.SQLITE_MANIFEST_DIR);
     await mkdir(fallbackDir, { recursive: true });
     const manifestPath = resolve(fallbackDir, 'manifest.json');
 
     const file = Bun.file(manifestPath);
     const manifest: Record<
       string,
-      { title: string; description: string; author: string; date: string; format: string }
+      { token: string; title: string; description: string; author: string; date: string; format: string }
     > = (await file.exists()) ? await file.json() : {};
 
-    manifest[id] = { title, description, author: ogAuthor, date, format: 'png' };
+    manifest[id] = { token, title, description, author: ogAuthor, date, format: 'png' };
 
     await Bun.write(manifestPath, JSON.stringify(manifest, null, 2));
   } catch (err) {

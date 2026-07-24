@@ -5,7 +5,7 @@ import { ogImages } from '@/lib/drizzle/sqlite/schema';
 import type { NewOgImage } from '@/lib/drizzle/sqlite/schema';
 import { envServer } from '@/lib/env/server.env';
 
-const manifestDir = process.env.MANIFEST_DIR ?? envServer.LOCAL_MANIFEST_DIR;
+const manifestDir = envServer.SQLITE_MANIFEST_DIR;
 const manifestPath = resolve(process.cwd(), manifestDir, 'manifest.json');
 console.log(manifestPath);
 

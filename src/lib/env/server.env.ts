@@ -25,13 +25,10 @@ const EnvSchema = z.object({
   VPS_PG_PASS: z.string().min(1, 'ENV: VPS_PG_PASS is required and must be a non-empty string'),
   VPS_PG_DB: z.string().min(1, 'ENV: VPS_PG_DB is required and must be a non-empty string'),
   // Vps Sqlite and Local
-  VPS_SQLITE_PATH: z.string().min(1, 'ENV: VPS_SQLITE_PATH is required and must be a non-empty string'),
-  LOCAL_SQLITE_PATH: z
+  SQLITE_PATH: z.string().min(1, 'ENV: SQLITE_PATH is required and must be a non-empty string'),
+  SQLITE_MANIFEST_DIR: z
     .string()
-    .min(1, 'ENV: LOCAL_SQLITE_PATH is required and must be a non-empty string'),
-  LOCAL_MANIFEST_DIR: z
-    .string()
-    .min(1, 'ENV: LOCAL_MANIFEST_DIR is required and must be a non-empty string'),
+    .min(1, 'ENV: SQLITE_MANIFEST_DIR is required and must be a non-empty string'),
 
   // BetterAuth
   BETTER_AUTH_SECRET: z
