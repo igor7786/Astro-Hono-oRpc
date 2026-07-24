@@ -2,12 +2,12 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 import { envServer } from '@/lib/env/server.env';
-import { ogIdTokenSchema, type OgParams } from '@/lib/shared/schemas/seo.schema';
+import { type OgRecord } from '@/lib/shared/schemas/seo.schema';
 
 export function generateOgToken(id: string): string {
   return createHmac('sha256', envServer.OG_SECRET).update(id).digest('hex').slice(0, 16);
 }
-export function generateOgParamsId(params: OgParams): string {
+export function generateOgParamsId(params: OgRecord): string {
   const normalized = Object.entries(params)
     .filter((entry): entry is [string, string] => entry[1] !== undefined)
     .sort(([a], [b]) => a.localeCompare(b))
@@ -22,8 +22,3 @@ export function verifyOgIdToken(id: string, token: string): boolean {
   // comparison always takes the same time regardless of where strings differ
   return timingSafeEqual(Buffer.from(expected, 'utf-8'), Buffer.from(token, 'utf-8'));
 }
-
-export const ogIdTokenServerSchema = ogIdTokenSchema.refine(
-  ({ id, token }) => verifyOgIdToken(id, token),
-  { message: 'Invalid OG token or ID 📛', path: ['token'] }
-);

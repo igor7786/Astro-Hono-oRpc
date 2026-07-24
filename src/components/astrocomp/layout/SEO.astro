@@ -41,11 +41,11 @@ try {
     // Save the OG params to SQLite
     await sqliteDb.insert(ogImages).values({
       id,
+      token,
       title,
       description,
       author,
       date,
-      format: 'png',
     });
   }
 } catch (error) {
@@ -61,7 +61,7 @@ try {
       { title: string; description: string; author: string; date: string; format: string }
     > = (await file.exists()) ? await file.json() : {};
 
-    manifest[id] = { title, description, author: ogAuthor, date, format: 'webp' };
+    manifest[id] = { title, description, author: ogAuthor, date, format: 'png' };
 
     await Bun.write(manifestPath, JSON.stringify(manifest, null, 2));
   } catch (err) {
@@ -69,13 +69,12 @@ try {
   }
 }
 // 🚀 SAFE Page URL BUILDER
-const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL);
+const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL).toString();
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 const fullPath = openApiBasePath + ogPath;
 const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 
 ogUrl.searchParams.set('id', id);
-ogUrl.searchParams.set('token', token);
 ogUrl.searchParams.set('format', 'png');
 const ogImageUrl = ogUrl.toString();
 ---

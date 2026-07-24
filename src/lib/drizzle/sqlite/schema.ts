@@ -17,11 +17,13 @@ export const test = sqliteTable('test', {
 export const ogImages = sqliteTable('og_images', {
   // Your HMAC-signed opaque hash ID — primary key, computed from the input params
   id: text('id').primaryKey(),
-
+  token: text('token').notNull(),
   title: text('title').notNull().default('Fast Web Tech'),
   description: text('description').notNull().default('My awesome app'),
   author: text('author').notNull().default('Alberto'),
-  format: text('format', { enum: ['webp', 'png'] }),
+  format: text('format', { enum: ['webp', 'png'] })
+    .notNull()
+    .default('png'),
 
   // Store as ISO string (matches your zod .transform(formatDate) output)
   date: text('date').notNull(),

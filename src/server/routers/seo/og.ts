@@ -4,43 +4,38 @@ import { eq } from 'drizzle-orm';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
 import type { OgImage } from '@/lib/drizzle/sqlite/schema';
+import { formatDate } from '@/lib/shared/schemas/seo.schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
 import { generateOgImage } from '@/server/seo/og/Generate';
-import { ogIdTokenServerSchema } from '@/server/seo/og/og.generate.token.id';
+import { verifyOgIdToken } from '@/server/seo/og/og.generate.token.id';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
   // input already passed Zod shape check from contract
   // now verify the HMAC token server-side
-  const parsed = ogIdTokenServerSchema.safeParse(input);
-  if (!parsed.success) {
-    throw errors.UNAUTHORIZED({ message: 'Invalid OG token or ID 📛' });
-  }
 
   let params: Record<string, string> | OgImage | null = null;
-
   try {
-    const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1);
-    params = rows[0] ?? null;
-  } catch (err) {
-    console.error('[error] SQLite unavailable, will try manifest fallback');
-    // params stays null — handled below alongside the "not found" case
+    [params] =
+      (await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1)) ?? null;
+  } catch (error) {
     params = null;
     throw errors.INTERNAL_SERVER_ERROR({ message: 'SQLite unavailable 📛' });
   }
-
-  if (!params) {
-    throw errors.INPUT_VALIDATION_FAILED({ message: 'No OG image found 📛' });
+  if (!params) throw errors.NOT_FOUND({ message: 'No Record found 📛' });
+  try {
+    const isValid = verifyOgIdToken(input.id, params.token);
+    if (!isValid) {
+      params = null;
+      throw errors.UNAUTHORIZED({ message: 'Invalid Id or Token 📛' });
+    }
+  } catch {
+    params = null;
+    throw errors.BAD_REQUEST({ message: 'Something went wrong 📛' });
   }
   const { title, description, author, date: dateStr } = params;
-  const date = dateStr
-    ? new Intl.DateTimeFormat('en-GB', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }).format(new Date(dateStr))
-    : undefined;
+  const date = formatDate(dateStr);
   // ------------------------------------------------------------------
   // Format negotiation — prefer WebP unless the requester is a crawler
   // that doesn't support it (e.g. Facebook's scraper)
@@ -51,7 +46,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     (accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png');
 
   const contentType = format === 'webp' ? 'image/webp' : 'image/png';
-
+  console.log('format', format);
   // ------------------------------------------------------------------
   // Build a stable, hashed cache key from all inputs
   // ------------------------------------------------------------------
