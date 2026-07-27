@@ -7,6 +7,7 @@ import ShareWidget from '@rcomp/playground/blog/ShareWidget';
 import CommentSection from '@rcomp/playground/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
 import { formatDate, createSeo } from '@/lib/shared/schemas/seo.schema';
+import { getReadingTime } from '@/lib/helpers/reading-time';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -17,8 +18,11 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content, headings, remarkPluginFrontmatter } = await render(post);
-const readingTime: string = remarkPluginFrontmatter?.minutesRead;
+const { Content, headings } = await render(post);
+
+// Reading time from raw body — no remark plugin needed with Sätteri
+const readingTime = getReadingTime(post.body);
+
 const ogDate = formatDate(post.data.date?.toISOString());
 const seo = createSeo({
   title: post.data.title,
@@ -55,7 +59,7 @@ const seo = createSeo({
         {ogDate && <span>•</span>}
         {ogDate && <span>{ogDate}</span>}
         {readingTime && <span>•</span>}
-        {readingTime && <span>{readingTime}</span>}
+        {readingTime && <span>{readingTime} min read</span>}
       </div>
 
       {/* ✅ React islands */}
@@ -104,4 +108,4 @@ const seo = createSeo({
       <a href="/playground/blog" class="text-primary text-sm hover:underline">← Back to Blog</a>
     </div>
   </div>
-</Layout>
+</Layout>; ---

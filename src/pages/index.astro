@@ -2,7 +2,7 @@
 import { createSeo } from '@/lib/shared/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
 import { discoverRoutes } from '@/lib/helpers/paths';
-
+import { Picture } from 'astro:assets';
 export const prerender = true;
 export async function getStaticPaths() {
   return [{ params: {} }];
@@ -17,6 +17,7 @@ const seo = createSeo({
   title: 'Playground | Home',
   description: 'Powered by Astro + Hono + oRPC',
   date: new Date(2026, 3, 15).toISOString(),
+  type: 'website',
 });
 ---
 
@@ -26,6 +27,7 @@ const seo = createSeo({
     slot="main"
   >
     <h1 class="text-foreground mx-auto mb-2 text-6xl font-bold">Welcome</h1>
+
     <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
 
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">

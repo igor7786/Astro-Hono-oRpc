@@ -1,5 +1,5 @@
 ---
-title: Hello Astro
+title: This is first Blog Post
 description: My first blog post
 author: Igor
 date: 2026-04-10

@@ -3,11 +3,33 @@ import { z } from 'zod';
 
 // Schema for validation
 const EnvSchema = z.object({
+  // General
+  PRODUCTION: z.string().min(1, 'ENV: PRODUCTION is required and must be a non-empty string'),
+  // Og Secret
+  OG_SECRET: z.string().min(1, 'ENV: OG_SECRET is required and must be a non-empty string'),
   // Database
-  DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
+  NEON_DB_URL: z.string().min(1, 'ENV: DB_URL is required and must be a non-empty string'),
   UPSTASH_REDIS_URL: z
     .string()
     .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
+  VPS_REDIS_URL: z.string().min(1, 'ENV: VPS_REDIS_URL is required and must be a non-empty string'),
+  VPS_TLS_SERVER: z.string().min(1, 'ENV: VPS_TLS_SERVER is required and must be a non-empty string'),
+  VPS_CA_CERT: z.string().min(1, 'ENV: VPS_CA_CERT is required and must be a non-empty string'),
+  VPS_CLIENT_CERT: z.string().min(1, 'ENV: VPS_CLIENT_CERT is required and must be a non-empty string'),
+  VPS_CLIENT_KEY: z.string().min(1, 'ENV: VPS_CLIENT_KEY is required and must be a non-empty string'),
+  // Vps Postgres and Local
+  LOCAL_PG_HOST: z.string().min(1, 'ENV: LOCAL_PG_HOST is required and must be a non-empty string'),
+  VPS_PG_HOST: z.string().min(1, 'ENV: VPS_PG_HOST is required and must be a non-empty string'),
+  VPS_PG_PORT: z.coerce.number().min(1, 'ENV: VPS_PG_PORT is required and must be a non-empty string'),
+  VPS_PG_USER: z.string().min(1, 'ENV: VPS_PG_USER is required and must be a non-empty string'),
+  VPS_PG_PASS: z.string().min(1, 'ENV: VPS_PG_PASS is required and must be a non-empty string'),
+  VPS_PG_DB: z.string().min(1, 'ENV: VPS_PG_DB is required and must be a non-empty string'),
+  // Vps Sqlite and Local
+  SQLITE_PATH: z.string().min(1, 'ENV: SQLITE_PATH is required and must be a non-empty string'),
+  SQLITE_MANIFEST_DIR: z
+    .string()
+    .min(1, 'ENV: SQLITE_MANIFEST_DIR is required and must be a non-empty string'),
+
   // BetterAuth
   BETTER_AUTH_SECRET: z
     .string()
@@ -40,6 +62,34 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test', 'preview']).default('development'),
   // AI
   QWEN_API_KEY: z.string().min(1, 'ENV: QWEN_API_KEY is required and must be a non-empty string'),
+  // RustFS
+  RUSTFS_ACCESS_KEY: z
+    .string()
+    .min(1, 'ENV: RUSTFS_ACCESS_KEY is required and must be a non-empty string'),
+  RUSTFS_SECRET_KEY: z
+    .string()
+    .min(1, 'ENV: RUSTFS_SECRET_KEY is required and must be a non-empty string'),
+  RUSTFS_ENDPOINT: z.string().min(1, 'ENV: RUSTFS_ENDPOINT is required and must be a non-empty string'),
+  // Red-panda,Kafka
+  VPS_KAFKA_BROKERS_DEV: z
+    .string()
+    .min(1, 'ENV: VPS_KAFKA_BROKERS_DEV is required and must be a non-empty string'),
+  VPS_KAFKA_BROKERS_PROD: z
+    .string()
+    .min(1, 'ENV: VPS_KAFKA_BROKERS_PROD is required and must be a non-empty string'),
+  KAFKA_ADMIN_USERNAME: z
+    .string()
+    .min(1, 'ENV: KAFKA_ADMIN_USERNAME is required and must be a non-empty string'),
+  KAFKA_ADMIN_PASSWORD: z
+    .string()
+    .min(1, 'ENV: KAFKA_ADMIN_PASSWORD is required and must be a non-empty string'),
+  KAFKA_APP_USER: z.string().min(1, 'ENV: KAFKA_APP_USER is required and must be a non-empty string'),
+  KAFKA_APP_USER_PASSWORD: z
+    .string()
+    .min(1, 'ENV: KAFKA_APP_USER_PASSWORD is required and must be a non-empty string'),
+  // Tinybird
+  TINYBIRD_URL: z.string().min(1, 'ENV: TINYBIRD_URL is required and must be a non-empty string'),
+  TINYBIRD_TOKEN: z.string().min(1, 'ENV: TINYBIRD_TOKEN is required and must be a non-empty string'),
 });
 
 // Type inferred from schema
