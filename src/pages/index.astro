@@ -13,6 +13,48 @@ const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
 });
 const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles);
 
+const adminRoutes = [
+  {
+    icon: 'simple-icons:ionos',
+    route: 'https://www.ionos.co.uk/',
+    label: 'Ionos-Admin',
+    size: 28,
+  },
+  { icon: 'selfhst:arcane', route: 'https://arcane.fast-web-tech.co.uk/', label: 'Arcane', size: 24 },
+  { icon: 'logos:nginx', route: 'https://npm.fast-web-tech.co.uk/', label: 'Npm Admin', size: 24 },
+  {
+    icon: 'ui:redpanda',
+    route: 'https://redpanda-console.fast-web-tech.co.uk/',
+    label: 'Redpanda-Console',
+    size: 24,
+  },
+  {
+    icon: 'ui:dragonfly',
+    route: 'https://redis-insight.fast-web-tech.co.uk/',
+    label: 'Dragonfly-Console',
+    size: 28,
+  },
+  {
+    icon: 'selfhst:rustfs',
+    route: 'https://rustfs.fast-web-tech.co.uk/',
+    label: 'Rustfs-Admin',
+    size: 24,
+  },
+  {
+    icon: 'selfhst:authentik',
+    route: 'https://auth.fast-web-tech.co.uk/',
+    label: 'Authentik-Admin',
+    size: 24,
+  },
+  {
+    icon: 'lucide:logs',
+    route: 'https://logs.fast-web-tech.co.uk/',
+    label: 'Logs-Admin',
+    size: 24,
+  },
+  { icon: 'simple-icons:scalar', route: '/api/docs', label: 'OpenAPI Docs', size: 24 },
+];
+
 const seo = createSeo({
   title: 'Playground | Home',
   description: 'Powered by Astro + Hono + oRPC',
@@ -41,6 +83,8 @@ const seo = createSeo({
     <div
       class="border-border hover:border-primary mb-6 flex flex-wrap items-center justify-center gap-3 rounded-lg border px-4 py-4 md:gap-4"
     >
+      <Icon name="logos:nginx" size={48} />
+      <Icon name="logos:bun" size={52} />
       <Icon name="skill-icons:astro" size={48} />
       <Icon name="ui:redpanda" size={48} />
       <Icon name="logos:hono" size={48} />
@@ -59,7 +103,7 @@ const seo = createSeo({
     </div>
     <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
 
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
       <!-- SSR -->
       <div>
         <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
@@ -102,6 +146,33 @@ const seo = createSeo({
                   class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
                 >
                   <span class="font-mono text-xs text-green-600 dark:text-green-400">{route}</span>
+                  <span class="ml-auto">{label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- API -->
+      <div>
+        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
+          <span class="rounded bg-blue-500/10 px-2 py-0.5 text-xs text-blue-600 dark:text-blue-400">
+            Admin
+          </span>
+          Admin Pages
+          <span class="text-muted-foreground text-sm font-normal">({adminRoutes.length})</span>
+        </h2>
+        <ul class="space-y-2">
+          {
+            adminRoutes.map(({ icon, route, label, size }) => (
+              <li>
+                <a
+                  href={route}
+                  class="border-border hover:border-primary hover:text-primary flex items-center justify-center gap-4 rounded-lg border px-3 py-2 text-sm transition-colors"
+                >
+                  <Icon name={icon} size={size} class="text-blue-600 dark:text-blue-400" />
+                  <span class="font-mono text-xs text-blue-600 dark:text-blue-400">----------</span>
                   <span class="ml-auto">{label}</span>
                 </a>
               </li>
