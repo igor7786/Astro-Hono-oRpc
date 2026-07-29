@@ -191,8 +191,9 @@ export default defineConfig({
         mdi: ['account', 'home', 'menu', 'close'],
         // To include a whole set (can be large):
         // ri: ["*"],
-        logos: ['hono', 'postgresql', 'sqlite', 'react-query-icon', 'tailwindcss-icon', 'react'],
+        logos: ['hono', 'postgresql', 'sqlite', 'react-query-icon', 'tailwindcss-icon', 'react', 'zod'],
         skillIcons: ['astro', 'vite-light'],
+        selfhst: ['rustfs'],
       },
     }),
   ],
