@@ -2,8 +2,7 @@
 import { createSeo } from '@/lib/shared/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
 import { discoverRoutes } from '@/lib/helpers/paths';
-import { Picture } from 'astro:assets';
-import AstroLogo from '../assets/icons/astro.svg';
+import { Icon } from 'astro-iconset/components';
 export const prerender = true;
 export async function getStaticPaths() {
   return [{ params: {} }];
@@ -28,7 +27,7 @@ const seo = createSeo({
     slot="main"
   >
     <h1 class="text-foreground mx-auto mb-2 text-6xl font-bold">Welcome</h1>
-    <div class="mb-6 flex items-center justify-center gap-4">
+    <!-- <div class="mb-6 flex items-center justify-center gap-4">
       <img src="/icons/astro-dark.svg" alt="Astro Dark Logo" width="48" height="48" />
       +
       <img src="/icons/hono.svg" alt="Hono Logo" width="48" height="48" />
@@ -38,6 +37,20 @@ const seo = createSeo({
       <img src="/icons/sqlite.svg" alt="SQLite Logo" width="96" height="96" />
       ->
       <img src="/icons/dragonfly.svg" alt="Dragonfly Logo" width="48" height="48" />
+    </div> -->
+    <div
+      class="border-border hover:border-primary mb-6 flex items-center justify-center gap-4 rounded-lg border px-4 py-2"
+    >
+      <Icon name="skill-icons:astro" size={48} />
+      <Icon name="logos:hono" size={48} />
+      <Icon name="ui:oRpc" size={80} />
+      <Icon name="logos:postgresql" size={48} />
+      <Icon name="logos:sqlite" size={96} />
+      <Icon name="ui:dragonfly" size={64} />
+      <Icon name="skill-icons:vite-light" size={48} />
+      <Icon name="logos:react-query-icon" size={48} />
+      <Icon name="logos:tailwindcss-icon" size={64} />
+      <Icon name="logos:react" size={48} />
     </div>
     <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
 
