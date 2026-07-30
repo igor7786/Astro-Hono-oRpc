@@ -203,7 +203,7 @@ export default defineConfig({
           'bun',
         ],
         skillIcons: ['astro', 'vite-light'],
-        selfhst: ['rustfs', 'arcane', 'authentik'],
+        selfhst: ['rustfs', 'arcane', 'authentik', 'crowdsec'],
         gravityUi: ['abbr-api'],
         simpleIcons: ['scalar', 'ionos'],
         lucide: ['logs'],

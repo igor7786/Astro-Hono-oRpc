@@ -3,6 +3,8 @@ import { createSeo } from '@/lib/shared/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
 import { discoverRoutes } from '@/lib/helpers/paths';
 import { Icon } from 'astro-iconset/components';
+import { adminRoutes } from '@/lib/helpers/icons';
+import Icons from '@/components/astrocomp/playground/blog/Icons.astro';
 export const prerender = true;
 export async function getStaticPaths() {
   return [{ params: {} }];
@@ -13,48 +15,6 @@ const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
 });
 const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles);
 
-const adminRoutes = [
-  {
-    icon: 'simple-icons:ionos',
-    route: 'https://www.ionos.co.uk/',
-    label: 'Ionos-Admin',
-    size: 28,
-  },
-  { icon: 'selfhst:arcane', route: 'https://arcane.fast-web-tech.co.uk/', label: 'Arcane', size: 24 },
-  { icon: 'logos:nginx', route: 'https://npm.fast-web-tech.co.uk/', label: 'Npm Admin', size: 24 },
-  {
-    icon: 'ui:redpanda',
-    route: 'https://redpanda-console.fast-web-tech.co.uk/',
-    label: 'Redpanda-Console',
-    size: 24,
-  },
-  {
-    icon: 'ui:dragonfly',
-    route: 'https://redis-insight.fast-web-tech.co.uk/',
-    label: 'Dragonfly-Console',
-    size: 28,
-  },
-  {
-    icon: 'selfhst:rustfs',
-    route: 'https://rustfs.fast-web-tech.co.uk/',
-    label: 'Rustfs-Admin',
-    size: 24,
-  },
-  {
-    icon: 'selfhst:authentik',
-    route: 'https://auth.fast-web-tech.co.uk/',
-    label: 'Authentik-Admin',
-    size: 24,
-  },
-  {
-    icon: 'lucide:logs',
-    route: 'https://logs.fast-web-tech.co.uk/',
-    label: 'Logs-Admin',
-    size: 24,
-  },
-  { icon: 'simple-icons:scalar', route: '/api/docs', label: 'OpenAPI Docs', size: 24 },
-];
-
 const seo = createSeo({
   title: 'Playground | Home',
   description: 'Powered by Astro + Hono + oRPC',
@@ -64,45 +24,11 @@ const seo = createSeo({
 ---
 
 <Layout {...seo}>
+  <Icons slot="header" />
   <div
-    class="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-16 text-center"
+    class="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-6 text-center"
     slot="main"
   >
-    <h1 class="text-foreground mx-auto mb-2 text-6xl font-bold">Welcome</h1>
-    <!-- <div class="mb-6 flex items-center justify-center gap-4">
-      <img src="/icons/astro-dark.svg" alt="Astro Dark Logo" width="48" height="48" />
-      +
-      <img src="/icons/hono.svg" alt="Hono Logo" width="48" height="48" />
-      ->
-      <img src="/icons/postgresql.svg" alt="PostgreSQL Logo" width="48" height="48" />
-      ->
-      <img src="/icons/sqlite.svg" alt="SQLite Logo" width="96" height="96" />
-      ->
-      <img src="/icons/dragonfly.svg" alt="Dragonfly Logo" width="48" height="48" />
-    </div> -->
-    <div
-      class="border-border hover:border-primary mb-6 flex flex-wrap items-center justify-center gap-3 rounded-lg border px-4 py-4 md:gap-4"
-    >
-      <Icon name="logos:nginx" size={48} />
-      <Icon name="logos:bun" size={52} />
-      <Icon name="skill-icons:astro" size={48} />
-      <Icon name="ui:redpanda" size={48} />
-      <Icon name="logos:hono" size={48} />
-      <Icon name="ui:oRpc" size={80} />
-      <Icon name="logos:zod" size={48} />
-      <Icon name="selfhst:rustfs" size={38} />
-      <Icon name="logos:postgresql" size={48} />
-      <Icon name="logos:sqlite" size={96} />
-      <Icon name="ui:dragonfly" size={64} />
-      <Icon name="skill-icons:vite-light" size={48} />
-      <Icon name="logos:react-query-icon" size={48} />
-      <Icon name="ui:drizzle" size={48} />
-      <Icon name="logos:tailwindcss-icon" size={64} />
-      <Icon name="logos:react" size={48} />
-      <Icon name="ui:nanostores" size={48} />
-    </div>
-    <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
-
     <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
       <!-- SSR -->
       <div>
