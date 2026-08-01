@@ -13,17 +13,18 @@ const EnvSchema = z.object({
     .string()
     .min(1, 'ENV: UPSTASH_REDIS_URL is required and must be a non-empty string'),
   VPS_REDIS_URL: z.string().min(1, 'ENV: VPS_REDIS_URL is required and must be a non-empty string'),
+  PROD_REDIS_URL: z.string().min(1, 'ENV: PROD_REDIS_URL is required and must be a non-empty string'),
   VPS_TLS_SERVER: z.string().min(1, 'ENV: VPS_TLS_SERVER is required and must be a non-empty string'),
   VPS_CA_CERT: z.string().min(1, 'ENV: VPS_CA_CERT is required and must be a non-empty string'),
   VPS_CLIENT_CERT: z.string().min(1, 'ENV: VPS_CLIENT_CERT is required and must be a non-empty string'),
   VPS_CLIENT_KEY: z.string().min(1, 'ENV: VPS_CLIENT_KEY is required and must be a non-empty string'),
   // Vps Postgres and Local
-  LOCAL_PGB_HOST: z.string().min(1, 'ENV: LOCAL_PGB_HOST is required and must be a non-empty string'),
   VPS_PGB_HOST: z.string().min(1, 'ENV: VPS_PGB_HOST is required and must be a non-empty string'),
+  PROD_PGB_HOST: z.string().min(1, 'ENV: PROD_PGB_HOST is required and must be a non-empty string'),
   VPS_PGB_PORT: z.coerce.number().min(1, 'ENV: VPS_PGB_PORT is required and must be a non-empty string'),
-  LOCAL_PGB_PORT: z.coerce
+  PROD_PGB_PORT: z.coerce
     .number()
-    .min(1, 'ENV: LOCAL_PGB_PORT is required and must be a non-empty string'),
+    .min(1, 'ENV: PROD_PGB_PORT is required and must be a non-empty string'),
   VPS_PGB_USER: z.string().min(1, 'ENV: VPS_PGB_USER is required and must be a non-empty string'),
   VPS_PGB_PASS: z.string().min(1, 'ENV: VPS_PGB_PASS is required and must be a non-empty string'),
   VPS_PGB_DB: z.string().min(1, 'ENV: VPS_PGB_DB is required and must be a non-empty string'),
@@ -72,7 +73,12 @@ const EnvSchema = z.object({
   RUSTFS_SECRET_KEY: z
     .string()
     .min(1, 'ENV: RUSTFS_SECRET_KEY is required and must be a non-empty string'),
-  RUSTFS_ENDPOINT: z.string().min(1, 'ENV: RUSTFS_ENDPOINT is required and must be a non-empty string'),
+  VPS_RUSTFS_ENDPOINT: z
+    .string()
+    .min(1, 'ENV: VPS_RUSTFS_ENDPOINT is required and must be a non-empty string'),
+  PROD_RUSTFS_ENDPOINT: z
+    .string()
+    .min(1, 'ENV: PROD_RUSTFS_ENDPOINT is required and must be a non-empty string'),
   // Red-panda,Kafka
   VPS_KAFKA_BROKERS_DEV: z
     .string()

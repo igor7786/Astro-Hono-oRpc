@@ -29,8 +29,8 @@ async function createDb() {
 
   console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)...');
   const pool = new Pool({
-    host: envServer.LOCAL_PGB_HOST,
-    port: envServer.LOCAL_PGB_PORT,
+    host: envServer.PROD_PGB_HOST,
+    port: envServer.PROD_PGB_PORT,
     user: envServer.VPS_PGB_USER,
     password: envServer.VPS_PGB_PASS,
     database: envServer.VPS_PGB_DB,

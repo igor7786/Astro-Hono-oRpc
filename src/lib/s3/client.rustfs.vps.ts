@@ -16,7 +16,7 @@ async function getRustfsClient() {
         accessKeyId: envServer.RUSTFS_ACCESS_KEY,
         secretAccessKey: envServer.RUSTFS_SECRET_KEY,
       },
-      endpoint: envServer.RUSTFS_ENDPOINT,
+      endpoint: envServer.VPS_RUSTFS_ENDPOINT,
       forcePathStyle: true,
       requestHandler: new NodeHttpHandler({
         httpsAgent: new https.Agent({
@@ -38,7 +38,7 @@ async function getRustfsClient() {
         accessKeyId: envServer.RUSTFS_ACCESS_KEY,
         secretAccessKey: envServer.RUSTFS_SECRET_KEY,
       },
-      endpoint: 'http://rustfs:9000',
+      endpoint: envServer.PROD_RUSTFS_ENDPOINT,
       forcePathStyle: true,
       requestHandler: new NodeHttpHandler({
         connectionTimeout: 3000,

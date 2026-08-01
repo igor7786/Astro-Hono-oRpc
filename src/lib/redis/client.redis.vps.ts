@@ -21,7 +21,7 @@ async function createRedisClient(): Promise<Redis> {
   }
 
   console.log('✅ [Redis] Running in production mode, connecting to local Redis without TLS...');
-  return new Redis(envServer.VPS_REDIS_URL, {
+  return new Redis(envServer.PROD_REDIS_URL, {
     connectTimeout: 200,
     enableReadyCheck: false,
     maxRetriesPerRequest: 3,
