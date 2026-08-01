@@ -18,12 +18,15 @@ const EnvSchema = z.object({
   VPS_CLIENT_CERT: z.string().min(1, 'ENV: VPS_CLIENT_CERT is required and must be a non-empty string'),
   VPS_CLIENT_KEY: z.string().min(1, 'ENV: VPS_CLIENT_KEY is required and must be a non-empty string'),
   // Vps Postgres and Local
-  LOCAL_PG_HOST: z.string().min(1, 'ENV: LOCAL_PG_HOST is required and must be a non-empty string'),
-  VPS_PG_HOST: z.string().min(1, 'ENV: VPS_PG_HOST is required and must be a non-empty string'),
-  VPS_PG_PORT: z.coerce.number().min(1, 'ENV: VPS_PG_PORT is required and must be a non-empty string'),
-  VPS_PG_USER: z.string().min(1, 'ENV: VPS_PG_USER is required and must be a non-empty string'),
-  VPS_PG_PASS: z.string().min(1, 'ENV: VPS_PG_PASS is required and must be a non-empty string'),
-  VPS_PG_DB: z.string().min(1, 'ENV: VPS_PG_DB is required and must be a non-empty string'),
+  LOCAL_PGB_HOST: z.string().min(1, 'ENV: LOCAL_PGB_HOST is required and must be a non-empty string'),
+  VPS_PGB_HOST: z.string().min(1, 'ENV: VPS_PGB_HOST is required and must be a non-empty string'),
+  VPS_PGB_PORT: z.coerce.number().min(1, 'ENV: VPS_PGB_PORT is required and must be a non-empty string'),
+  LOCAL_PGB_PORT: z.coerce
+    .number()
+    .min(1, 'ENV: LOCAL_PGB_PORT is required and must be a non-empty string'),
+  VPS_PGB_USER: z.string().min(1, 'ENV: VPS_PGB_USER is required and must be a non-empty string'),
+  VPS_PGB_PASS: z.string().min(1, 'ENV: VPS_PGB_PASS is required and must be a non-empty string'),
+  VPS_PGB_DB: z.string().min(1, 'ENV: VPS_PGB_DB is required and must be a non-empty string'),
   // Vps Sqlite and Local
   SQLITE_PATH: z.string().min(1, 'ENV: SQLITE_PATH is required and must be a non-empty string'),
   SQLITE_MANIFEST_DIR: z

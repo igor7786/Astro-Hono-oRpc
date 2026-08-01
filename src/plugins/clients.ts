@@ -11,7 +11,7 @@ async function loadClients() {
   const { sqliteDb, closeSqlite } = await import('@/lib/drizzle/sqlite/client.ts');
   const { redisVps } = await import('@/lib/redis/client.redis.vps.ts');
   const { producer } = await import('@/lib/redpanda-kafka/producer.ts');
-  const { db } = await import('@/lib/drizzle/pg/client.pg.db');
+  const { pgDb } = await import('@/lib/drizzle/pg/client.pg.db');
   const { rustfsClient } = await import('@/lib/s3/client.rustfs.vps.ts');
   console.log('[server] PRODUCTION ->', envServer.PRODUCTION === 'true' ? '✅' : '❌');
   try {
@@ -52,7 +52,7 @@ async function loadClients() {
   }
 
   try {
-    await db.select().from(testPg).where(eq(testPg.key, 'og:test'));
+    await pgDb.select().from(testPg).where(eq(testPg.key, 'og:test'));
 
     console.log('[server] POSTGRES DRIZZLE ->', '✅');
   } catch (err: any) {
@@ -72,7 +72,7 @@ async function loadClients() {
     const results = await Promise.allSettled([
       redisVps.disconnect(),
       producer.close(),
-      db.$client.end(),
+      pgDb.$client.end(),
       rustfsClient.destroy(),
       closeSqlite(),
     ]);

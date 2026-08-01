@@ -1,48 +1,47 @@
-// src/lib/drizzle/client.pg.db.ts
-import { drizzle } from 'drizzle-orm/bun-sql';
-
-import { SQL } from 'bun';
+// src/lib/drizzle/pg/client.pg.db.ts
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
 
 import { envServer } from '@/lib/env/server.env';
 
+const { Pool } = pg;
+
 async function createDb() {
   if (envServer.PRODUCTION === 'false') {
-    console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting to remote VPS PostgreSQL with TLS...');
+    console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting via pgbouncer mTLS...');
     const { tls } = await import('@/lib/tls/client.tls');
-    const { ca, cert, key, rejectUnauthorized } = await tls();
-    const client = new SQL({
-      hostname: envServer.VPS_PG_HOST,
-      port: envServer.VPS_PG_PORT,
-      username: envServer.VPS_PG_USER,
-      password: envServer.VPS_PG_PASS,
-      database: envServer.VPS_PG_DB,
-      tls: { ca, cert, key, rejectUnauthorized },
-      max: 10,
-      idleTimeout: 30, // don't wait forever for a connection
-      connectionTimeout: 10, // fail fast if VPS unreachable
-      maxLifetime: 3600, // recycle connections every hour
-      prepare: true,
+    const ssl = await tls();
+
+    const pool = new Pool({
+      host: envServer.VPS_PGB_HOST,
+      port: envServer.VPS_PGB_PORT,
+      user: envServer.VPS_PGB_USER,
+      password: envServer.VPS_PGB_PASS,
+      database: envServer.VPS_PGB_DB,
+      max: 60,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+      ssl,
     });
 
-    return drizzle({ client });
+    return drizzle({ client: pool });
   }
 
-  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting to local PostgreSQL without TLS...');
-  const client = new SQL({
-    hostname: envServer.LOCAL_PG_HOST,
-    port: envServer.VPS_PG_PORT,
-    username: envServer.VPS_PG_USER,
-    password: envServer.VPS_PG_PASS,
-    database: envServer.VPS_PG_DB,
-    max: 10,
-    idleTimeout: 30, // don't wait forever for a connection
-    connectionTimeout: 10, // fail fast if VPS unreachable
-    maxLifetime: 3600, // recycle connections every hour
-    prepare: true,
+  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)...');
+  const pool = new Pool({
+    host: envServer.LOCAL_PGB_HOST,
+    port: envServer.LOCAL_PGB_PORT,
+    user: envServer.VPS_PGB_USER,
+    password: envServer.VPS_PGB_PASS,
+    database: envServer.VPS_PGB_DB,
+    max: 60,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+    // no ssl — internal Docker network
   });
 
-  return drizzle({ client });
+  return drizzle({ client: pool });
 }
 
-const db = await createDb();
-export { db };
+const pgDb = await createDb();
+export { pgDb };
