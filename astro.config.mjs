@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 // @ts-check
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
 
 import fs from 'fs';
@@ -179,6 +180,33 @@ export default defineConfig({
         }
 
         return entry;
+      },
+    }),
+    iconset({
+      iconDirs: {
+        ui: 'src/assets/icons',
+      },
+      include: {
+        // Only ship the icons your server routes actually render
+        mdi: ['account', 'home', 'menu', 'close'],
+        // To include a whole set (can be large):
+        // ri: ["*"],
+        logos: [
+          'nginx',
+          'hono',
+          'postgresql',
+          'sqlite',
+          'react-query-icon',
+          'tailwindcss-icon',
+          'react',
+          'zod',
+          'bun',
+        ],
+        skillIcons: ['astro', 'vite-light'],
+        selfhst: ['rustfs', 'arcane', 'authentik', 'crowdsec'],
+        gravityUi: ['abbr-api'],
+        simpleIcons: ['scalar', 'ionos'],
+        lucide: ['logs'],
       },
     }),
   ],

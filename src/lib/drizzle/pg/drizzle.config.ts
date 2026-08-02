@@ -2,21 +2,25 @@
 import { defineConfig } from 'drizzle-kit';
 
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const ca = readFileSync(process.env.VPS_CA_CERT!, 'utf-8');
 const cert = readFileSync(process.env.VPS_CLIENT_CERT!, 'utf-8');
 const key = readFileSync(process.env.VPS_CLIENT_KEY!, 'utf-8');
-
+console.log('📁 Schema Path :', join(process.cwd(), 'src/lib/drizzle/pg/pg.schema.ts'));
+console.log('📁 Migrations Path:', join(process.cwd(), 'src/lib/drizzle/pg/migrations'));
+const schema = join(process.cwd(), 'src/lib/drizzle/pg/pg.schema.ts');
+const out = join(process.cwd(), 'src/lib/drizzle/pg/migrations');
 export default defineConfig({
   dialect: 'postgresql',
-  schema: './src/lib/drizzle/pg/pg.schema.ts',
-  out: './src/lib/drizzle/pg/migrations',
+  schema,
+  out,
   dbCredentials: {
-    host: process.env.VPS_PG_HOST!,
-    port: Number(process.env.VPS_PG_PORT),
-    user: process.env.VPS_PG_USER!,
-    password: process.env.VPS_PG_PASS!,
-    database: process.env.VPS_PG_DB!,
+    host: process.env.VPS_PGB_HOST!,
+    port: Number(process.env.VPS_PGB_PORT!),
+    user: process.env.VPS_PGB_USER!,
+    password: process.env.VPS_PGB_PASS!,
+    database: process.env.VPS_PGB_DB!,
     ssl: {
       ca,
       cert,

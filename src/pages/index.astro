@@ -2,7 +2,9 @@
 import { createSeo } from '@/lib/shared/schemas/seo.schema';
 import Layout from '@/layouts/Layout.astro';
 import { discoverRoutes } from '@/lib/helpers/paths';
-import { Picture } from 'astro:assets';
+import { Icon } from 'astro-iconset/components';
+import { adminRoutes } from '@/lib/helpers/icons';
+import Icons from '@/components/astrocomp/playground/blog/Icons.astro';
 export const prerender = true;
 export async function getStaticPaths() {
   return [{ params: {} }];
@@ -22,15 +24,12 @@ const seo = createSeo({
 ---
 
 <Layout {...seo}>
+  <Icons slot="header" />
   <div
-    class="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-16 text-center"
+    class="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-6 text-center"
     slot="main"
   >
-    <h1 class="text-foreground mx-auto mb-2 text-6xl font-bold">Welcome</h1>
-
-    <p class="text-muted-foreground mb-12 text-xl">Browse all available pages</p>
-
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
       <!-- SSR -->
       <div>
         <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
@@ -73,6 +72,33 @@ const seo = createSeo({
                   class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
                 >
                   <span class="font-mono text-xs text-green-600 dark:text-green-400">{route}</span>
+                  <span class="ml-auto">{label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- API -->
+      <div>
+        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
+          <span class="rounded bg-blue-500/10 px-2 py-0.5 text-xs text-blue-600 dark:text-blue-400">
+            Admin
+          </span>
+          Admin Pages
+          <span class="text-muted-foreground text-sm font-normal">({adminRoutes.length})</span>
+        </h2>
+        <ul class="space-y-2">
+          {
+            adminRoutes.map(({ icon, route, label, size }) => (
+              <li>
+                <a
+                  href={route}
+                  class="border-border hover:border-primary hover:text-primary flex items-center justify-center gap-4 rounded-lg border px-3 py-2 text-sm transition-colors"
+                >
+                  <Icon name={icon} size={size} class="text-blue-600 dark:text-blue-400" />
+                  <span class="font-mono text-xs text-blue-600 dark:text-blue-400">----------</span>
                   <span class="ml-auto">{label}</span>
                 </a>
               </li>

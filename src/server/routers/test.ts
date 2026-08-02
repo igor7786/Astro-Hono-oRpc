@@ -21,8 +21,7 @@ export const testRoute = base.tests.test.handler(async ({ input, context, errors
 });
 
 export const slowTestRoute = base.tests.slowTest.handler(async ({ input, context, errors }) => {
-  const signal = context.signal; // ← fallback
-  // Not working as expected in Bun
+  const signal = context.signal;
   await new Promise<void>((resolve, reject) => {
     const timeout = setTimeout(() => resolve(), 6_000);
 
@@ -30,7 +29,7 @@ export const slowTestRoute = base.tests.slowTest.handler(async ({ input, context
       console.log('🛑 abort fired!');
       clearTimeout(timeout);
       reject(errors.CLIENT_CLOSED_REQUEST());
-    });
+    }); // poll every 100ms — cheap, plenty responsive for this
   });
 
   return { name: `Hello, ${input.name}!` };

@@ -36,6 +36,7 @@ src/assets/*
 /public/images
 /public/videos
 /public/llms.css
+**/public/icons
 ### CompressedArchive ###
 
 ### Mostly from https://en.wikipedia.org/wiki/List_of_archive_formats
@@ -734,4 +735,5 @@ GIT.txt
 !**/src/scripts
 !src/lib/env
 !.example.env
+
 

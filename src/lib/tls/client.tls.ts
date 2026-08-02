@@ -26,7 +26,7 @@ async function getTls(): Promise<TlsConfig> {
     ca: await Bun.file(envServer.VPS_CA_CERT).text(),
     cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
     key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-    rejectUnauthorized: true,
+    rejectUnauthorized: true, // Set to true in production for security
   };
   return cachedTls;
 }
