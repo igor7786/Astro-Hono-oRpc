@@ -46,7 +46,6 @@
     ]
   },
   "dependencies": {
-    "@astrojs/node": "11.0.3",
     "@astrojs/react": "6.0.2",
     "@astrojs/sitemap": "3.7.3",
     "@aws-sdk/client-s3": "^3.1101.0",
@@ -83,6 +82,7 @@
     "@tinybirdco/sdk": "^0.0.82",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
+    "@wyattjoh/astro-bun-adapter": "^2.1.1",
     "add": "^2.0.6",
     "astro": "7.1.6",
     "astro-iconset": "^0.0.6",

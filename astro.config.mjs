@@ -1,9 +1,9 @@
 import { satteri } from '@astrojs/markdown-satteri';
-import node from '@astrojs/node';
 import react from '@astrojs/react';
 // @ts-check
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import bun from '@wyattjoh/astro-bun-adapter';
 import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
 
@@ -39,9 +39,7 @@ export default defineConfig({
     enabled: false,
   },
   output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: bun(),
 
   vite: {
     ssr: {
