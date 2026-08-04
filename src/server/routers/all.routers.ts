@@ -1,3 +1,4 @@
+import { ClientsRoute } from '@/server/routers/clients';
 import { llmsRoute } from '@/server/routers/seo/llms.html';
 import { llmsTxtRoute } from '@/server/routers/seo/llms.txt';
 import { ogRoute } from '@/server/routers/seo/og';
@@ -7,6 +8,7 @@ export const allRouters = {
   tests: {
     test: testRoute,
     slowTest: slowTestRoute,
+    testClients: ClientsRoute,
   },
   seo: {
     ogRoute: ogRoute,
