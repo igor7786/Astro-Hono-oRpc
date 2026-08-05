@@ -10,35 +10,17 @@ async function createDb() {
   const { tls } = await import('@/lib/tls/client.tls');
   const ssl = await tls();
 
-  if (envServer.PRODUCTION === 'false') {
-    console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting via pgbouncer mTLS...');
+  console.log('✅ [POSTGRESQL -> DRIZZLE] — connecting via pgbouncer mTLS...');
 
-    const pool = new Pool({
-      host: envServer.VPS_PGB_HOST,
-      port: envServer.VPS_PGB_PORT,
-      user: envServer.VPS_PGB_USER,
-      password: envServer.VPS_PGB_PASS,
-      database: envServer.VPS_PGB_DB,
-      max: 60,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
-      ssl,
-    });
-
-    return drizzle({ client: pool });
-  }
-
-  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)... mTLS');
   const pool = new Pool({
-    host: envServer.PROD_PGB_HOST,
-    port: envServer.PROD_PGB_PORT,
+    host: envServer.VPS_PGB_HOST,
+    port: envServer.VPS_PGB_PORT,
     user: envServer.VPS_PGB_USER,
     password: envServer.VPS_PGB_PASS,
     database: envServer.VPS_PGB_DB,
     max: 60,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
-    // Need ssl as well for production, otherwise it will throw an error"
     ssl,
   });
 
