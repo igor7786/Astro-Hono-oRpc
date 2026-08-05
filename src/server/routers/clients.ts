@@ -5,7 +5,7 @@ import { test } from '@/lib/drizzle/pg/pg.schema';
 import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
 import { base } from '@/server/procedures/base';
 
-export const ClientsRoute = base.tests.testClients.handler(async ({ context, errors }) => {
+export const ClientsRoute = base.tests.testClients.handler(async ({ context }) => {
   let kafkaClient = 'Client Kafka failed to connect ❌';
   let pgClient = 'Client Postgres failed to connect ❌';
   let sqliteClient = 'Client SQLite failed to connect ❌';
