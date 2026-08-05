@@ -7,10 +7,11 @@ import { envServer } from '@/lib/env/server.env';
 const { Pool } = pg;
 
 async function createDb() {
+  const { tls } = await import('@/lib/tls/client.tls');
+  const ssl = await tls();
+
   if (envServer.PRODUCTION === 'false') {
     console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting via pgbouncer mTLS...');
-    const { tls } = await import('@/lib/tls/client.tls');
-    const ssl = await tls();
 
     const pool = new Pool({
       host: envServer.VPS_PGB_HOST,
@@ -27,7 +28,7 @@ async function createDb() {
     return drizzle({ client: pool });
   }
 
-  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)...');
+  console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)... mTLS');
   const pool = new Pool({
     host: envServer.PROD_PGB_HOST,
     port: envServer.PROD_PGB_PORT,
@@ -37,7 +38,8 @@ async function createDb() {
     max: 60,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
-    // no ssl — internal Docker network
+    // Need ssl as well for production, otherwise it will throw an error"
+    ssl,
   });
 
   return drizzle({ client: pool });
