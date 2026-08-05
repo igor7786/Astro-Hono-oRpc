@@ -2,13 +2,27 @@ import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
+import { pgDb } from '@/lib/drizzle/pg/client.pg.db';
+import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { envServer, type EnvServer } from '@/lib/env/server.env';
 import { prettyLogger } from '@/lib/helpers/logger';
 import { openApiBasePath, rpcBasePath } from '@/lib/helpers/paths';
+import { redisVps } from '@/lib/redis/client.redis.vps';
+import { producer } from '@/lib/redpanda-kafka/producer';
+import { rustfsClient } from '@/lib/s3/client.rustfs.vps';
 import openApiHandler from '@/server/handlers/openapi.handler';
 import rpcHandler from '@/server/handlers/rpc.handler';
 
-type Env = { Bindings: EnvServer };
+type Env = {
+  Bindings: EnvServer;
+  Variables: {
+    sqlite: typeof sqliteDb;
+    pg: typeof pgDb;
+    producer: typeof producer;
+    rustfs: typeof rustfsClient;
+    redis: typeof redisVps;
+  };
+};
 
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
 
@@ -28,6 +42,11 @@ app.use(
 app.use(prettyLogger);
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', async (c, next) => {
+  c.set('sqlite', sqliteDb);
+  c.set('pg', pgDb);
+  c.set('producer', producer);
+  c.set('rustfs', rustfsClient);
+  c.set('redis', redisVps);
   if (c.req.method !== 'HEAD') return next();
 
   const getRequest = new Request(c.req.url, {
@@ -46,7 +65,14 @@ app.use('/*', async (c, next) => {
   // ─── RPC handler ───────────────────────────────────────────────────────────
   const res = await rpcHandler.handle(c.req.raw, {
     prefix: rpcBasePath,
-    context: { env: c.env },
+    context: {
+      env: envServer,
+      sqlite: c.get('sqlite'),
+      pg: c.get('pg'),
+      producer: c.get('producer'),
+      rustfs: c.get('rustfs'),
+      redis: c.get('redis'),
+    },
   });
   if (res.matched) {
     return c.newResponse(res.response.body, res.response);
@@ -57,7 +83,12 @@ app.use('/*', async (c, next) => {
     response: c.res,
     ctx: c,
     signal: c.req.raw.signal,
-    env: c.env,
+    env: envServer,
+    sqlite: c.get('sqlite'),
+    pg: c.get('pg'),
+    producer: c.get('producer'),
+    rustfs: c.get('rustfs'),
+    redis: c.get('redis'),
   };
   // ─── OpenAPI handler ───────────────────────────────────────────────────────
   const apiRes = await openApiHandler.handle(c.req.raw, {
