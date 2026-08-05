@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const testClientSchema = z.object({
-  status: z.string().trim(),
+  sqliteStatus: z.string().trim(),
+  pgStatus: z.string().trim(),
+  kafkaStatus: z.string().trim(),
+  redisStatus: z.string().trim(),
+  s3Status: z.string().trim(),
 });
 
 export type TestClientOutput = z.infer<typeof testClientSchema>;
