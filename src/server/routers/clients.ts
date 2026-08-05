@@ -1,5 +1,4 @@
-import { ListBucketsCommand } from '@aws-sdk/client-s3';
-import { ProduceAcks } from '@platformatic/kafka';
+import { HeadBucketCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
 import { test } from '@/lib/drizzle/pg/pg.schema';
@@ -39,15 +38,16 @@ export const ClientsRoute = base.tests.testClients.handler(async ({ context, err
   }
   // Check S3 connection
   try {
-    const s3Ping = await context.rustfs?.send(new ListBucketsCommand({}));
-    console.log('S3 Ping Result:', await context.rustfs);
+    const s3Ping = await context.rustfs?.send(new HeadBucketCommand({ Bucket: 'og-images' }));
     s3Client = s3Ping ? 'Client S3 connected ✅' : 'Client S3 failed to connect ❌';
   } catch (error) {
     s3Client = `Client S3 failed to connect ❌`;
   }
   // Check Kafka connection
   try {
-    const reqKafka = context.producer?.isActive();
+    const reqKafka = await context.producer?.metadata({
+      topics: ['health'],
+    });
     kafkaClient = reqKafka ? 'Client Kafka connected ✅' : 'Client Kafka failed to connect ❌';
   } catch (error) {
     kafkaClient = `Client Kafka failed to connect ❌`;
