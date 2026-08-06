@@ -2,19 +2,22 @@
 import { defineConfig } from 'drizzle-kit';
 
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 const ca = readFileSync(process.env.VPS_CA_CERT!, 'utf-8');
 const cert = readFileSync(process.env.VPS_CLIENT_CERT!, 'utf-8');
 const key = readFileSync(process.env.VPS_CLIENT_KEY!, 'utf-8');
-console.log('📁 Schema Path :', join(process.cwd(), 'src/lib/drizzle/pg/pg.schema.ts'));
-console.log('📁 Migrations Path:', join(process.cwd(), 'src/lib/drizzle/pg/migrations'));
-const schema = join(process.cwd(), 'src/lib/drizzle/pg/pg.schema.ts');
-const out = join(process.cwd(), 'src/lib/drizzle/pg/migrations');
+
+// FIX: Define relative paths from your project root folder
+const schema = './src/lib/drizzle/pg/pg.schema.ts';
+const out = './src/lib/drizzle/pg/migrations';
+
+console.log('📁 Schema Path :', schema);
+console.log('📁 Migrations Path:', out);
+
 export default defineConfig({
   dialect: 'postgresql',
   schema,
-  out,
+  out, // Drizzle Kit will now read this relative path perfectly
   dbCredentials: {
     host: process.env.VPS_PGB_HOST!,
     port: Number(process.env.VPS_PGB_PORT!),
