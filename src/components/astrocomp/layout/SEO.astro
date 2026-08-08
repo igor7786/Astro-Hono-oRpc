@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { mkdir } from 'node:fs/promises';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
-import { generateOgParamsId, generateOgToken } from '@/server/seo/og/og.generate.token.id';
+import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.url';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
 // ✅ Safe parse (no crash in production)

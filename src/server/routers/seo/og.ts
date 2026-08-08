@@ -1,6 +1,7 @@
 // src/server/seo/og/og.route.ts
 import { eq } from 'drizzle-orm';
 
+import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
 import type { OgImage } from '@/lib/drizzle/sqlite/schema';
@@ -9,7 +10,6 @@ import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
 import { generateOgImage } from '@/server/seo/og/Generate';
-import { verifyOgIdToken } from '@/server/seo/og/og.generate.token.id';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
   // input already passed Zod shape check from contract
