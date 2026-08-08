@@ -8,4 +8,4 @@ export const testClientSchema = z.object({
   s3Status: z.string().trim(),
 });
 
-export type TestClientOutput = z.infer<typeof testClientSchema>;
+export type TestClientSchema = z.infer<typeof testClientSchema>;

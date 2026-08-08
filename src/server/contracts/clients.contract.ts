@@ -1,3 +1,5 @@
+import { eventIterator } from '@orpc/server';
+
 import { baseOc } from '@/server/contracts/oc.base';
 import { testClientSchema } from '@/server/schemas/clients.schema';
 
@@ -13,4 +15,4 @@ export const testClients = baseOc
     successDescription: 'Test clients route successful',
     successStatus: 200,
   })
-  .output(testClientSchema);
+  .output(eventIterator(testClientSchema));
