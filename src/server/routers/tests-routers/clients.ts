@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 
 import { test } from '@/lib/drizzle/pg/pg.schema';
 import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
+import type { AppContext } from '@/server/procedures/base';
 import { base } from '@/server/procedures/base';
 import type { ClientStatus, TestClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
@@ -28,7 +29,7 @@ async function timed(name: string, fn: () => Promise<boolean>): Promise<ClientSt
   }
 }
 
-async function checkClients(context: any): Promise<TestClientSchema> {
+async function checkClients(context: AppContext): Promise<TestClientSchema> {
   const [pg, sqlite, redis, s3, kafka] = await Promise.all([
     timed('PostgreSQL', async () => {
       const [row] = (await context.pg?.select().from(test).where(eq(test.key, 'Ping')).limit(1)) ?? [];
