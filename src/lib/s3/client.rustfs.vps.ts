@@ -1,21 +1,42 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 
+import http from 'http';
 import https from 'https';
 
 import { envServer } from '@/lib/env/server.env';
 
 async function getRustfsClient() {
-  envServer.PRODUCTION === 'false'
-    ? console.log('⚠️ [RustFS] Running in development mode, connecting to remote VPS with mTLS...')
-    : console.log('✅ [RustFS] Running in production mode, connecting without TLS...');
-  const tls =
-    envServer.PRODUCTION === 'false' ? await (await import('@/lib/tls/client.tls')).tls() : undefined;
-  const ca = tls?.ca;
-  const cert = tls?.cert;
-  const key = tls?.key;
-  const rejectUnauthorized = tls?.rejectUnauthorized;
-  const httpsAgent = tls ? new https.Agent({ ca, cert, key, rejectUnauthorized }) : undefined;
+  const isProd = envServer.PRODUCTION !== 'false';
+
+  isProd
+    ? console.log('✅ [RustFS] Running in production mode, connecting without TLS...')
+    : console.log('⚠️ [RustFS] Running in development mode, connecting to remote VPS with mTLS...');
+
+  const agent =
+    envServer.PRODUCTION === 'true'
+      ? {
+          httpAgent: new http.Agent({ keepAlive: true }),
+        }
+      : {
+          httpsAgent: await (async () => {
+            const { ca, cert, key, rejectUnauthorized } = await (
+              await import('@/lib/tls/client.tls')
+            ).tls();
+            return new https.Agent({
+              ca,
+              cert,
+              key,
+              rejectUnauthorized,
+              keepAlive: true,
+            });
+          })(),
+        };
+  const requestHandler = new NodeHttpHandler({
+    ...agent,
+    connectionTimeout: 3000,
+    socketTimeout: 5000,
+  });
   const client = new S3Client({
     region: 'us-east-1',
     credentials: {
@@ -24,11 +45,7 @@ async function getRustfsClient() {
     },
     endpoint: envServer.VPS_RUSTFS_ENDPOINT,
     forcePathStyle: true,
-    requestHandler: new NodeHttpHandler({
-      httpsAgent,
-      connectionTimeout: 3000,
-      socketTimeout: 5000,
-    }),
+    requestHandler,
   });
   return client;
 }
