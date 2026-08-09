@@ -4,48 +4,51 @@ import { eq } from 'drizzle-orm';
 import { test } from '@/lib/drizzle/pg/pg.schema';
 import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
 import { base } from '@/server/procedures/base';
-import type { TestClientSchema } from '@/server/schemas/clients.schema';
+import type { ClientStatus, TestClientSchema } from '@/server/schemas/clients.schema';
+
+async function timed(name: string, fn: () => Promise<boolean>): Promise<ClientStatus> {
+  const start = performance.now();
+  try {
+    const ok = await fn();
+    return {
+      name,
+      connected: ok,
+      message: ok ? `${name} connected` : `${name} failed to connect`,
+      latencyMs: Math.round(performance.now() - start),
+      checkedAt: new Date().toISOString(),
+    };
+  } catch (err) {
+    return {
+      name,
+      connected: false,
+      message: err instanceof Error ? err.message : `${name} failed to connect`,
+      latencyMs: Math.round(performance.now() - start),
+      checkedAt: new Date().toISOString(),
+    };
+  }
+}
 
 async function checkClients(context: any): Promise<TestClientSchema> {
-  let kafkaClient = 'Client Kafka failed to connect ❌';
-  let pgClient = 'Client Postgres failed to connect ❌';
-  let sqliteClient = 'Client SQLite failed to connect ❌';
-  let redisClient = 'Client Redis failed to connect ❌';
-  let s3Client = 'Client S3 failed to connect ❌';
+  const [pg, sqlite, redis, s3, kafka] = await Promise.all([
+    timed('PostgreSQL', async () => {
+      const [row] = (await context.pg?.select().from(test).where(eq(test.key, 'Ping')).limit(1)) ?? [];
+      return !!row;
+    }),
+    timed('SQLite', async () => {
+      const [row] =
+        (await context.sqlite?.select().from(sqliteTest).where(eq(sqliteTest.key, 'ping')).limit(1)) ??
+        [];
+      return !!row;
+    }),
+    timed('Redis', async () => (await context.redis?.ping()) === 'PONG'),
+    timed(
+      'S3',
+      async () => !!(await context.rustfs?.send(new HeadBucketCommand({ Bucket: 'og-images' })))
+    ),
+    timed('Kafka', async () => !!(await context.producer?.metadata({ topics: ['health'] }))),
+  ]);
 
-  try {
-    const [reqPg] = (await context.pg?.select().from(test).where(eq(test.key, 'Ping')).limit(1)) ?? [];
-    pgClient = reqPg ? 'Client Postgres connected ✅' : pgClient;
-  } catch {}
-
-  try {
-    const [reqSqlite] =
-      (await context.sqlite?.select().from(sqliteTest).where(eq(sqliteTest.key, 'ping')).limit(1)) ?? [];
-    sqliteClient = reqSqlite ? 'Client SQLite connected ✅' : sqliteClient;
-  } catch {}
-
-  try {
-    const redisPing = await context.redis?.ping();
-    redisClient = redisPing === 'PONG' ? 'Client Redis connected ✅' : redisClient;
-  } catch {}
-
-  try {
-    const s3Ping = await context.rustfs?.send(new HeadBucketCommand({ Bucket: 'og-images' }));
-    s3Client = s3Ping ? 'Client S3 connected ✅' : s3Client;
-  } catch {}
-
-  try {
-    const reqKafka = await context.producer?.metadata({ topics: ['health'] });
-    kafkaClient = reqKafka ? 'Client Kafka connected ✅' : kafkaClient;
-  } catch {}
-
-  return {
-    sqliteStatus: sqliteClient,
-    pgStatus: pgClient,
-    kafkaStatus: kafkaClient,
-    redisStatus: redisClient,
-    s3Status: s3Client,
-  };
+  return { pg, sqlite, redis, s3, kafka };
 }
 
 export const ClientsRoute = base.tests.testClients.handler(async function* ({ context, signal }) {
