@@ -1,6 +1,7 @@
 // src/server/seo/og/og.route.ts
 import { eq } from 'drizzle-orm';
 
+import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { ogImages } from '@/lib/drizzle/sqlite/schema';
 import type { OgImage } from '@/lib/drizzle/sqlite/schema';
@@ -9,7 +10,6 @@ import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
 import { generateOgImage } from '@/server/seo/og/Generate';
-import { verifyOgIdToken } from '@/server/seo/og/og.generate.token.id';
 
 export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, context, errors }) => {
   // input already passed Zod shape check from contract
@@ -41,9 +41,10 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   // that doesn't support it (e.g. Facebook's scraper)
   // ------------------------------------------------------------------
   const accept = context.request?.headers.get('accept') ?? '';
+  const userAgent = context.request?.headers.get('user-agent') ?? '';
   const format =
     input.format ??
-    (accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png');
+    (accept.includes('image/webp') && !userAgent.includes('facebookexternalhit') ? 'webp' : 'png');
 
   const contentType = format === 'webp' ? 'image/webp' : 'image/png';
   console.log('format', format);

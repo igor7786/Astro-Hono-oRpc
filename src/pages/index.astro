@@ -5,6 +5,7 @@ import { discoverRoutes } from '@/lib/helpers/paths';
 import { Icon } from 'astro-iconset/components';
 import { adminRoutes } from '@/lib/helpers/icons';
 import Icons from '@/components/astrocomp/playground/blog/Icons.astro';
+import TestClients from '@/components/reactcomp/playground/TestClients';
 export const prerender = true;
 export async function getStaticPaths() {
   return [{ params: {} }];
@@ -106,6 +107,8 @@ const seo = createSeo({
           }
         </ul>
       </div>
+      <!-- Client SSE -->
+      <TestClients client:only="react" />
     </div>
   </div>
 </Layout>

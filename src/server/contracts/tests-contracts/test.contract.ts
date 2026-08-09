@@ -1,13 +1,13 @@
 import { baseOc } from '@/server/contracts/oc.base';
-import { testSchema } from '@/server/schemas/test.schema';
+import { testSchema } from '@/server/schemas/tests-schema/test.schema';
 
 const pathPrefix = '/tests'; // ✅ added path prefix
 export const test = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/test`, // ✅ added path
-    description: 'Test route',
-    summary: 'Test route summary',
+    summary: 'Dummy test',
+    description: 'Returning query params , name and sets cookie dummy cookie abc123',
     tags: ['Tests'],
     successDescription: 'Test route successful',
     successStatus: 200,
@@ -19,8 +19,8 @@ export const slowTest = baseOc
   .route({
     method: 'POST',
     path: `${pathPrefix}/slow-test`, // ✅ added path
-    description: 'Slow test route',
-    summary: 'Slow test route summary',
+    description: 'Slow test route, sleeps for 6 seconds',
+    summary: 'Slow test',
     tags: ['Tests'],
     successDescription: 'Slow test route successful',
     successStatus: 200,

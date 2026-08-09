@@ -47,7 +47,7 @@ export const ogRecordSchema = z.object({
   title: z.string().nonempty('Title must not be empty'),
   description: z.string().nonempty('Description must not be empty'),
   author: z.string().nonempty('Author must not be empty').default('Igor'),
-  format: z.enum(['webp', 'png']).default('png').optional(),
+  format: z.enum(['webp', 'png']).optional(),
   date: z
     .string()
     .nonempty()
@@ -56,17 +56,7 @@ export const ogRecordSchema = z.object({
 
 export type OgRecord = z.infer<typeof ogRecordSchema>;
 
-const hex = /^[0-9a-f]+$/;
-
 // The ONLY thing validated on the incoming public request now: id + optional
 // format. `id` gates the SQLite/manifest lookup; there's no token in the URL
 // to validate since the image endpoint doesn't trust client-supplied auth —
 // existence of `id` in your store IS the authorization.
-export const ogIdTokenSchema = z
-  .object({
-    id: z.string().trim().length(32).regex(hex).default('1234567890'),
-    format: z.enum(['webp', 'png']).default('png').optional(),
-  })
-  .strip();
-
-export type OgIdToken = z.infer<typeof ogIdTokenSchema>;

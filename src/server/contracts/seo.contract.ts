@@ -1,73 +1,47 @@
-import { z } from 'zod';
-
-import { ogIdTokenSchema } from '@/lib/shared/schemas/seo.schema';
 import { baseOc } from '@/server/contracts/oc.base';
+import {
+  llmsHtmlOutputSchema,
+  llmsTxtOutputSchema,
+  ogIdTokenSchema,
+  outputOgSchema,
+} from '@/server/schemas/seo.og.html.txt';
 
 const pathPrefix = '/seo'; // ✅ added path prefix
 export const og = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/og/v1`, // ✅ added path
-    description: 'Og image',
     summary: 'Generates og images',
+    description: 'Og image',
     tags: ['SEO'],
     successDescription: 'Og image generated successfully',
     successStatus: 200,
     outputStructure: 'detailed',
   })
   .input(ogIdTokenSchema)
-  .output(
-    z.object({
-      body: z.file(),
-      headers: z.object({
-        'Content-Type': z.string(),
-        'Cache-Control': z.string(),
-        'Content-Disposition': z.string(),
-        'X-Cache': z.string(),
-        'X-Cache-Tier': z.string(),
-      }),
-    })
-  );
+  .output(outputOgSchema);
 
 export const llmsHtml = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/llms.html`,
-    description: 'LLMs Html',
     summary: 'Generates LLMs Html',
+    description: 'LLMs Html',
     tags: ['SEO'],
     successDescription: 'LLMs Html generated successfully',
     successStatus: 200,
     outputStructure: 'detailed',
   })
-  .output(
-    z.object({
-      body: z.instanceof(Blob),
-      headers: z.object({
-        'Content-Type': z.string(),
-        'Cache-Control': z.string(),
-        'Content-Disposition': z.string(),
-      }),
-    })
-  );
+  .output(llmsHtmlOutputSchema);
 export const llmsTxt = baseOc
   .route({
     method: 'GET',
     path: `${pathPrefix}/llms.txt`,
-    description: 'LLMs Text',
     summary: 'Generates LLMs Text',
+    description: 'LLMs Text',
     tags: ['SEO'],
     successDescription: 'LLMs Text generated successfully',
     successStatus: 200,
     outputStructure: 'detailed',
   })
-  .output(
-    z.object({
-      body: z.file(),
-      headers: z.object({
-        'Content-Type': z.string(),
-        'Cache-Control': z.string(),
-        'Content-Disposition': z.string(),
-      }),
-    })
-  );
+  .output(llmsTxtOutputSchema);

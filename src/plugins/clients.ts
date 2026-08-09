@@ -15,8 +15,8 @@ async function loadClients() {
   const { rustfsClient } = await import('@/lib/s3/client.rustfs.vps.ts');
   console.log('[server] PRODUCTION ->', envServer.PRODUCTION === 'true' ? '✅' : '❌');
   try {
-    await sqliteDb.select().from(test).where(eq(test.key, 'ping'));
-    console.log('[server] SQLITE DRIZZLE ->', '✅');
+    const [pong] = (await sqliteDb.select().from(test).where(eq(test.key, 'ping'))) ?? null;
+    console.log('[server] SQLITE DRIZZLE ->', pong ? '✅' : '❌');
   } catch (e) {
     console.error('[error] SQLITE DRIZZLE -> ❌');
   }
@@ -28,33 +28,32 @@ async function loadClients() {
   }
 
   try {
-    await producer.send({
-      messages: [
-        {
-          topic: 'health',
-          key: 'health',
-          value: JSON.stringify({
-            event: 'test',
-            name: 'ok',
-            timestamp: Date.now(),
-          }),
-          headers: {
-            source: 'web-app',
+    const result =
+      (await producer.send({
+        messages: [
+          {
+            topic: 'health',
+            key: 'health',
+            value: JSON.stringify({
+              event: 'test',
+              name: 'ok',
+              timestamp: Date.now(),
+            }),
+            headers: {
+              source: 'web-app',
+            },
           },
-        },
-      ],
-      acks: ProduceAcks.LEADER,
-    });
-
-    console.log('[server] REDPANDA -> ✅');
+        ],
+        acks: ProduceAcks.LEADER,
+      })) ?? null;
+    console.log('[server] REDPANDA ->', result?.offsets ? '✅' : '❌');
   } catch {
     console.error('[error] REDPANDA -> ❌');
   }
 
   try {
-    await pgDb.select().from(testPg).where(eq(testPg.key, 'og:test'));
-
-    console.log('[server] POSTGRES DRIZZLE ->', '✅');
+    const [pong] = (await pgDb.select().from(testPg).where(eq(testPg.key, 'Ping'))) ?? null;
+    console.log('[server] POSTGRES ->', pong?.value === 'Pong' ? '✅' : '❌');
   } catch (err: any) {
     console.error('[error] POSTGRES DRIZZLE -> ❌');
   }
@@ -66,6 +65,11 @@ async function loadClients() {
     console.error('[error] RUSTFS -> ❌');
   }
   // all imports scoped here — shutdown can access via closure
+  return { sqliteDb, closeSqlite, redisVps, producer, pgDb, rustfsClient };
+}
+function registerShutdown(clients: Awaited<ReturnType<typeof loadClients>>) {
+  const { redisVps, producer, pgDb, rustfsClient, closeSqlite } = clients;
+
   const shutdown = async (signal: string) => {
     console.log(`[server] ${signal} — shutting down...`);
 
@@ -76,12 +80,14 @@ async function loadClients() {
       rustfsClient.destroy(),
       closeSqlite(),
     ]);
+
     results.forEach((result, i) => {
       if (result.status === 'rejected') {
         const names = ['redis', 'kafka producer', 'postgres', 'rustfs', 'sqlite'];
         console.error(`[error] shutdown of ${names[i]} failed:`, result.reason);
       }
     });
+
     console.log(`[server] ${signal} — shutdown complete`);
     process.exit(0);
   };
@@ -95,7 +101,7 @@ export default function serverStartup() {
     name: 'server-startup',
     hooks: {
       'astro:server:setup': async () => {
-        await loadClients();
+        registerShutdown(await loadClients());
       },
       // 'astro:build:start': async () => {
       //   await loadClients();
