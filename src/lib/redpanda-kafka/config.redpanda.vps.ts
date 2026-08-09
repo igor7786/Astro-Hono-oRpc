@@ -20,20 +20,10 @@ const brokers = isProd
  */
 
 async function getBaseConfig() {
-  if (isProd) {
-    console.log('✅ [Redpanda] Running in production mode, connecting without TLS...');
-    return {
-      clientId: 'astro-hono-orpc',
-      bootstrapBrokers: brokers,
-      sasl: {
-        mechanism: 'SCRAM-SHA-256' as const,
-        username: envServer.KAFKA_APP_USER,
-        password: envServer.KAFKA_APP_USER_PASSWORD,
-      },
-    };
-  }
-  console.log('⚠️ [Redpanda] Running in development mode, connecting to remote VPS with mTLS...');
-  const { tls } = await import('@/lib/tls/client.tls');
+  isProd
+    ? console.log('✅ [Redpanda] Running in production mode, connecting without TLS...')
+    : console.log('⚠️ [Redpanda] Running in development mode, connecting to remote VPS with mTLS...');
+  const tls = isProd ? undefined : await (await import('@/lib/tls/client.tls')).tls();
   return {
     clientId: 'astro-hono-orpc',
     bootstrapBrokers: brokers,
@@ -42,7 +32,7 @@ async function getBaseConfig() {
       username: envServer.KAFKA_APP_USER,
       password: envServer.KAFKA_APP_USER_PASSWORD,
     },
-    tls: await tls(),
+    tls,
   };
 }
 const baseConfig = await getBaseConfig();
