@@ -12,7 +12,10 @@ const props = Astro.props as Partial<SEO>;
 <html lang="en" class="scroll-smooth">
   <!-- METADATA, CSS, JS, etc -->
   <HEAD {...props} />
-
+  <script>
+    import { z } from 'zod';
+    z.config({ jitless: true });
+  </script>
   <!-- BODY, CONTENT, FOOTER -->
   <body>
     <div class="bg-background min-h-screen">
