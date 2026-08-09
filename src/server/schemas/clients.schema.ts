@@ -7,7 +7,7 @@ const clientStatusSchema = z.object({
   connected: z.boolean(),
   message: z.string().trim(),
   latencyMs: z.number().nonnegative().optional(),
-  checkedAt: z.string().datetime(),
+  checkedAt: z.iso.datetime(),
 });
 
 export type ClientStatus = z.infer<typeof clientStatusSchema>;

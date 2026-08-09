@@ -47,7 +47,7 @@ export const ogRecordSchema = z.object({
   title: z.string().nonempty('Title must not be empty'),
   description: z.string().nonempty('Description must not be empty'),
   author: z.string().nonempty('Author must not be empty').default('Igor'),
-  format: z.enum(['webp', 'png']).default('png').optional(),
+  format: z.enum(['webp', 'png']).optional(),
   date: z
     .string()
     .nonempty()
@@ -65,7 +65,7 @@ const hex = /^[0-9a-f]+$/;
 export const ogIdTokenSchema = z
   .object({
     id: z.string().trim().length(32).regex(hex).default('1234567890'),
-    format: z.enum(['webp', 'png']).default('png').optional(),
+    format: z.enum(['webp', 'png']).optional(),
   })
   .strip();
 
