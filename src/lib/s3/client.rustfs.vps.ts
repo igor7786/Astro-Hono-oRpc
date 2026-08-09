@@ -12,7 +12,7 @@ async function getRustfsClient() {
   isProd
     ? console.log('✅ [RustFS] Running in production mode, connecting without TLS...')
     : console.log('⚠️ [RustFS] Running in development mode, connecting to remote VPS with mTLS...');
-
+  const endpoint = isProd ? envServer.PROD_RUSTFS_ENDPOINT : envServer.VPS_RUSTFS_ENDPOINT;
   const agent =
     envServer.PRODUCTION === 'true'
       ? {
@@ -43,7 +43,7 @@ async function getRustfsClient() {
       accessKeyId: envServer.RUSTFS_ACCESS_KEY,
       secretAccessKey: envServer.RUSTFS_SECRET_KEY,
     },
-    endpoint: envServer.VPS_RUSTFS_ENDPOINT,
+    endpoint,
     forcePathStyle: true,
     requestHandler,
   });
