@@ -25,21 +25,6 @@ type Env = {
 };
 
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
-
-// ─── Global middleware ────────────────────────────────────────────────────────
-app.use(
-  '*',
-  cors({
-    origin: [envServer.PUBLIC_URL],
-    credentials: true,
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
-    exposeHeaders: ['Content-Length', 'Content-Type', 'Content-Disposition'],
-    maxAge: 600,
-  })
-);
-
-app.use(prettyLogger);
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', async (c, next) => {
   c.set('sqlite', sqliteDb);
@@ -59,6 +44,21 @@ app.use('*', async (c, next) => {
     ...Object.fromEntries(getResponse.headers),
   });
 });
+
+// ─── Global middleware ────────────────────────────────────────────────────────
+app.use(
+  '*',
+  cors({
+    origin: [envServer.PUBLIC_URL],
+    credentials: true,
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+    exposeHeaders: ['Content-Length', 'Content-Type', 'Content-Disposition'],
+    maxAge: 600,
+  })
+);
+
+app.use(prettyLogger);
 
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', async (c, next) => {
