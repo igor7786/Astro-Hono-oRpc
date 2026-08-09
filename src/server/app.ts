@@ -44,6 +44,13 @@ app.use('*', async (c, next) => {
     ...Object.fromEntries(getResponse.headers),
   });
 });
+app.use('*', async (c, next) => {
+  await next();
+  const vary = c.res.headers.get('Vary');
+  if (vary && vary.includes('Origin') && !vary.includes('Accept')) {
+    c.res.headers.set('Vary', `${vary}, Accept`);
+  }
+});
 
 // ─── Global middleware ────────────────────────────────────────────────────────
 app.use(
