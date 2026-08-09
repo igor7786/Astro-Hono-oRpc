@@ -41,9 +41,10 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   // that doesn't support it (e.g. Facebook's scraper)
   // ------------------------------------------------------------------
   const accept = context.request?.headers.get('accept') ?? '';
+  const userAgent = context.request?.headers.get('user-agent') ?? '';
   const format =
     input.format ??
-    (accept.includes('image/webp') && !accept.includes('facebookexternalhit') ? 'webp' : 'png');
+    (accept.includes('image/webp') && !userAgent.includes('facebookexternalhit') ? 'webp' : 'png');
 
   const contentType = format === 'webp' ? 'image/webp' : 'image/png';
   console.log('format', format);
