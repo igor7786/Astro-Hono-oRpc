@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { test } from '@/lib/drizzle/pg/pg.schema';
 import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
 import { base } from '@/server/procedures/base';
-import type { ClientStatus, TestClientSchema } from '@/server/schemas/clients.schema';
+import type { ClientStatus, TestClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
 async function timed(name: string, fn: () => Promise<boolean>): Promise<ClientStatus> {
   const start = performance.now();

@@ -1,7 +1,7 @@
 import { eventIterator } from '@orpc/server';
 
 import { baseOc } from '@/server/contracts/oc.base';
-import { testClientSchema } from '@/server/schemas/clients.schema';
+import { testClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
 const pathPrefix = '/tests'; // ✅ added path prefix
 export const testClients = baseOc
