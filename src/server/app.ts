@@ -24,7 +24,9 @@ type Env = {
   };
 };
 
+// GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
+
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', async (c, next) => {
   c.set('sqlite', sqliteDb);
@@ -44,6 +46,8 @@ app.use('*', async (c, next) => {
     ...Object.fromEntries(getResponse.headers),
   });
 });
+
+// Handle OPTIONS requests globally to ensure they are processed correctly by all handlers
 app.use('*', async (c, next) => {
   await next();
   const vary = c.res.headers.get('Vary');
@@ -52,7 +56,7 @@ app.use('*', async (c, next) => {
   }
 });
 
-// ─── Global middleware ────────────────────────────────────────────────────────
+// ─── CORS ────────────────────────────────────────────────────────────────────
 app.use(
   '*',
   cors({
