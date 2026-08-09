@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-z.config({ jitless: true });
 export const testSchema = z.object({
   name: z
     .string()

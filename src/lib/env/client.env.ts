@@ -1,7 +1,6 @@
 // src/lib/env/client.env.ts
 import { z } from 'zod';
 
-z.config({ jitless: true });
 // Schema for browser-exposed vars (only PUBLIC ones)
 // Only include client-safe variables (prefixed with PUBLIC_)
 const EnvClientSchema = z.object({

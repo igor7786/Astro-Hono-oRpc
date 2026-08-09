@@ -21,4 +21,8 @@ const props = Astro.props as Partial<SEOType>;
   <script>
     import '@/bones/registry.js';
   </script>
+  <script>
+    import { z } from 'zod';
+    z.config({ jitless: true });
+  </script>
 </head>
