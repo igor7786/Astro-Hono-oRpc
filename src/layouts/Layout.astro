@@ -6,6 +6,7 @@ import HEAD from '@/components/astrocomp/layout/HEAD.astro';
 import type { SEO } from '@/lib/shared/schemas/seo.schema';
 
 const props = Astro.props as Partial<SEO>;
+console.log(import.meta.env.DEV);
 ---
 
 <!doctype html>
@@ -21,10 +22,10 @@ const props = Astro.props as Partial<SEO>;
       <slot name="footer" />
 
       <!-- Toaster for sonner -->
-      <Toaster client:load position="top-right" />
+      <Toaster client:only position="top-right" />
     </div>
 
     <!-- Tanstack Query DevTools -->
-    <DevTools client:only="react" />
+    {import.meta.env.DEV && <DevTools client:only />}
   </body>
 </html>
