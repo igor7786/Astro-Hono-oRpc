@@ -1,0 +1,16 @@
+---
+import Layout from '@/layouts/Layout.astro';
+const seo = {
+  title: 'Test Redirect',
+  description: 'Powered by Astro + Hono + oRPC',
+  date: new Date(2026, 4, 15).toISOString(),
+  type: 'website',
+};
+import TestRedirect from '@rcomp/playground/TestRedirect';
+---
+
+<Layout {...seo}>
+  <div slot="main" class="mx-auto flex min-h-screen flex-col items-center justify-center gap-4">
+    <TestRedirect client:only />
+  </div></Layout
+>

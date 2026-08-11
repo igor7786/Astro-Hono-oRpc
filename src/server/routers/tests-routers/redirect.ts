@@ -1,16 +1,16 @@
 import { base } from '@/server/procedures/base';
 
-export const testRedirect = base.tests.redirectTest.handler(async ({ input, context }) => {
+export const testRedirect = base.tests.redirectTest.handler(async ({ input, errors }) => {
   if (input.name === 'admin') {
-    return {
-      status: 301,
-      headers: { location: '/' },
-    };
+    // Pass custom fields directly within the typed data payload wrapper
+    throw errors.REDIRECT_REQUEST({
+      message: 'Redirecting to home',
+      data: {
+        url: '/',
+      },
+    });
   }
   return {
-    status: 200,
-    body: {
-      name: `Hello, ${input.name}!`,
-    },
+    name: `Hello, ${input.name}!`,
   };
 });

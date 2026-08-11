@@ -1,6 +1,16 @@
 import { oc } from '@orpc/contract';
+import z from 'zod';
 
 export const baseOc = oc.errors({
+  REDIRECT_REQUEST: {
+    message: 'Redirect Request',
+    status: 403,
+    description: 'The request is redirected another location',
+    // Wrap your custom payload inside a typed data schema object
+    data: z.object({
+      url: z.string(),
+    }),
+  },
   BAD_REQUEST: {
     message: 'Bad Request',
     status: 400,

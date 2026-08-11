@@ -11,7 +11,7 @@ export const redirectTest = baseOc
     summary: 'Redirect route',
     tags: ['Tests'],
     successDescription: 'Redirect route successful',
-    outputStructure: 'detailed', // Allows 200 vs 307 conditional return
+    successStatus: 200,
   })
   .input(redirectSchema)
   .output(outputSchema);

@@ -5,6 +5,8 @@ import type { JsonifiedClient } from '@orpc/openapi-client';
 import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
+import { navigate } from 'astro:transitions/client';
+
 // 1. You need the contract reference here
 // If AppRouter is just a type, you might need to import the actual router object
 // or the contract if you are using separate contracts.
@@ -35,12 +37,12 @@ const link = new OpenAPILink(appContract, {
 
       console.error(`[oRPC Client] ${error.code} - ${error.message}`);
 
-      if (error.code === 'UNAUTHORIZED') {
-        window.location.href = '/login';
-      }
-
-      if (error.code === 'FORBIDDEN') {
-        window.location.href = '/403';
+      if (error.code === 'REDIRECT_REQUEST') {
+        // Extract the destination string safely from our typed error payload
+        const targetUrl = (error.data as { url?: string })?.url || '/';
+        console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
+        // 2. Instruct the browser to redirect
+        navigate(targetUrl);
       }
     }),
   ],
