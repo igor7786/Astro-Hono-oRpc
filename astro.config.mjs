@@ -96,10 +96,8 @@ export default defineConfig({
   ],
   markdown: {
     // readingTime: true, // ← built-in, no remark plugin needed
-    shikiConfig: {
-      theme: 'dracula',
-    },
-    // Pass your custom options into the native Sätteri compiler
+    syntaxHighlight: 'prism',
+
     processor: satteri({
       features: {
         directive: true,

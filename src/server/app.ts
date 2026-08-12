@@ -129,10 +129,14 @@ app.get('/health', (c) => c.json({ status: 'ok' }));
 
 // ─── CSP report handler ──────────────────────────────────────────────────────────────────────
 app.post('/csp-report', async (c) => {
-  const report = await c.req.json().catch(() => null);
-  console.log('[CSP Violation]', report);
-  if (report) console.warn('[CSP Violation]', JSON.stringify(report));
-  return c.body(null, 200);
+  const body = await c.req.text();
+  try {
+    const report = JSON.parse(body);
+    console.warn('[CSP Violation]', JSON.stringify(report, null, 2));
+  } catch {
+    console.warn('[CSP Violation - raw]', body);
+  }
+  return c.body(null, 204);
 });
 
 // ─── 404 handler ──────────────────────────────────────────────────────────────
