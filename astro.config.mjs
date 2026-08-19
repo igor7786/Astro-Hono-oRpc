@@ -12,6 +12,7 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import cspManifestPlugin from './src/plugins/astro-csp-manifest.ts';
 import serverStartup from './src/plugins/clients';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
@@ -108,6 +109,7 @@ export default defineConfig({
     react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
     serverStartup(),
+    cspManifestPlugin(),
     // boneyardPlugin({ /* plugin options */ }),
     // sitemap integration
     sitemap({

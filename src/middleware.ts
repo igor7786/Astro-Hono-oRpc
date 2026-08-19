@@ -1,6 +1,6 @@
 // src/middleware.ts
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { defineMiddleware } from 'astro:middleware';
@@ -9,47 +9,64 @@ import { defineMiddleware } from 'astro:middleware';
  * ============================================================
  * CSP — computed once at server startup, not per-request
  * ============================================================
- *
- * This middleware is the single source of truth for CSP.
- * astro.config.mjs must NOT have a `security.csp` block —
- * Astro's native CSP auto-generates style hashes that silently
- * disable 'unsafe-inline' (a hash's presence nullifies
- * unsafe-inline per the CSP spec), which breaks any runtime
- * inline style (React `style={{}}` props, animation/drag libs,
- * etc). See: github.com/withastro/roadmap/discussions/1325
  */
 const themeScriptHash = (() => {
   try {
     const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
-    const content = readFileSync(themeScriptPath, 'utf-8');
-    return `sha256-${createHash('sha256').update(content).digest('base64')}`;
+    if (existsSync(themeScriptPath)) {
+      const content = readFileSync(themeScriptPath, 'utf-8');
+      return `sha256-${createHash('sha256').update(content).digest('base64')}`;
+    }
   } catch (e) {
     console.error('[CSP] Failed to hash theme-checker.js — script-src will block it', e);
-    return null;
   }
+  return null;
 })();
 
-const missingHashes = [
-  // "'sha256-zvOr/gdK3jsdZw9UL5+JdhIPfba74txoTxCQ6m3RLLI='",
-  "'sha256-eIXWvAmxkr251LJZkjniEK5LcPF3NkapbJepohwYRIc='",
-  "'sha256-Ya0pUYrC7nM5Cn/056TyVuEiz6dFGrzmkWzgON0pF0U='",
-].join(' ');
+// Safely initialize arrays to guarantee they are iterable during compilation
+let crawledScripts: string[] = [];
+let crawledStyles: string[] = [];
 
-const CSP = themeScriptHash
-  ? [
-      "default-src 'self'",
-      "connect-src 'self'",
-      "img-src 'self' data:",
-      "font-src 'self' data:",
-      "frame-ancestors 'none'",
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      `script-src 'self' '${themeScriptHash}' ${missingHashes}`,
-      "style-src 'self' 'unsafe-inline'",
-      'report-uri /api/csp-report',
-    ].join('; ')
-  : null;
+try {
+  const manifestPath = join(process.cwd(), 'src/csp-manifest.json');
+  if (existsSync(manifestPath)) {
+    const content = readFileSync(manifestPath, 'utf-8');
+    const parsed = JSON.parse(content);
+
+    // Ensure the arrays exist explicitly inside the parsed file
+    if (Array.isArray(parsed?.scripts)) crawledScripts = parsed.scripts;
+    if (Array.isArray(parsed?.styles)) crawledStyles = parsed.styles;
+  }
+} catch (e) {
+  console.warn(
+    '[CSP] Manifest file not found or unreadable yet (this is normal during early build steps).'
+  );
+}
+
+// Merge the static theme script hash along with extracted build arrays
+const scriptHashes = [
+  themeScriptHash ? `'${themeScriptHash}'` : '',
+  ...crawledScripts, // Guaranteed to be an array now
+]
+  .filter(Boolean)
+  .join(' ');
+
+// Merge inline production layout style hashes
+const styleHashes = "'self' 'unsafe-inline'";
+
+const CSP = [
+  "default-src 'self'",
+  "connect-src 'self'",
+  "img-src 'self' data:",
+  "font-src 'self' data:",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  `script-src 'self' ${scriptHashes}`,
+  `style-src ${styleHashes}`,
+  'report-uri /api/csp-report',
+].join('; ');
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
