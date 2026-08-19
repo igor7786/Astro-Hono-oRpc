@@ -39,10 +39,12 @@ const link = new OpenAPILink(appContract, {
 
       if (error.code === 'REDIRECT_REQUEST') {
         // Extract the destination string safely from our typed error payload
-        const targetUrl = (error.data as { url?: string })?.url || '/';
+        const rawUrl = (error.data as { url?: string })?.url;
+        const targetUrl = rawUrl && rawUrl.startsWith('/') && !rawUrl.startsWith('//') ? rawUrl : '/';
         console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
         // 2. Instruct the browser to redirect
-        navigate(targetUrl);
+        // navigate(targetUrl);
+        window.location.replace(targetUrl);
       }
     }),
   ],
