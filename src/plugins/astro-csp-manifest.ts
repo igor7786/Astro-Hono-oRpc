@@ -56,7 +56,7 @@ export default function cspManifestPlugin(): AstroIntegration {
         }
 
         // Output structural JSON manifest
-        const manifestOutputPath = join(process.cwd(), 'src', 'csp-manifest.json');
+        const manifestOutputPath = join(process.cwd(), 'src/plugins', 'csp-manifest.json');
         const manifestPayload = {
           scripts: Array.from(scriptHashes),
           styles: Array.from(styleHashes),

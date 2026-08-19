@@ -28,7 +28,7 @@ let crawledScripts: string[] = [];
 let crawledStyles: string[] = [];
 
 try {
-  const manifestPath = join(process.cwd(), 'src/csp-manifest.json');
+  const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');
   if (existsSync(manifestPath)) {
     const content = readFileSync(manifestPath, 'utf-8');
     const parsed = JSON.parse(content);

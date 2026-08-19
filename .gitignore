@@ -710,7 +710,10 @@ pip-selfcheck.json
 **/pg_data
 ### redis ###
 **/data_redis
+### csp-manifest ###
+**/csp-manifest.json
 ### react ###
+
 
 ### understand-ai ###
 **/.understand-anything
