@@ -1,9 +1,13 @@
 // astro-csp-manifest.ts
 import type { AstroIntegration } from 'astro';
+import { eq } from 'drizzle-orm';
 
+import console from 'node:console';
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
+
+import { test } from '@/lib/drizzle/sqlite/schema';
 
 function getHtmlFiles(dir: string, fileList: string[] = []): string[] {
   const files = readdirSync(dir);
@@ -23,6 +27,11 @@ export default function cspManifestPlugin(): AstroIntegration {
     name: 'astro-csp-manifest',
     hooks: {
       'astro:build:done': async ({ dir }) => {
+        const { sqliteDb, closeSqlite } = await import('@/lib/drizzle/sqlite/client.ts');
+        console.log(
+          '[server] SQLITE DRIZZLE ->',
+          await sqliteDb.select().from(test).where(eq(test.key, 'ping'))
+        );
         // Resolve target build directory
         const distPath = dir.pathname;
         const htmlFiles = getHtmlFiles(distPath);

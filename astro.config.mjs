@@ -12,7 +12,7 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import cspManifestPlugin from './src/plugins/astro-csp-manifest.ts';
+import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
 import serverStartup from './src/plugins/clients';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';

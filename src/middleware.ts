@@ -2,6 +2,7 @@
 import { defineMiddleware } from 'astro:middleware';
 
 import { csp, permissionsPolicy } from '@/lib/csp/headers';
+import { envServer } from '@/lib/env/server.env';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
@@ -38,7 +39,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * own csp for /api/docs — see src/server/app.ts)
    * ============================================================
    */
-  if (import.meta.env.PROD && csp && !pathname.startsWith('/api/') && isHtml) {
+  if (envServer.PRODUCTION === 'true' && csp && !pathname.startsWith('/api/') && isHtml) {
     response.headers.set('Content-Security-Policy', csp);
   }
 
