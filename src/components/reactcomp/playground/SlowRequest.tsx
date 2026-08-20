@@ -44,7 +44,7 @@ export default function SlowRequest() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <h2 className="text-xl font-bold">Slow Request (3s)</h2>
+      <h2 className="text-xl font-bold">Slow Request (6s)</h2>
 
       <div className="flex gap-2">
         <Button
@@ -65,7 +65,7 @@ export default function SlowRequest() {
       </div>
 
       <div className="text-sm">
-        {isFetching && <p className="text-yellow-600">⏳ Waiting 10 seconds...</p>}
+        {isFetching && <p className="text-yellow-600">⏳ Waiting 6 seconds...</p>}
         {cancelled && !isFetching && <p className="text-red-600">🛑 Request cancelled</p>}
         {data && !cancelled && !isFetching && <p className="text-green-600">✅ {data.name}</p>}
         {error && <p className="text-red-600">❌ {error.message}</p>}

@@ -23,7 +23,7 @@ if (!result.success) {
 // ✅ fallback to safe defaults
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
-const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
+const { title, description, author, date, type, siteName = Astro.url.href } = seo;
 let ogAuthor = author;
 if (!ogAuthor) ogAuthor = 'Alberto';
 

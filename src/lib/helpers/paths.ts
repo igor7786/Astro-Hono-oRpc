@@ -1,3 +1,5 @@
+import { join } from 'node:path';
+
 import { allRouters } from '@/server/routers/all.routers';
 
 // Files/folders to ignore globally when scanning routes
@@ -196,3 +198,6 @@ export async function discoverRoutes(
 export const openApiBasePath = '/api/openapi';
 export const rpcBasePath = '/api/rpc';
 export const ogPath = allRouters.seo.ogRoute['~orpc'].route.path; // derived from router definition
+
+export const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
+export const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');

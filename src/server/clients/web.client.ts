@@ -5,8 +5,6 @@ import type { JsonifiedClient } from '@orpc/openapi-client';
 import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
-import { navigate } from 'astro:transitions/client';
-
 // 1. You need the contract reference here
 // If AppRouter is just a type, you might need to import the actual router object
 // or the contract if you are using separate contracts.
