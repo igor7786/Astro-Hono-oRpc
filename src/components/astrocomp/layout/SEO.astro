@@ -5,8 +5,8 @@ import { eq } from 'drizzle-orm';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
 import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.url';
-import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schemas';
+import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
+import { ogImages } from '@/lib/drizzle/neon/schemas';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
@@ -32,19 +32,31 @@ const token = generateOgToken(id);
 try {
   // SQLite caching for OG image generation
   // Check if the OG params already exist in SQLite
-  const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
+  const rows = await neonDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
   const existing = rows[0] ?? null;
   const isNew = !existing;
   if (isNew) {
     // Save the OG params to SQLite
-    await sqliteDb.insert(ogImages).values({
-      id,
-      token,
-      title,
-      description,
-      author,
-      date,
-    });
+    await neonDb
+      .insert(ogImages)
+      .values({
+        id,
+        token,
+        title,
+        description,
+        author,
+        date,
+      })
+      .onConflictDoUpdate({
+        target: ogImages.id,
+        set: {
+          token,
+          title,
+          description,
+          author,
+          date,
+        },
+      });
   }
 } catch (error) {
   console.error('[error] Sqlite unavailable 📛');

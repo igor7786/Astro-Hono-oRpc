@@ -199,6 +199,7 @@ export default defineConfig({
           'react',
           'zod',
           'bun',
+          'neon-icon',
         ],
         skillIcons: ['astro', 'vite-light'],
         selfhst: ['rustfs', 'arcane', 'authentik', 'crowdsec'],

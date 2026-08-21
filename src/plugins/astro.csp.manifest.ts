@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
-import { hashes } from '@/lib/drizzle/sqlite/schemas';
+import { hashes } from '@/lib/drizzle/neon/schemas';
 
 function getHtmlFiles(dir: string, fileList: string[] = []): string[] {
   const files = readdirSync(dir);
@@ -26,7 +26,7 @@ export default function cspManifestPlugin(): AstroIntegration {
     name: 'astro-csp-manifest',
     hooks: {
       'astro:build:done': async ({ dir }) => {
-        const { sqliteDb } = await import('@/lib/drizzle/sqlite/client');
+        const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
 
         const distPath = dir.pathname;
         const htmlFiles = getHtmlFiles(distPath);
@@ -58,8 +58,8 @@ export default function cspManifestPlugin(): AstroIntegration {
 
         // Clear-and-reinsert per format so removed scripts/styles don't
         // linger as stale permitted hashes forever
-        await sqliteDb.delete(hashes).where(eq(hashes.format, 'script'));
-        await sqliteDb.delete(hashes).where(eq(hashes.format, 'style'));
+        await neonDb.delete(hashes).where(eq(hashes.format, 'script'));
+        await neonDb.delete(hashes).where(eq(hashes.format, 'style'));
 
         const now = new Date();
         const rows = [
@@ -80,7 +80,7 @@ export default function cspManifestPlugin(): AstroIntegration {
         ];
 
         if (rows.length > 0) {
-          await sqliteDb.insert(hashes).values(rows);
+          await neonDb.insert(hashes).values(rows);
         }
 
         console.log(

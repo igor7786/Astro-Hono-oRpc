@@ -20,6 +20,12 @@ const adminRoutes = [
     size: 24,
   },
   {
+    icon: 'logos:neon-icon',
+    route: 'https://neon.com/',
+    label: 'Neon-Admin',
+    size: 24,
+  },
+  {
     icon: 'ui:dragonfly',
     route: 'https://redis-insight.fast-web-tech.co.uk/',
     label: 'Dragonfly-Console',
