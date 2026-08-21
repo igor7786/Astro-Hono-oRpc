@@ -5,6 +5,7 @@ import { clientOrpc as orpc } from '@/server/clients/web.client';
 
 const clientLabels = {
   pg: 'PostgreSQL',
+  neon: 'Neon',
   sqlite: 'SQLite',
   redis: 'Redis',
   s3: 'S3',

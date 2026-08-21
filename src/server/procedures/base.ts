@@ -2,6 +2,7 @@ import { implement } from '@orpc/server';
 import type { ResponseHeadersPluginContext } from '@orpc/server/plugins';
 import type { Context } from 'hono';
 
+import type { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import type { pgDb } from '@/lib/drizzle/pg/client.pg.db';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { envServer } from '@/lib/env/server.env';
@@ -20,6 +21,7 @@ export type AppContext = {
   env?: typeof envServer;
   sqlite?: typeof sqliteDb;
   pg?: typeof pgDb;
+  neon?: typeof neonDb;
   producer?: typeof producer;
   rustfs?: typeof rustfsClient;
   redis?: typeof redisVps;

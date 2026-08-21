@@ -2,6 +2,7 @@ import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
+import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import { pgDb } from '@/lib/drizzle/pg/client.pg.db';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
 import { envServer, type EnvServer } from '@/lib/env/server.env';
@@ -18,6 +19,7 @@ type Env = {
   Variables: {
     sqlite: typeof sqliteDb;
     pg: typeof pgDb;
+    neon: typeof neonDb;
     producer: typeof producer;
     rustfs: typeof rustfsClient;
     redis: typeof redisVps;
@@ -30,6 +32,7 @@ export const app = new Hono<Env>({ strict: false }).basePath('/api');
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', async (c, next) => {
   c.set('sqlite', sqliteDb);
+  c.set('neon', neonDb);
   c.set('pg', pgDb);
   c.set('producer', producer);
   c.set('rustfs', rustfsClient);
@@ -80,6 +83,7 @@ app.use('/*', async (c, next) => {
       env: envServer,
       sqlite: c.get('sqlite'),
       pg: c.get('pg'),
+      neon: c.get('neon'),
       producer: c.get('producer'),
       rustfs: c.get('rustfs'),
       redis: c.get('redis'),
@@ -97,6 +101,7 @@ app.use('/*', async (c, next) => {
     env: envServer,
     sqlite: c.get('sqlite'),
     pg: c.get('pg'),
+    neon: c.get('neon'),
     producer: c.get('producer'),
     rustfs: c.get('rustfs'),
     redis: c.get('redis'),
