@@ -26,7 +26,7 @@ export default function cspManifestPlugin(): AstroIntegration {
     name: 'astro-csp-manifest',
     hooks: {
       'astro:build:done': async ({ dir }) => {
-        const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
+        const { sqliteDb } = await import('@/lib/drizzle/sqlite/client');
 
         const distPath = dir.pathname;
         const htmlFiles = getHtmlFiles(distPath);
