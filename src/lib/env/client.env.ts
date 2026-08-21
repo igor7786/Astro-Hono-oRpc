@@ -6,6 +6,7 @@ import { z } from 'zod';
 const EnvClientSchema = z.object({
   PUBLIC_URL: z.string().min(1, 'ENV: PUBLIC_URL is required and must be a non-empty string'),
   PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string'),
+  PRODUCTION: z.string().min(1, 'ENV: PRODUCTION is required and must be a non-empty string'),
 });
 
 export type ClientEnv = z.infer<typeof EnvClientSchema>;
@@ -14,6 +15,7 @@ export function getClientEnv(): ClientEnv {
   const parsed = EnvClientSchema.parse({
     PUBLIC_URL: import.meta.env.PUBLIC_URL,
     PUBLIC_API_URL: import.meta.env.PUBLIC_API_URL,
+    PRODUCTION: import.meta.env.PRODUCTION,
   });
   return parsed;
 }

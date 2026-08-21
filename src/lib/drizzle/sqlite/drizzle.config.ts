@@ -2,9 +2,9 @@ import { defineConfig } from 'drizzle-kit';
 
 import { join } from 'node:path';
 
-console.log('📁 Schema Path :', join(process.cwd(), '/src/lib/drizzle/sqlite/schema.ts'));
+console.log('📁 Schema Path :', join(process.cwd(), '/src/lib/drizzle/sqlite/schemas/index.ts'));
 console.log('📁 Migrations Path:', join(process.cwd(), '/src/lib/drizzle/sqlite/db/migrations'));
-const schema = './src/lib/drizzle/sqlite/schema.ts';
+const schema = './src/lib/drizzle/sqlite/schemas/index.ts';
 const out = './src/lib/drizzle/sqlite/db/migrations';
 
 export default defineConfig({

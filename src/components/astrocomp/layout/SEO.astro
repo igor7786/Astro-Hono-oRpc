@@ -8,7 +8,7 @@ import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
 import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.url';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schema';
+import { ogImages } from '@/lib/drizzle/sqlite/schemas';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,

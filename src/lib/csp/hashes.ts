@@ -1,15 +1,18 @@
 // src/lib/csp.ts
+import { eq } from 'drizzle-orm';
+
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
-import { manifestPath, themeScriptPath } from '@/lib/helpers/paths';
+import { hashes } from '@/lib/drizzle/sqlite/schemas';
+import { themeScriptPath } from '@/lib/helpers/paths';
 
 /**
  * ============================================================
  * CSP — computed once at module load (server startup for SSR,
  * or at each `astro build` pass for prerendered routes — see
  * Dockerfile's two-pass build for why prerendered pages need
- * csp-manifest.json to already exist on disk before this runs)
+ * the hashes table already populated before this runs)
  * ============================================================
  */
 const themeScriptHash = (() => {
@@ -24,19 +27,21 @@ const themeScriptHash = (() => {
   return null;
 })();
 
-// Safely initialize arrays to guarantee they are iterable during compilation
+// Safely initialize arrays to guarantee they are iterable regardless of DB state
 let crawledScripts: string[] = [];
-try {
-  if (existsSync(manifestPath)) {
-    const content = readFileSync(manifestPath, 'utf-8');
-    const parsed = JSON.parse(content);
 
-    // Ensure the arrays exist explicitly inside the parsed file
-    if (Array.isArray(parsed?.scripts)) crawledScripts = parsed.scripts;
-  }
+try {
+  const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
+  const rows = await sqliteDb
+    .select({ hash: hashes.hash })
+    .from(hashes)
+    .where(eq(hashes.format, 'script'));
+
+  crawledScripts = rows.map((row) => `'${row.hash}'`);
 } catch (e) {
   console.warn(
-    '[CSP] Manifest file not found or unreadable yet (this is normal during early build steps).'
+    '[CSP] Could not read script hashes from DB yet (this is normal during early build steps).',
+    e
   );
 }
 

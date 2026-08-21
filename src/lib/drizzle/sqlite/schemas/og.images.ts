@@ -1,18 +1,5 @@
-// src/lib/drizzle/sqlite/schema.ts
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-
-export const test = sqliteTable('test', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-
-  key: text('key').notNull().unique(),
-
-  value: text('value').notNull(),
-
-  createdAt: integer('created_at', {
-    mode: 'timestamp',
-  }).notNull(),
-});
 
 export const ogImages = sqliteTable('og_images', {
   // Your HMAC-signed opaque hash ID — primary key, computed from the input params

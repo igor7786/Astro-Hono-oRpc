@@ -5,7 +5,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 import { Toaster } from '@rcomp/ui/sonner';
 import HEAD from '@/components/astrocomp/layout/HEAD.astro';
 import type { SEO } from '@/lib/shared/schemas/seo.schema';
-
+import { envClient } from '@/lib/env/client.env';
 const props = Astro.props as Partial<SEO>;
 ---
 
@@ -26,6 +26,6 @@ const props = Astro.props as Partial<SEO>;
     </div>
 
     <!-- Tanstack Query DevTools -->
-    {import.meta.env.DEV && <DevTools client:only />}
+    {envClient.PRODUCTION === 'false' && <DevTools client:only />}
   </body>
 </html>

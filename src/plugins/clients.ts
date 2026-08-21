@@ -3,7 +3,7 @@ import { ProduceAcks } from '@platformatic/kafka';
 import { eq } from 'drizzle-orm';
 
 import { test as testPg } from '@/lib/drizzle/pg/pg.schema';
-import { test } from '@/lib/drizzle/sqlite/schema';
+import { test } from '@/lib/drizzle/sqlite/schemas';
 
 async function loadClients() {
   // Load clients or perform any necessary setup here

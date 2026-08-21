@@ -21,7 +21,9 @@ async function createDb() {
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
     ssl:
-      envServer.PRODUCTION === 'false' ? await (await import('@/lib/tls/client.tls')).tls() : undefined,
+      envServer.PRODUCTION === 'false'
+        ? await (await import('@/lib/tls/client.tls')).tls(true)
+        : undefined,
   });
 
   // Without this, an idle client dying (pgbouncer/network dropping it)

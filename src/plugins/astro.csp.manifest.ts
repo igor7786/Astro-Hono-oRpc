@@ -2,12 +2,11 @@
 import type { AstroIntegration } from 'astro';
 import { eq } from 'drizzle-orm';
 
-import console from 'node:console';
 import { createHash } from 'node:crypto';
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
-import { test } from '@/lib/drizzle/sqlite/schema';
+import { hashes } from '@/lib/drizzle/sqlite/schemas';
 
 function getHtmlFiles(dir: string, fileList: string[] = []): string[] {
   const files = readdirSync(dir);
@@ -27,19 +26,14 @@ export default function cspManifestPlugin(): AstroIntegration {
     name: 'astro-csp-manifest',
     hooks: {
       'astro:build:done': async ({ dir }) => {
-        const { sqliteDb, closeSqlite } = await import('@/lib/drizzle/sqlite/client.ts');
-        console.log(
-          '[server] SQLITE DRIZZLE ->',
-          await sqliteDb.select().from(test).where(eq(test.key, 'ping'))
-        );
-        // Resolve target build directory
+        const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
+
         const distPath = dir.pathname;
         const htmlFiles = getHtmlFiles(distPath);
 
         const scriptHashes = new Set<string>();
         const styleHashes = new Set<string>();
 
-        // Regex selectors that skip external asset calls (ignores tags containing src="..." or href="...")
         const scriptRegex = /<script(?![^>]*\bsrc\b)[^>]*>([\s\S]*?)<\/script>/gi;
         const styleRegex = /<style(?![^>]*\bhref\b)[^>]*>([\s\S]*?)<\/style>/gi;
 
@@ -47,33 +41,50 @@ export default function cspManifestPlugin(): AstroIntegration {
           const htmlContent = readFileSync(file, 'utf-8');
           let match;
 
-          // Process scripts
           while ((match = scriptRegex.exec(htmlContent)) !== null) {
             const rawContent = match[1]?.trim();
             if (!rawContent) continue;
             const hash = createHash('sha256').update(rawContent, 'utf-8').digest('base64');
-            scriptHashes.add(`'sha256-${hash}'`);
+            scriptHashes.add(`sha256-${hash}`);
           }
 
-          // Process style blocks
           while ((match = styleRegex.exec(htmlContent)) !== null) {
             const rawContent = match[1]?.trim();
             if (!rawContent) continue;
             const hash = createHash('sha256').update(rawContent, 'utf-8').digest('base64');
-            styleHashes.add(`'sha256-${hash}'`);
+            scriptHashes.add(`sha256-${hash}`);
           }
         }
 
-        // Output structural JSON manifest
-        const manifestOutputPath = join(process.cwd(), 'src/plugins', 'csp-manifest.json');
-        const manifestPayload = {
-          scripts: Array.from(scriptHashes),
-          styles: Array.from(styleHashes),
-        };
+        // Clear-and-reinsert per format so removed scripts/styles don't
+        // linger as stale permitted hashes forever
+        await sqliteDb.delete(hashes).where(eq(hashes.format, 'script'));
+        await sqliteDb.delete(hashes).where(eq(hashes.format, 'style'));
 
-        writeFileSync(manifestOutputPath, JSON.stringify(manifestPayload, null, 2), 'utf-8');
+        const now = new Date();
+        const rows = [
+          ...Array.from(scriptHashes).map((hash) => ({
+            id: hash,
+            hash,
+            format: 'script' as const,
+            createdAt: now,
+            updatedAt: now,
+          })),
+          ...Array.from(styleHashes).map((hash) => ({
+            id: hash,
+            hash,
+            format: 'style' as const,
+            createdAt: now,
+            updatedAt: now,
+          })),
+        ];
+
+        if (rows.length > 0) {
+          await sqliteDb.insert(hashes).values(rows);
+        }
+
         console.log(
-          `\x1b[32m[CSP Manifest]\x1b[0m Generated: ${manifestPayload.scripts.length} script hashes & ${manifestPayload.styles.length} style hashes.`
+          `\x1b[32m[CSP Manifest]\x1b[0m Generated: ${scriptHashes.size} script hashes & ${styleHashes.size} style hashes.`
         );
       },
     },

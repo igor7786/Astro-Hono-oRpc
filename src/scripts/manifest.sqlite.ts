@@ -1,8 +1,8 @@
 import { resolve } from 'node:path';
 
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schema';
-import type { NewOgImage } from '@/lib/drizzle/sqlite/schema';
+import { ogImages } from '@/lib/drizzle/sqlite/schemas';
+import type { NewOgImage } from '@/lib/drizzle/sqlite/schemas';
 import { envServer } from '@/lib/env/server.env';
 
 const manifestDir = envServer.SQLITE_MANIFEST_DIR;

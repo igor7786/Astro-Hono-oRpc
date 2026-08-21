@@ -2,7 +2,7 @@ import { HeadBucketCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
 import { test } from '@/lib/drizzle/pg/pg.schema';
-import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
+import { test as sqliteTest } from '@/lib/drizzle/sqlite/schemas';
 import type { AppContext } from '@/server/procedures/base';
 import { base } from '@/server/procedures/base';
 import type { ClientStatus, TestClientSchema } from '@/server/schemas/tests-schema/clients.schema';

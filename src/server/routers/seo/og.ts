@@ -3,8 +3,8 @@ import { eq } from 'drizzle-orm';
 
 import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
 import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schema';
-import type { OgImage } from '@/lib/drizzle/sqlite/schema';
+import { ogImages } from '@/lib/drizzle/sqlite/schemas';
+import type { OgImage } from '@/lib/drizzle/sqlite/schemas';
 import { formatDate } from '@/lib/shared/schemas/seo.schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
