@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
-import { hashes } from '@/lib/drizzle/sqlite/schemas';
+import { hashes } from '@/lib/drizzle/neon/schemas';
 import { themeScriptPath } from '@/lib/helpers/paths';
 
 /**
@@ -31,8 +31,8 @@ const themeScriptHash = (() => {
 let crawledScripts: string[] = [];
 
 try {
-  const { sqliteDb } = await import('@/lib/drizzle/sqlite/client.ts');
-  const rows = await sqliteDb
+  const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
+  const rows = await neonDb
     .select({ hash: hashes.hash })
     .from(hashes)
     .where(eq(hashes.format, 'script'));

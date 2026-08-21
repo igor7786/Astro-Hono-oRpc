@@ -2,9 +2,9 @@
 import { eq } from 'drizzle-orm';
 
 import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
-import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schemas';
-import type { OgImage } from '@/lib/drizzle/sqlite/schemas';
+import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
+import { ogImages } from '@/lib/drizzle/neon/schemas';
+import type { OgImage } from '@/lib/drizzle/neon/schemas';
 import { formatDate } from '@/lib/shared/schemas/seo.schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
@@ -17,8 +17,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
 
   let params: Record<string, string> | OgImage | null = null;
   try {
-    [params] =
-      (await sqliteDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1)) ?? null;
+    [params] = (await neonDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1)) ?? null;
   } catch (error) {
     params = null;
     throw errors.INTERNAL_SERVER_ERROR({ message: 'SQLite unavailable 📛' });
