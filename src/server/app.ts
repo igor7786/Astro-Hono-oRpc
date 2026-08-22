@@ -74,6 +74,16 @@ app.use(
 
 app.use(prettyLogger);
 
+// ─── CSP report handler ──────────────────────────────────────────────────────────────────────
+// mount before your oRPC/openapi route handling
+app.use('/openapi/csp', async (c, next) => {
+  const ct = c.req.header('content-type') ?? '';
+  if (ct.includes('csp-report') || ct.includes('text/plain')) {
+    c.req.raw.headers.set('content-type', 'application/json');
+  }
+  await next();
+});
+
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', async (c, next) => {
   // ─── RPC handler ───────────────────────────────────────────────────────────
@@ -131,18 +141,6 @@ app.get(
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({ status: 'ok' }));
-
-// ─── CSP report handler ──────────────────────────────────────────────────────────────────────
-app.post('/csp-report', async (c) => {
-  const body = await c.req.text();
-  try {
-    const report = JSON.parse(body);
-    console.warn('[CSP Violation]', JSON.stringify(report, null, 2));
-  } catch {
-    console.warn('[CSP Violation - raw]', body);
-  }
-  return c.body(null, 204);
-});
 
 // ─── 404 handler ──────────────────────────────────────────────────────────────
 app.notFound((c) => {

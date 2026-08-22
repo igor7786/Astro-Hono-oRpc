@@ -1,3 +1,4 @@
+import { cspRoute } from '@/server/routers/csp/csp';
 import { llmsRoute } from '@/server/routers/seo/llms.html';
 import { llmsTxtRoute } from '@/server/routers/seo/llms.txt';
 import { ogRoute } from '@/server/routers/seo/og';
@@ -16,6 +17,9 @@ export const allRouters = {
     ogRoute: ogRoute,
     llmsRoute: llmsRoute,
     llmsTxtRoute: llmsTxtRoute,
+  },
+  csp: {
+    cspRoute: cspRoute,
   },
 };
 export type AppRouter = typeof allRouters;

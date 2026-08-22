@@ -11,7 +11,7 @@ export const csp = [
   "form-action 'self'",
   `script-src 'self' ${scriptHashes}`,
   `style-src ${styleHashes}`,
-  'report-uri /api/csp-report',
+  'report-uri /api/openapi/csp',
 ].join('; ');
 
 /**
