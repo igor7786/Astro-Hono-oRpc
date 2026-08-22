@@ -35,14 +35,15 @@ const link = new OpenAPILink(appContract, {
 
       console.error(`[oRPC Client] ${error.code} - ${error.message}`);
 
-      if (error.code === 'REDIRECT_REQUEST') {
+      if (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN') {
         // Extract the destination string safely from our typed error payload
-        const rawUrl = (error.data as { url?: string })?.url;
-        const targetUrl = rawUrl && rawUrl.startsWith('/') && !rawUrl.startsWith('//') ? rawUrl : '/';
-        console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
-        // 2. Instruct the browser to redirect
-        // navigate(targetUrl);
-        window.location.replace(targetUrl);
+        const data = error.data as { redirect?: boolean; url?: string };
+
+        if (data?.redirect) {
+          const targetUrl = data.url?.startsWith('/') && !data.url.startsWith('//') ? data.url : '/';
+          console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
+          window.location.replace(targetUrl);
+        }
       }
     }),
   ],

@@ -8,7 +8,6 @@ export default function TestRedirect() {
   const { data, isLoading, error } = useQuery(
     orpc.tests.redirectTest.queryOptions({
       input: { name: 'admin' },
-      queryKey: orpc.tests.redirectTest.queryKey({ input: { name: 'admin' } }),
       retry: false,
     }),
     client
