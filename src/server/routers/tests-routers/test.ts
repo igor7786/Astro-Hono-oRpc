@@ -15,7 +15,7 @@ export const testRoute = base.tests.test.handler(async ({ input, context, errors
   }
   // ✅ This now actually works
   if (input.name === 'admin') {
-    throw errors.FORBIDDEN({ data: { redirect: false } }); // uses default message
+    throw errors.FORBIDDEN(); // uses default message
   }
   return { name: `Hello, ${input.name}!` };
 });

@@ -29,9 +29,6 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
       params = null;
       throw errors.UNAUTHORIZED({
         message: 'Invalid Id or Token 📛',
-        data: {
-          redirect: false,
-        },
       });
     }
   } catch {

@@ -22,20 +22,24 @@ export const baseOc = oc.errors({
     status: 401,
     description: 'Authentication is required or has failed',
     code: 'UNAUTHORIZED',
-    data: z.object({
-      redirect: z.boolean().default(false),
-      url: z.string().optional(),
-    }),
+    data: z
+      .object({
+        redirect: z.boolean().default(false),
+        url: z.string(),
+      })
+      .optional(),
   },
   FORBIDDEN: {
     message: 'You are Forbidden',
     status: 403,
     description: 'You do not have permission to access this resource',
     code: 'FORBIDDEN',
-    data: z.object({
-      redirect: z.boolean().default(false),
-      url: z.string().optional(),
-    }),
+    data: z
+      .object({
+        redirect: z.boolean().default(false),
+        url: z.string(),
+      })
+      .optional(),
   },
   NOT_FOUND: {
     message: 'Not Found',
