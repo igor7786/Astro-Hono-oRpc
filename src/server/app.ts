@@ -1,32 +1,14 @@
-import { Scalar } from '@scalar/hono-api-reference';
 import { Hono } from 'hono';
 
-import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
-import { pgDb } from '@/lib/drizzle/pg/client.pg.db';
-import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { type EnvServer } from '@/lib/env/server.env';
 import { prettyLogger } from '@/lib/helpers/logger';
-import { redisVps } from '@/lib/redis/client.redis.vps';
-import { producer } from '@/lib/redpanda-kafka/producer';
-import { rustfsClient } from '@/lib/s3/client.rustfs.vps';
 import corsMiddleware from '@/server/hono-middleware/cors';
+import type { Env } from '@/server/hono-middleware/env';
 import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
+import allowedMethods from '@/server/hono-middleware/methods';
 import options from '@/server/hono-middleware/options';
 import orpcMiddleware from '@/server/hono-middleware/orpc';
 import scalar from '@/server/hono-middleware/scalar';
-
-type Env = {
-  Bindings: EnvServer;
-  Variables: {
-    sqlite: typeof sqliteDb;
-    pg: typeof pgDb;
-    neon: typeof neonDb;
-    producer: typeof producer;
-    rustfs: typeof rustfsClient;
-    redis: typeof redisVps;
-  };
-};
 
 // GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
@@ -49,12 +31,10 @@ app.use('/*', orpcMiddleware);
 app.get('/docs', scalar);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
-app.get('/health', (c) => c.json({ status: 'ok' }));
+app.get('/health', async (c) => c.json({ status: 'ok' }));
 
-// ─── 404 handler ──────────────────────────────────────────────────────────────
-app.notFound((c) => {
-  return c.json({ error: 'Not Found', path: c.req.path }, 404);
-});
+// ─── Allow all methods ───────────────────────────────────────────────────────
+app.all('*', allowedMethods);
 
 export default app;
 
