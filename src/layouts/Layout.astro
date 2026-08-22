@@ -26,6 +26,6 @@ const props = Astro.props as Partial<SEO>;
     </div>
 
     <!-- Tanstack Query DevTools -->
-    {envClient.PRODUCTION === 'false' && <DevTools client:only />}
+    {!envClient.PRODUCTION && <DevTools client:only />}
   </body>
 </html>
