@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 
 import { prettyLogger } from '@/lib/helpers/logger';
 import corsMiddleware from '@/server/hono-middleware/cors';
+import { csp } from '@/server/hono-middleware/csp';
 import type { Env } from '@/server/hono-middleware/env';
 import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
@@ -12,6 +13,8 @@ import scalar from '@/server/hono-middleware/scalar';
 
 // GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
+app.use('*', csp);
+app.get('/docs', scalar);
 // Inject clients as Sqlite, Redis, PG and so on ...
 app.use('*', injectClients);
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
@@ -28,7 +31,7 @@ app.use(prettyLogger);
 app.use('/*', orpcMiddleware);
 
 // ─── Scalar docs ─────────────────────────────────────────────────────────────
-app.get('/docs', scalar);
+// app.get('/docs', scalar);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', async (c) => c.json({ status: 'ok' }));
