@@ -1,17 +1,26 @@
 import z from 'zod';
 
 import { baseOc } from '@/server/contracts/oc.base';
-import { cspReportSchema } from '@/server/schemas/csp.report';
 
 export const cspReport = baseOc
   .route({
     method: 'POST',
-    path: `/csp`, // ✅ added path
+    path: `/csp`,
     description: 'This route is used when CSP report is sent. When CSP fails, it will be sent here.',
     summary: 'CSP Report',
     tags: ['CSP'],
-    successDescription: 'Test SSE clients route successful',
+    successDescription: 'CSP report received',
     successStatus: 204,
+    inputStructure: 'detailed',
   })
-  .input(cspReportSchema)
+  .input(
+    z.object({
+      headers: z
+        .object({
+          'content-type': z.enum(['application/csp-report', 'text/plain']),
+        })
+        .loose(),
+      body: z.instanceof(Blob), // ✅ accept raw text, whatever the content-type
+    })
+  )
   .output(z.void());

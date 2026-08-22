@@ -73,17 +73,6 @@ app.use(
 );
 
 app.use(prettyLogger);
-
-// ─── CSP report handler ──────────────────────────────────────────────────────────────────────
-// mount before your oRPC/openapi route handling
-app.use('/openapi/csp', async (c, next) => {
-  const ct = c.req.header('content-type') ?? '';
-  if (ct.includes('csp-report') || ct.includes('text/plain')) {
-    c.req.raw.headers.set('content-type', 'application/json');
-  }
-  await next();
-});
-
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', async (c, next) => {
   // ─── RPC handler ───────────────────────────────────────────────────────────
