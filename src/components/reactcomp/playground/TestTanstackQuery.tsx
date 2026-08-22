@@ -8,7 +8,7 @@ import { type TestInput } from '@/server/schemas/tests-schema/test.schema';
 interface Props {
   className?: string;
   initialData?: { name: string } | null;
-  name?: TestInput['name']; // ← add name prop to pass to the query
+  name: TestInput['name']; // ← add name prop to pass to the query
 }
 
 // TestTanstackQuery.tsx
