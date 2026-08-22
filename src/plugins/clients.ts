@@ -54,7 +54,7 @@ async function loadClients() {
   }
 
   try {
-    const [pong] = (await pgDb.select().from(testNeon).where(eq(testNeon.key, 'Ping'))) ?? null;
+    const [pong] = (await neonDb.select().from(testNeon).where(eq(testNeon.key, 'Ping'))) ?? null;
     console.log('[server] NEON ->', pong?.value === 'Pong' ? '✅' : '❌');
   } catch (err: any) {
     console.error('[error] NEON DRIZZLE -> ❌');

@@ -13,17 +13,17 @@ import { clientOrpc as orpc } from '@/server/clients/web.client';
 export const useTest = (name: string, initialData?: { name: string }) => {
   const client = getQueryClient();
 
-  // ✅ check cache first — skip fetch if already cached
-  const cachedData = client.getQueryData<{ name: string }>(['test', { name }]);
+  const queryKey = orpc.tests.test.queryKey({ input: { name } });
+  const cachedData = client.getQueryData<{ name: string }>(queryKey);
+
   return useQuery(
     orpc.tests.test.queryOptions({
       input: { name },
-      queryKey: ['test', { name }],
-      initialData: cachedData ?? initialData, // cache → SSR prop
+      initialData: cachedData ?? initialData,
       initialDataUpdatedAt: 0,
-      placeholderData: (prev) => prev, // show previous while fetching
+      placeholderData: (prev) => prev,
       staleTime: 5000,
-      enabled: !cachedData, // skip if cached
+      enabled: !cachedData,
       retry: false,
     }),
     client
