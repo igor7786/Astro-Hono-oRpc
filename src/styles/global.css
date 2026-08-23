@@ -19,6 +19,17 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Colors Custom */
+  --color-error-client: #e8a33d;
+  --color-error-client-dim: #e8a33d33;
+  --color-error-server: #e5533d;
+  --color-error-server-dim: #e5533d33;
+
+  --color-surface: #0b0e14;
+  --color-panel: #12161f;
+  --color-ink: #e4e7ec;
+  --color-ink-muted: #7a8194;
+  /*  */
   --font-sans: 'Inter Variable', sans-serif;
   --font-heading: 'Playfair Display', sans-serif; /* ← was var(--font-sans) */
   --font-mono: 'JetBrains Mono', monospace;
