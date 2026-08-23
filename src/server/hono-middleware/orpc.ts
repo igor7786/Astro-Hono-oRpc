@@ -18,6 +18,7 @@ const orpcMiddleware = createMiddleware(async (c, next) => {
       producer: c.get('producer'),
       rustfs: c.get('rustfs'),
       redis: c.get('redis'),
+      geo: c.get('geo'),
     },
   });
   if (res.matched) {
@@ -36,6 +37,7 @@ const orpcMiddleware = createMiddleware(async (c, next) => {
     producer: c.get('producer'),
     rustfs: c.get('rustfs'),
     redis: c.get('redis'),
+    geo: c.get('geo'),
   };
   // ─── OpenAPI handler ───────────────────────────────────────────────────────
   const apiRes = await openApiHandler.handle(c.req.raw, {

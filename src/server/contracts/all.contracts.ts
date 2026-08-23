@@ -1,4 +1,5 @@
 import { cspReport } from '@/server/contracts/csp/csp';
+import { geoContract } from '@/server/contracts/geo/geo';
 import { llmsHtml, llmsTxt, og } from '@/server/contracts/seo/seo';
 import { testClients } from '@/server/contracts/tests-contracts/clients';
 import { redirectTest } from '@/server/contracts/tests-contracts/redirect';
@@ -18,6 +19,9 @@ export const appContract = {
   },
   csp: {
     cspReport,
+  },
+  geo: {
+    geoContract,
   },
 };
 

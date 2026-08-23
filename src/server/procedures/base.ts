@@ -10,6 +10,7 @@ import { redisVps } from '@/lib/redis/client.redis.vps';
 import { producer } from '@/lib/redpanda-kafka/producer';
 import type { rustfsClient } from '@/lib/s3/client.rustfs.vps';
 import { appContract } from '@/server/contracts/all.contracts';
+import { type Geo } from '@/server/hono-middleware/geo';
 import { isValErrors } from '@/server/middlewares/validation-errors';
 
 interface ORPCContext extends ResponseHeadersPluginContext {}
@@ -25,6 +26,7 @@ export type AppContext = {
   producer?: typeof producer;
   rustfs?: typeof rustfsClient;
   redis?: typeof redisVps;
+  geo?: Geo;
   // responseHeaders?: Headers;
 } & ORPCContext;
 const os = implement(appContract);

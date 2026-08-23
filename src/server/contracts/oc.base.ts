@@ -53,6 +53,12 @@ export const baseOc = oc.errors({
     description: 'The request conflicts with current state of the resource',
     code: 'CONFLICT',
   },
+  METHOD_NOT_SUPPORTED: {
+    message: 'Method not allowed for this route',
+    status: 405,
+    description: 'The request method is not allowed',
+    code: 'METHOD_NOT_SUPPORTED',
+  },
   INPUT_VALIDATION_FAILED: {
     message: 'Input validation failed',
     status: 422,
