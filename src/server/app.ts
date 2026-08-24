@@ -10,11 +10,16 @@ import allowedMethods from '@/server/hono-middleware/methods';
 import options from '@/server/hono-middleware/options';
 import orpcMiddleware from '@/server/hono-middleware/orpc';
 import scalar from '@/server/hono-middleware/scalar';
+import trailingSlash from '@/server/hono-middleware/trailing.slash';
 
 // GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
+app.get('/', (c) => c.json({ status: 'ok' }));
+// CSP Headers
 app.use('*', csp);
 app.get('/docs', scalar);
+// Trailing slash
+app.use('*', trailingSlash);
 // Inject clients as Sqlite, Redis, PG and so on ...
 app.use('*', injectClients);
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers

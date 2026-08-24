@@ -2,7 +2,7 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 import { envServer } from '@/lib/env/server.env';
-import { type OgRecord } from '@/lib/shared/schemas/seo.schema';
+import { type OgRecord } from '@/lib/shared/schemas/seo/seo.schema';
 
 export function generateOgToken(id: string): string {
   return createHmac('sha256', envServer.OG_SECRET).update(id).digest('hex').slice(0, 16);

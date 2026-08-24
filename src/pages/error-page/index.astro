@@ -1,35 +1,8 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { z } from 'zod';
 
-import { createSeo } from '@/lib/shared/schemas/seo.schema';
-
-export const ErrorCodeSchema = z.enum(['401', '403', '404', '405', '500']);
-
-export type ErrorCode = z.infer<typeof ErrorCodeSchema>;
-
-export const errorContent: Record<ErrorCode, { title: string; message: string }> = {
-  '401': {
-    title: 'Unauthorized',
-    message: 'You need to sign in to view this page.',
-  },
-  '403': {
-    title: 'Access Restricted',
-    message: "Access to this site isn't available from your region.",
-  },
-  '404': {
-    title: 'Page Not Found',
-    message: "The page you're looking for doesn't exist.",
-  },
-  '405': {
-    title: 'Method Not Allowed',
-    message: "That request method isn't supported here.",
-  },
-  '500': {
-    title: 'Something Went Wrong',
-    message: "We're experiencing an issue. Please try again shortly.",
-  },
-};
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
+import { ErrorCodeSchema, errorContent } from '@/lib/shared/schemas/errors/page.errors';
 
 export const prerender = false;
 
@@ -54,7 +27,6 @@ const seo = createSeo({
   description: message,
   type: 'website',
 });
-
 const requestId = Astro.request.headers.get('x-request-id') ?? 'unavailable';
 ---
 
@@ -85,7 +57,7 @@ const requestId = Astro.request.headers.get('x-request-id') ?? 'unavailable';
     <!-- Error card -->
     <section class="relative w-full max-w-2xl" aria-labelledby="error-title">
       <div
-        class="bg-panel/90 overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/20 backdrop-blur-xl"
+        class="bg-panel/90 hover:border-primary overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/20 backdrop-blur-xl"
       >
         <!-- Top bar -->
         <div class="flex items-center justify-between border-b border-white/10 px-5 py-3">

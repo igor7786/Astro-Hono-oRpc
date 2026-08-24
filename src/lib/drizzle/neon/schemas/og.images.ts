@@ -10,7 +10,7 @@ export const ogImages = pgTable('og_images', {
 
   description: text('description').notNull().default('My awesome app'),
 
-  author: text('author').notNull().default('Alberto'),
+  author: text('author'),
 
   format: text('format', {
     enum: ['webp', 'png'],
@@ -19,7 +19,7 @@ export const ogImages = pgTable('og_images', {
     .default('png'),
 
   // Store as ISO string (matches your Zod .transform(formatDate) output)
-  date: text('date').notNull(),
+  date: text('date'),
 
   // Cache/generation bookkeeping
   status: text('status', {

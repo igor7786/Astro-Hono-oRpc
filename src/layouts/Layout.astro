@@ -4,7 +4,7 @@ import '@/styles/global.css';
 import 'prismjs/themes/prism-tomorrow.css';
 import { Toaster } from '@rcomp/ui/sonner';
 import HEAD from '@/components/astrocomp/layout/HEAD.astro';
-import type { SEO } from '@/lib/shared/schemas/seo.schema';
+import type { SEO } from '@/lib/shared/schemas/seo/seo.schema';
 import { envClient } from '@/lib/env/client.env';
 const props = Astro.props as Partial<SEO>;
 ---

@@ -9,37 +9,44 @@ import { clientOrpc as orpc } from '@/server/clients/web.client';
 
 export default function SlowRequest() {
   const client = getQueryClient();
-  const [fetchId, setFetchId] = useState(0);
+
+  const [started, setStarted] = useState(false);
   const [cancelled, setCancelled] = useState(false);
 
-  const { data, isFetching, error } = useQuery(
-    orpc.tests.slowTest.queryOptions({
-      input: { name: 'slow operation' },
-      queryKey: ['slow-test', fetchId], // ← changes on every fetch
-      enabled: fetchId > 0, // don't fetch on mount
-      retry: false,
-    }),
-    client
-  );
+  const queryOptions = orpc.tests.slowTest.queryOptions({
+    input: {
+      name: 'slow operation',
+    },
+    queryKey: ['slow-test'],
+    retry: false,
+    enabled: started,
+  });
 
+  const { data, isFetching, error } = useQuery(queryOptions, client);
+
+  // Start the request when the mouse enters the button.
+  const handleMouseEnter = () => {
+    setCancelled(false);
+    setStarted(true);
+  };
+
+  // Start/restart the request when clicking Fetch.
   const handleFetch = () => {
     setCancelled(false);
-    // cancel previous query before starting new one
-    client.cancelQueries({ queryKey: ['slow-test'] });
-    setFetchId((id) => id + 1); // ← new key = new request, previous auto-cancelled
-  };
-  const handleMouseEnter = () => {
-    client.prefetchQuery(
-      orpc.tests.slowTest.queryOptions({
-        input: { name: 'slow operation' },
-        queryKey: ['slow-test', fetchId],
-      })
-    );
+    setStarted(true);
+
+    // If there is already a cached result, force a new request.
+    client.invalidateQueries({
+      queryKey: ['slow-test'],
+    });
   };
 
   const handleCancel = () => {
     setCancelled(true);
-    client.cancelQueries({ queryKey: ['slow-test'] });
+
+    client.cancelQueries({
+      queryKey: ['slow-test'],
+    });
   };
 
   return (
@@ -66,9 +73,12 @@ export default function SlowRequest() {
 
       <div className="text-sm">
         {isFetching && <p className="text-yellow-600">⏳ Waiting 6 seconds...</p>}
+
         {cancelled && !isFetching && <p className="text-red-600">🛑 Request cancelled</p>}
+
         {data && !cancelled && !isFetching && <p className="text-green-600">✅ {data.name}</p>}
-        {error && <p className="text-red-600">❌ {error.message}</p>}
+
+        {error && !cancelled && <p className="text-red-600">❌ {error.message}</p>}
       </div>
     </div>
   );

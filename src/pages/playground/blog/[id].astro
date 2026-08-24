@@ -6,7 +6,7 @@ import LikeButton from '@rcomp/playground/blog/LikeButton';
 import ShareWidget from '@rcomp/playground/blog/ShareWidget';
 import CommentSection from '@rcomp/playground/blog/CommentSection';
 import { getCollection, render } from 'astro:content';
-import { formatDate, createSeo } from '@/lib/shared/schemas/seo.schema';
+import { formatDate, createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import { getReadingTime } from '@/lib/helpers/reading-time';
 
 export async function getStaticPaths() {

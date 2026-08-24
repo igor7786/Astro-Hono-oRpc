@@ -1,0 +1,9 @@
+---
+export const prerender = false;
+
+const pathname = Astro.url.pathname;
+const isApi = pathname.startsWith('/api/');
+if (!isApi) {
+  return Astro.redirect('/error-page?code=404', 302);
+}
+---

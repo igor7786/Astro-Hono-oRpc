@@ -5,7 +5,7 @@ import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
 import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import { ogImages } from '@/lib/drizzle/neon/schemas';
 import type { OgImage } from '@/lib/drizzle/neon/schemas';
-import { formatDate } from '@/lib/shared/schemas/seo.schema';
+import { formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';
@@ -20,7 +20,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     [params] = (await neonDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1)) ?? null;
   } catch (error) {
     params = null;
-    throw errors.INTERNAL_SERVER_ERROR({ message: 'SQLite unavailable 📛' });
+    throw errors.INTERNAL_SERVER_ERROR({ message: 'Neon unavailable 📛' });
   }
   if (!params) throw errors.NOT_FOUND({ message: 'No Record found 📛' });
   try {
@@ -36,7 +36,13 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     throw errors.BAD_REQUEST({ message: 'Something went wrong 📛' });
   }
   const { title, description, author, date: dateStr } = params;
-  const date = formatDate(dateStr);
+  let date;
+  if (dateStr) {
+    date = formatDate(dateStr);
+  } else {
+    date = undefined;
+  }
+  // const date = formatDate(dateStr);
   // ------------------------------------------------------------------
   // Format negotiation — prefer WebP unless the requester is a crawler
   // that doesn't support it (e.g. Facebook's scraper)
@@ -52,7 +58,13 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   // ------------------------------------------------------------------
   // Build a stable, hashed cache key from all inputs
   // ------------------------------------------------------------------
-  const cacheKey = buildCacheKey({ title, description, author, date, format });
+  let checkAuthor;
+  if (author) {
+    checkAuthor = author;
+  } else {
+    checkAuthor = undefined;
+  }
+  const cacheKey = buildCacheKey({ title, description, checkAuthor, date, format });
 
   // ------------------------------------------------------------------
   // Try cache first; generate only on miss.
@@ -70,11 +82,12 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
     const result = await getOrGenerate(
       cacheKey,
       async () =>
-        generateOgImage({ title: title ?? 'Fast Web Tech', description, author, date }, format).catch(
-          () => {
-            throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
-          }
-        ),
+        generateOgImage(
+          { title: title ?? 'Fast Web Tech', description, author: checkAuthor, date },
+          format
+        ).catch(() => {
+          throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
+        }),
       { format, title }
     );
     image = result.image;
@@ -82,7 +95,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   } catch (err: any) {
     console.error('[error] Cache layer unavailable, generating without cache', err.message);
     image = await generateOgImage(
-      { title: title ?? 'Fast Web Tech', description, author, date },
+      { title: title ?? 'Fast Web Tech', description, author: checkAuthor, date },
       format
     ).catch(() => {
       throw errors.INTERNAL_SERVER_ERROR({ message: 'Failed to generate OG image' });
