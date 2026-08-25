@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import { ErrorCard } from '@rcomp/playground/ErrorPage';
 
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import { ErrorCodeSchema, errorContent } from '@/lib/shared/schemas/errors/page.errors';
@@ -19,12 +20,6 @@ Astro.response.status = Number(code);
 
 const isServerError = code.startsWith('5');
 
-const accentText = isServerError ? 'text-error-server' : 'text-error-client';
-
-const accentBg = isServerError ? 'bg-error-server' : 'bg-error-client';
-
-const accentBorder = isServerError ? 'border-error-server-dim' : 'border-error-client-dim';
-
 const seo = createSeo({
   title: `${code} — ${title}`,
   description: message,
@@ -34,120 +29,5 @@ const requestId = Astro.request.headers.get('x-request-id') ?? 'unavailable';
 ---
 
 <Layout {...seo}>
-  <main
-    slot="main"
-    class="relative flex min-h-[calc(100vh-2rem)] w-full items-center justify-center overflow-hidden px-6 py-16"
-  >
-    <!-- Ambient background -->
-    <div
-      aria-hidden="true"
-      class:list={[
-        'pointer-events-none absolute inset-0',
-        'bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_55%)]',
-      ]}
-    >
-    </div>
-
-    <div
-      aria-hidden="true"
-      class:list={[
-        'pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-10 blur-3xl',
-        accentBg,
-      ]}
-    >
-    </div>
-
-    <!-- Error card -->
-    <section class="relative w-full max-w-2xl" aria-labelledby="error-title">
-      <div
-        class="bg-panel/90 hover:border-primary overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/20 backdrop-blur-xl"
-      >
-        <!-- Top bar -->
-        <div class="flex items-center justify-between border-b border-white/10 px-5 py-3">
-          <div class="flex items-center gap-2">
-            <span class:list={['h-2.5 w-2.5 rounded-full', accentBg]}></span>
-
-            <span class="text-ink-muted font-mono text-xs">fast-web-tech.co.uk</span>
-          </div>
-
-          <span class="text-ink-muted font-mono text-xs">HTTP</span>
-        </div>
-
-        <div class="px-6 py-10 sm:px-10 sm:py-12">
-          <!-- Status -->
-          <div class="mb-8 flex items-end gap-4">
-            <span class:list={['font-mono text-6xl font-bold tracking-tighter sm:text-8xl', accentText]}>
-              {code}
-            </span>
-
-            <span
-              class:list={[
-                'mb-2 inline-flex items-center rounded-md border px-2 py-1 font-mono text-[10px] tracking-widest uppercase',
-                accentBorder,
-                accentText,
-              ]}
-            >
-              error
-            </span>
-          </div>
-
-          <div class:list={['mb-8 border-t border-dashed', accentBorder]}></div>
-
-          <!-- Message -->
-          <div class="max-w-xl">
-            <h1 id="error-title" class="text-ink mb-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-              {title}
-            </h1>
-
-            <p class="text-ink-muted leading-7">
-              {message}
-            </p>
-          </div>
-
-          <!-- Request metadata -->
-          <div class="mt-10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
-            <div class="flex items-center justify-between border-b border-white/10 px-4 py-3">
-              <span class="text-ink-muted font-mono text-[11px] tracking-wider uppercase">
-                Request Metadata
-              </span>
-
-              <span class="text-ink-muted font-mono text-[10px]">TRACE</span>
-            </div>
-
-            <div class="p-4">
-              <div class="flex flex-col gap-2 font-mono text-xs sm:flex-row sm:items-center">
-                <span class="text-ink-muted">request-id:</span>
-
-                <code class="text-ink break-all">
-                  {requestId}
-                </code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="/"
-              class="bg-ink text-background inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all hover:-translate-y-0.5 hover:opacity-90"
-            >
-              <span
-                aria-hidden="true"
-                class="inline-flex h-6 w-6 -translate-y-px items-center justify-center leading-none"
-              >
-                ←
-              </span>
-
-              Back to fast-web-tech.co.uk
-            </a>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="border-t border-white/10 px-6 py-3 sm:px-10">
-          <p class="text-ink-muted font-mono text-[10px]">powered by Astro + Hono + oRPC</p>
-        </div>
-      </div>
-    </section>
-  </main>
+  <ErrorCard slot="main" {code} {title} {message} {requestId} {isServerError} client:load />
 </Layout>

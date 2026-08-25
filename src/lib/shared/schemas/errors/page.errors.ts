@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Expanded with common HTTP and application error codes
+// Expanded with common HTTP, application, and mTLS error codes
 export const ErrorCodeSchema = z.enum([
   '400', // Bad Request
   '401', // Unauthorized
@@ -9,6 +9,8 @@ export const ErrorCodeSchema = z.enum([
   '405', // Method Not Allowed
   '408', // Request Timeout
   '429', // Too Many Requests
+  '495', // mTLS Certificate Error
+  '496', // mTLS Certificate Missing
   '500', // Internal Server Error
   '502', // Bad Gateway
   '503', // Service Unavailable
@@ -46,6 +48,14 @@ export const errorContent: Record<ErrorCode, { title: string; message: string }>
     title: 'Too Many Requests',
     message: "You've made too many requests recently. Please slow down and try again.",
   },
+  '495': {
+    title: 'Security Certificate Invalid',
+    message: 'The client TLS certificate provided is invalid, expired, or untrusted.',
+  },
+  '496': {
+    title: 'Security Certificate Required',
+    message: 'This service requires a valid client mTLS certificate to grant access.',
+  },
   '500': {
     title: 'Something Went Wrong',
     message: "We're experiencing an issue. Please try again shortly.",
@@ -65,3 +75,13 @@ export const errorContent: Record<ErrorCode, { title: string; message: string }>
 };
 
 export type ErrorContent = typeof errorContent;
+
+export const errorCardSchema = z.object({
+  code: z.string(),
+  title: z.string(),
+  message: z.string(),
+  requestId: z.string(),
+  isServerError: z.boolean(),
+});
+
+export type ErrorCardProps = z.infer<typeof errorCardSchema>;
