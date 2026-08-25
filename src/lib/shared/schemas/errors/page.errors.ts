@@ -1,8 +1,27 @@
 import { z } from 'zod';
 
-export const ErrorCodeSchema = z.enum(['401', '403', '404', '405', '500']);
+// Expanded with common HTTP and application error codes
+export const ErrorCodeSchema = z.enum([
+  '400', // Bad Request
+  '401', // Unauthorized
+  '403', // Forbidden / Restricted
+  '404', // Not Found
+  '405', // Method Not Allowed
+  '408', // Request Timeout
+  '429', // Too Many Requests
+  '500', // Internal Server Error
+  '502', // Bad Gateway
+  '503', // Service Unavailable
+  '504', // Gateway Timeout
+]);
+
 export type ErrorCode = z.infer<typeof ErrorCodeSchema>;
+
 export const errorContent: Record<ErrorCode, { title: string; message: string }> = {
+  '400': {
+    title: 'Bad Request',
+    message: 'The server could not understand the request due to invalid syntax.',
+  },
   '401': {
     title: 'Unauthorized',
     message: 'You need to sign in to view this page.',
@@ -19,9 +38,29 @@ export const errorContent: Record<ErrorCode, { title: string; message: string }>
     title: 'Method Not Allowed',
     message: "That request method isn't supported here.",
   },
+  '408': {
+    title: 'Request Timeout',
+    message: 'The server timed out waiting for the request to complete.',
+  },
+  '429': {
+    title: 'Too Many Requests',
+    message: "You've made too many requests recently. Please slow down and try again.",
+  },
   '500': {
     title: 'Something Went Wrong',
     message: "We're experiencing an issue. Please try again shortly.",
+  },
+  '502': {
+    title: 'Bad Gateway',
+    message: 'The server received an invalid response from an upstream server.',
+  },
+  '503': {
+    title: 'Service Unavailable',
+    message: 'The server is temporarily overloaded or down for maintenance.',
+  },
+  '504': {
+    title: 'Gateway Timeout',
+    message: 'The upstream server failed to respond within the allowed time limit.',
   },
 };
 

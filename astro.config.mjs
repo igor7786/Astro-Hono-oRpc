@@ -22,6 +22,14 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   site: 'https://fast-web-tech.co.uk/',
+  // 🛡️ Add this global security layer to allow your production proxies
+  security: {
+    checkOrigin: true, // Keep it active for great safety
+    allowedDomains: [
+      { hostname: 'fast-web-tech.co.uk', protocol: 'https' },
+      { hostname: 'www.fast-web-tech.co.uk', protocol: 'https' },
+    ],
+  },
   server: {
     host: 'localhost', // ← Bind the interfaces
     port: 4322, // ← Explicit port

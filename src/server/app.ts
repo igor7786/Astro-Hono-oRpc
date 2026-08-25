@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { prettyLogger } from '@/lib/helpers/logger';
 import corsMiddleware from '@/server/hono-middleware/cors';
 import { csp } from '@/server/hono-middleware/csp';
+import { csrfMiddleware } from '@/server/hono-middleware/csrf';
 import type { Env } from '@/server/hono-middleware/env';
 import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
@@ -31,6 +32,10 @@ app.use('*', options);
 // ─── CORS ────────────────────────────────────────────────────────────────────
 app.use('*', corsMiddleware);
 
+// ─── CSRF ──────────────────────────────────────────────────────────
+app.use(csrfMiddleware);
+
+// ─── Pretty logger ──────────────────────────────────────────────────────────
 app.use(prettyLogger);
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', orpcMiddleware);

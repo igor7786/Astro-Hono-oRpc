@@ -14,8 +14,9 @@ export const IGNORED_EXACT = [
 
 // Pages that should always be treated as static (even if not dynamic)
 export const STATIC_FLAT = [
-  '../pages/playground/blog/index.astro',
-  // add flat prerender=true pages here
+  './index.astro',
+  './404.astro', // Catches the current scan path format
+  './500.astro', // Catches the current scan path format
 ];
 
 /**

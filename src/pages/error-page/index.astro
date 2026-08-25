@@ -8,7 +8,10 @@ export const prerender = false;
 
 const parsed = ErrorCodeSchema.safeParse(Astro.url.searchParams.get('code'));
 
-const code = parsed.success ? parsed.data : '500';
+if (!parsed.success) {
+  return Astro.redirect('/error-page?code=404', 302);
+}
+const code = parsed.data;
 
 const { title, message } = errorContent[code];
 
