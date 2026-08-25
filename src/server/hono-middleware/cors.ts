@@ -1,12 +1,20 @@
 // src/server/middleware/cors.ts
 import { cors } from 'hono/cors';
 
-import { envServer } from '@/lib/env/server.env';
+import { allowedOrigins } from '@/server/hono-middleware/allowed.origins';
 
 const corsMiddleware = cors({
   origin: (origin) => {
-    const allowed = [envServer.PUBLIC_URL, 'http://localhost:4321', 'http://localhost:4322'];
-    return allowed.includes(origin) ? origin : envServer.PUBLIC_URL;
+    // Normalize trailing slashes to prevent string mismatch bugs
+    const cleanOrigin = origin?.replace(/\/$/, '');
+
+    // ✅ If allowed, return the explicit origin string to pass CORS
+    if (allowedOrigins.includes(cleanOrigin)) {
+      return origin;
+    }
+
+    // ❌ Explicitly return null to block the cross-site request
+    return null;
   },
   credentials: true,
   allowHeaders: ['Content-Type', 'Authorization'],
