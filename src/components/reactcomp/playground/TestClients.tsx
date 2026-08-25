@@ -37,7 +37,7 @@ export default function TestClients() {
       <CardHeader className="items-center gap-0 border-b border-white/10 px-4 py-3">
         <div className="flex w-full flex-row items-center justify-between">
           {/* Left Corner badge & title layout */}
-          <h2 className="text-foreground flex items-center gap-2 font-semibold text-sm">
+          <h2 className="text-white flex items-center gap-2 font-semibold text-sm">
             <div className="relative">
               <span className="rounded border border-violet-500/20 bg-violet-500/10 px-3 py-0.5 text-xs font-medium text-violet-400">
                 SSE

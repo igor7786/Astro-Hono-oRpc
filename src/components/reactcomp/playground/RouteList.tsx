@@ -1,4 +1,6 @@
 import { cn } from '@rcomp/lib/utils';
+// Import Shadcn Card Components
+import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 type RouteAccent = 'ssr' | 'static' | 'admin';
 
@@ -27,8 +29,8 @@ interface AccentStyleValue {
 
 const accentStyles: Record<RouteAccent, AccentStyleValue> = {
   ssr: {
-    badge: 'bg-primary/10 text-primary border-primary/20',
-    text: 'text-muted-foreground',
+    badge: 'bg-primary/10 text-white border-primary/20',
+    text: 'text-white',
     hoverBorder: 'hover:border-primary',
     hoverText: 'hover:text-primary',
   },
@@ -40,7 +42,7 @@ const accentStyles: Record<RouteAccent, AccentStyleValue> = {
   },
   admin: {
     badge: 'bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400',
-    text: 'text-blue-600 dark:text-blue-400',
+    text: 'text-white dark:text-blue-400',
     hoverBorder: 'hover:border-primary',
     hoverText: 'hover:text-primary',
   },
@@ -50,28 +52,36 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Rout
   const styles = accentStyles[accent];
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-black/20">
-      <div className="flex w-full flex-row items-center justify-between border-b border-white/10 px-4 py-3">
-        <h2 className="text-foreground flex items-center gap-2 font-semibold">
-          <span className={cn('rounded border px-2 py-0.5 text-xs font-medium', styles.badge)}>
-            {badgeLabel}
-          </span>
-          {title}
-          <span className="text-muted-foreground text-sm font-normal">({items.length})</span>
-        </h2>
-      </div>
+    /* FIXED: Replaced standard div wrapper with Shadcn Card */
+    <Card className="bg-panel/90 flex flex-col overflow-hidden rounded-xl border border-white/10 py-0 shadow-2xl backdrop-blur-xl">
+      {/* FIXED: Replaced internal layout div with Shadcn CardHeader */}
+      <CardHeader className="items-center gap-0 border-b border-white/10 px-4 py-3">
+        <div className="flex w-full flex-row items-center justify-between">
+          <h2 className="text-white flex items-center gap-2 font-semibold text-sm">
+            <span className={cn('rounded border px-2 py-0.5 text-xs font-medium', styles.badge)}>
+              {badgeLabel}
+            </span>
+            {title}
+            <span className="text-neutral-100 text-sm font-normal">({items.length})</span>
+          </h2>
 
-      <div className="p-4">
+          {/* Right Corner element added for total style synergy with other cards */}
+          <span className="font-mono text-xs text-neutral-500">HTTP/3</span>
+        </div>
+      </CardHeader>
+
+      {/* FIXED: Replaced padding wrapper with Shadcn CardContent */}
+      <CardContent className="p-4">
         <ul className="space-y-1.5">
           {items.map(({ route, label, iconHtml }) => (
             <li key={route}>
               <a
                 href={route}
                 className={cn(
-                  'grid grid-cols-12 items-center rounded-lg border border-white/5 bg-white/[0.01] px-4 py-2 text-sm transition-all duration-200',
+                  'grid grid-cols-12 items-center rounded-lg border border-white/5 bg-white/1 px-4 py-2 text-sm transition-all duration-200',
                   styles.hoverBorder,
                   styles.hoverText,
-                  'hover:bg-white/[0.03]'
+                  'hover:bg-white/10'
                 )}
               >
                 {/* Left Side: Route Path (Takes up 7 out of 12 columns) */}
@@ -97,7 +107,7 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Rout
             </li>
           ))}
         </ul>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

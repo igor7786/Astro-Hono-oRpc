@@ -68,7 +68,7 @@ export function GeoDebugCard() {
       <CardHeader className="items-center gap-0 border-b border-white/10 px-4 py-3">
         <div className="flex w-full flex-row items-center justify-between">
           {/* Left Corner badge & title layout */}
-          <h2 className="text-foreground flex items-center gap-2 font-semibold text-sm">
+          <h2 className="text-white flex items-center gap-2 font-semibold text-sm">
             <span className="rounded border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400">
               Geo
             </span>
