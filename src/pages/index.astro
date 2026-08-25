@@ -7,10 +7,10 @@ import { adminRoutes } from '@/lib/helpers/icons';
 import Icons from '@/components/astrocomp/playground/blog/Icons.astro';
 import TestClients from '@/components/reactcomp/playground/TestClients';
 import { GeoDebugCard } from '@rcomp/playground/GeoDebugCard';
+import { RouteListCard } from '@rcomp/playground/RouteList';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+
 export const prerender = true;
-export async function getStaticPaths() {
-  return [{ params: {} }];
-}
 
 const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
   eager: true,
@@ -22,6 +22,19 @@ const seo = createSeo({
   description: 'Powered by Astro + Hono + oRPC',
   type: 'website',
 });
+
+// Pre-render each admin icon to a raw HTML string, since <Icon> can't be
+// called from inside RouteListCard.tsx (Astro components aren't real
+// callable functions in React/TSX contexts).
+const container = await AstroContainer.create();
+const adminRoutesWithIcons = await Promise.all(
+  adminRoutes.map(async (r) => ({
+    ...r,
+    iconHtml: r.icon
+      ? await container.renderToString(Icon, { props: { name: r.icon, size: r.size } })
+      : null,
+  }))
+);
 ---
 
 <Layout {...seo}>
@@ -31,82 +44,16 @@ const seo = createSeo({
     slot="main"
   >
     <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
-      <!-- SSR -->
-      <div>
-        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
-          <span class="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs">SSR</span>
-          Server Pages
-          <span class="text-muted-foreground text-sm font-normal">({ssrRoutes.length})</span>
-        </h2>
-        <ul class="space-y-2">
-          {
-            ssrRoutes.map(({ route, label }) => (
-              <li>
-                <a
-                  href={route}
-                  class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
-                >
-                  <span class="text-muted-foreground font-mono text-xs">{route}</span>
-                  <span class="ml-auto">{label}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+      <RouteListCard accent="ssr" badgeLabel="SSR" title="Server Pages" items={ssrRoutes} />
+      <RouteListCard accent="static" badgeLabel="Static" title="Static Pages" items={staticRoutes} />
+      <RouteListCard
+        accent="admin"
+        badgeLabel="Admin"
+        title="Admin Pages"
+        items={adminRoutesWithIcons}
+        masked
+      />
 
-      <!-- Static -->
-      <div>
-        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
-          <span class="rounded bg-green-500/10 px-2 py-0.5 text-xs text-green-600 dark:text-green-400">
-            Static
-          </span>
-          Static Pages
-          <span class="text-muted-foreground text-sm font-normal">({staticRoutes.length})</span>
-        </h2>
-        <ul class="space-y-2">
-          {
-            staticRoutes.map(({ route, label }) => (
-              <li>
-                <a
-                  href={route}
-                  class="border-border hover:border-primary hover:text-primary flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors"
-                >
-                  <span class="font-mono text-xs text-green-600 dark:text-green-400">{route}</span>
-                  <span class="ml-auto">{label}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <!-- API -->
-      <div>
-        <h2 class="text-foreground mb-4 flex items-center gap-2 font-semibold">
-          <span class="rounded bg-blue-500/10 px-2 py-0.5 text-xs text-blue-600 dark:text-blue-400">
-            Admin
-          </span>
-          Admin Pages
-          <span class="text-muted-foreground text-sm font-normal">({adminRoutes.length})</span>
-        </h2>
-        <ul class="space-y-2">
-          {
-            adminRoutes.map(({ icon, route, label, size }) => (
-              <li>
-                <a
-                  href={route}
-                  class="border-border hover:border-primary hover:text-primary flex items-center justify-center gap-4 rounded-lg border px-3 py-2 text-sm transition-colors"
-                >
-                  <Icon name={icon} size={size} class="text-blue-600 dark:text-blue-400" />
-                  <span class="font-mono text-xs text-blue-600 dark:text-blue-400">----------</span>
-                  <span class="ml-auto">{label}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
       <!-- Client SSE -->
       <TestClients client:only="react" />
       <GeoDebugCard client:only="react" />
