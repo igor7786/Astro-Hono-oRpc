@@ -32,7 +32,7 @@ export default function TestClients() {
   const allConnected = Object.values(data).every((s) => s.connected);
 
   return (
-    <Card className="bg-panel/90 flex flex-col overflow-hidden rounded-xl border border-border py-0 shadow-2xl backdrop-blur-xl">
+    <Card className="bg-panel/90 flex flex-col overflow-hidden rounded-xl border border-border py-0 shadow-2xl backdrop-blur-xl hover:border-white">
       {/* Header section matching error and geo card layout patterns */}
       <CardHeader className="items-center gap-0 border-b border-white/10 px-4 py-3">
         <div className="flex w-full flex-row items-center justify-between">
