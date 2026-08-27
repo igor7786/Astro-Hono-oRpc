@@ -62,7 +62,7 @@ function GeoDebugError({ resetErrorBoundary }: { resetErrorBoundary: () => void 
 
 export function GeoDebugCard() {
   return (
-    <Card className="bg-panel/90 flex flex-col overflow-hidden rounded-xl border border-border py-0 shadow-2xl backdrop-blur-xl">
+    <Card className="bg-panel/90 flex flex-col overflow-hidden rounded-xl border border-border py-0 shadow-2xl backdrop-blur-xl hover:border-white">
       {/* Header section matching your project's dashboard style */}
       <CardHeader className="items-center gap-0 border-b border-white/10 px-4 py-3">
         <div className="flex w-full flex-row items-center justify-between">
