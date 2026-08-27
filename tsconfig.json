@@ -6,6 +6,7 @@
     "types": ["bun", "vite/client"],
     "jsx": "react-jsx",
     "jsxImportSource": "react",
+    "resolveJsonModule": true, // ✨ ADD THIS LINE TO FIX TS2307
     // "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
