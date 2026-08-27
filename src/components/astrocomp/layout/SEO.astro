@@ -1,21 +1,18 @@
 ---
-import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo.schema';
+import { seoSchema, baseSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import z from 'zod';
 import { eq } from 'drizzle-orm';
-import { resolve } from 'node:path';
-import { mkdir } from 'node:fs/promises';
 import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
 import { envServer } from '@/lib/env/server.env';
 import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.url';
-import { sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { ogImages } from '@/lib/drizzle/sqlite/schema';
+import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
+import { ogImages } from '@/lib/drizzle/neon/schemas';
 // ✅ Safe parse (no crash in production)
 const result = seoSchema.safeParse({
   ...baseSeo,
   ...Astro.props,
-  url: envServer.PUBLIC_URL,
+  siteUrl: new URL(Astro.url.href, envServer.PUBLIC_URL).toString(),
 });
-
 if (!result.success) {
   console.error('[SEO] Invalid props:', z.treeifyError(result.error));
 }
@@ -23,53 +20,47 @@ if (!result.success) {
 // ✅ fallback to safe defaults
 const seo = result.success ? result.data : seoSchema.parse(baseSeo);
 
-const { title, description, author, date, type, siteName, siteUrl, url = Astro.url.href } = seo;
-let ogAuthor = author;
-if (!ogAuthor) ogAuthor = 'Alberto';
+const { title, description, author, date, type, siteName, siteUrl = Astro.url.href } = seo;
 
 // hex id, token, and other params for OG image generation
-const id = generateOgParamsId({ title, description, author: ogAuthor, date });
+const id = generateOgParamsId({ title, description, author, date });
 const token = generateOgToken(id);
 
 try {
   // SQLite caching for OG image generation
   // Check if the OG params already exist in SQLite
-  const rows = await sqliteDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
+  const rows = await neonDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
   const existing = rows[0] ?? null;
   const isNew = !existing;
   if (isNew) {
     // Save the OG params to SQLite
-    await sqliteDb.insert(ogImages).values({
-      id,
-      token,
-      title,
-      description,
-      author,
-      date,
-    });
+    await neonDb
+      .insert(ogImages)
+      .values({
+        id,
+        token,
+        title,
+        description,
+        author,
+        date,
+      })
+      .onConflictDoUpdate({
+        target: ogImages.id,
+        set: {
+          token,
+          title,
+          description,
+          author,
+          date,
+        },
+      });
   }
 } catch (error) {
-  console.error('[error] Sqlite unavailable 📛, appending to fallback manifest');
-  try {
-    const fallbackDir = resolve(process.cwd(), envServer.SQLITE_MANIFEST_DIR);
-    await mkdir(fallbackDir, { recursive: true });
-    const manifestPath = resolve(fallbackDir, 'manifest.json');
-
-    const file = Bun.file(manifestPath);
-    const manifest: Record<
-      string,
-      { token: string; title: string; description: string; author: string; date: string; format: string }
-    > = (await file.exists()) ? await file.json() : {};
-
-    manifest[id] = { token, title, description, author: ogAuthor, date, format: 'png' };
-
-    await Bun.write(manifestPath, JSON.stringify(manifest, null, 2));
-  } catch (err) {
-    console.error('[error] Failed to create fallback manifest');
-  }
+  console.error(error);
+  console.error('[error] NeonDB unavailable 📛');
 }
 // 🚀 SAFE Page URL BUILDER
-const pageURL = new URL(Astro.url.pathname, envServer.PUBLIC_URL).toString();
+
 // 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
 const fullPath = openApiBasePath + ogPath;
 const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
@@ -81,21 +72,21 @@ const ogImageUrl = ogUrl.toString();
 
 <!-- BASIC SEO -->
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#0f172a" />
-<link rel="canonical" href={pageURL} />
+<link rel="canonical" href={siteUrl} />
 
 <!-- OPEN GRAPH -->
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={pageURL} />
+<meta property="og:url" content={siteUrl} />
 <Fragment set:html={`<meta property="og:image" content="${ogImageUrl}" />`} />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
@@ -120,9 +111,9 @@ const ogImageUrl = ogUrl.toString();
   set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': type === 'article' ? 'Article' : 'WebSite',
-    '@id': pageURL,
+    '@id': siteUrl,
     name: title,
-    url: pageURL,
+    url: siteUrl,
     description,
     ...(author && {
       author: {

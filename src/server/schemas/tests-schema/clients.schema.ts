@@ -15,6 +15,7 @@ export type ClientStatus = z.infer<typeof clientStatusSchema>;
 export const testClientSchema = z.object({
   sqlite: clientStatusSchema,
   pg: clientStatusSchema,
+  neon: clientStatusSchema,
   kafka: clientStatusSchema,
   redis: clientStatusSchema,
   s3: clientStatusSchema,

@@ -6,7 +6,7 @@ export const seoSchema = z.object({
   title: z.string().default('Fast Web Tech'),
   description: z.string().default('My awesome app'),
   author: z.string().optional(),
-  date: z.string().default(() => new Date().toISOString()),
+  date: z.string().optional(),
   dateModified: z.string().optional(),
   type: z.enum(['website', 'article']).default('website'),
   siteName: z.string().default('Fast Web Tech'),
@@ -19,7 +19,6 @@ export type SEO = z.infer<typeof seoSchema>;
 export const baseSeo = {
   siteName: 'Fast Web Tech',
   siteUrl: envClient.PUBLIC_URL,
-  author: 'Igor',
   type: 'website' as const,
 };
 
@@ -46,7 +45,7 @@ export function formatDate(date?: string) {
 export const ogRecordSchema = z.object({
   title: z.string().nonempty('Title must not be empty'),
   description: z.string().nonempty('Description must not be empty'),
-  author: z.string().nonempty('Author must not be empty').default('Igor'),
+  author: z.string().optional(),
   format: z.enum(['webp', 'png']).optional(),
   date: z
     .string()

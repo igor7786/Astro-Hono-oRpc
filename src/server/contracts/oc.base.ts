@@ -1,6 +1,16 @@
 import { oc } from '@orpc/contract';
+import z from 'zod';
 
 export const baseOc = oc.errors({
+  REDIRECT_REQUEST: {
+    message: 'Redirect Request',
+    status: 403,
+    description: 'The request is redirected another location',
+    // Wrap your custom payload inside a typed data schema object
+    data: z.object({
+      url: z.string(),
+    }),
+  },
   BAD_REQUEST: {
     message: 'Bad Request',
     status: 400,
@@ -12,12 +22,24 @@ export const baseOc = oc.errors({
     status: 401,
     description: 'Authentication is required or has failed',
     code: 'UNAUTHORIZED',
+    data: z
+      .object({
+        redirect: z.boolean().default(false),
+        url: z.string(),
+      })
+      .optional(),
   },
   FORBIDDEN: {
     message: 'You are Forbidden',
     status: 403,
     description: 'You do not have permission to access this resource',
     code: 'FORBIDDEN',
+    data: z
+      .object({
+        redirect: z.boolean().default(false),
+        url: z.string(),
+      })
+      .optional(),
   },
   NOT_FOUND: {
     message: 'Not Found',
@@ -30,6 +52,12 @@ export const baseOc = oc.errors({
     status: 409,
     description: 'The request conflicts with current state of the resource',
     code: 'CONFLICT',
+  },
+  METHOD_NOT_SUPPORTED: {
+    message: 'Method not allowed for this route',
+    status: 405,
+    description: 'The request method is not allowed',
+    code: 'METHOD_NOT_SUPPORTED',
   },
   INPUT_VALIDATION_FAILED: {
     message: 'Input validation failed',

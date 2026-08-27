@@ -8,7 +8,7 @@ import { envServer } from '@/lib/env/server.env';
 
 interface TlsConfig {
   servername: string;
-  ca: string;
+  ca: string | undefined;
   cert: string;
   key: string;
   rejectUnauthorized: boolean;
@@ -19,16 +19,15 @@ interface TlsConfig {
  * =========================
  */
 
-async function getTls(): Promise<TlsConfig> {
+async function getTls(usesHomeCaServerCert = false): Promise<TlsConfig> {
   console.log('🔐[TLS] Loading certs...');
-  const cachedTls = {
+  return {
     servername: envServer.VPS_TLS_SERVER,
-    ca: await Bun.file(envServer.VPS_CA_CERT).text(),
+    ca: usesHomeCaServerCert ? await Bun.file(envServer.VPS_CA_CERT).text() : undefined,
     cert: await Bun.file(envServer.VPS_CLIENT_CERT).text(),
     key: await Bun.file(envServer.VPS_CLIENT_KEY).text(),
-    rejectUnauthorized: true, // Set to true in production for security
+    rejectUnauthorized: true,
   };
-  return cachedTls;
 }
 
 export { getTls as tls };

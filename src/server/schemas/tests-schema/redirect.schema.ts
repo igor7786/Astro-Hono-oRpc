@@ -10,18 +10,6 @@ export const redirectSchema = z.object({
 
 export type RedirectInput = z.infer<typeof redirectSchema>;
 
-// ✅ FIXED: Removed the invalid z.object wrapper around the union
-export const outputSchema = z.union([
-  z.object({
-    status: z.literal(200),
-    body: redirectSchema,
-  }),
-  z.object({
-    status: z.literal(301),
-    headers: z.object({
-      location: z.string(),
-    }),
-  }),
-]);
+export const outputSchema = redirectSchema;
 
 export type RedirectOutput = z.infer<typeof outputSchema>;

@@ -2,8 +2,9 @@ import { ListBucketsCommand } from '@aws-sdk/client-s3';
 import { ProduceAcks } from '@platformatic/kafka';
 import { eq } from 'drizzle-orm';
 
-import { test as testPg } from '../lib/drizzle/pg/pg.schema';
-import { test } from '../lib/drizzle/sqlite/schema';
+import { test as testNeon } from '@/lib/drizzle/neon/schemas';
+import { test as testPg } from '@/lib/drizzle/pg/pg.schema';
+import { test as testSqlite } from '@/lib/drizzle/sqlite/schemas';
 
 async function loadClients() {
   // Load clients or perform any necessary setup here
@@ -12,10 +13,11 @@ async function loadClients() {
   const { redisVps } = await import('@/lib/redis/client.redis.vps.ts');
   const { producer } = await import('@/lib/redpanda-kafka/producer.ts');
   const { pgDb } = await import('@/lib/drizzle/pg/client.pg.db');
+  const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
   const { rustfsClient } = await import('@/lib/s3/client.rustfs.vps.ts');
   console.log('[server] PRODUCTION ->', envServer.PRODUCTION === 'true' ? '✅' : '❌');
   try {
-    const [pong] = (await sqliteDb.select().from(test).where(eq(test.key, 'ping'))) ?? null;
+    const [pong] = (await sqliteDb.select().from(testSqlite).where(eq(testSqlite.key, 'ping'))) ?? null;
     console.log('[server] SQLITE DRIZZLE ->', pong ? '✅' : '❌');
   } catch (e) {
     console.error('[error] SQLITE DRIZZLE -> ❌');
@@ -51,6 +53,12 @@ async function loadClients() {
     console.error('[error] REDPANDA -> ❌');
   }
 
+  try {
+    const [pong] = (await neonDb.select().from(testNeon).where(eq(testNeon.key, 'Ping'))) ?? null;
+    console.log('[server] NEON ->', pong?.value === 'Pong' ? '✅' : '❌');
+  } catch (err: any) {
+    console.error('[error] NEON DRIZZLE -> ❌');
+  }
   try {
     const [pong] = (await pgDb.select().from(testPg).where(eq(testPg.key, 'Ping'))) ?? null;
     console.log('[server] POSTGRES ->', pong?.value === 'Pong' ? '✅' : '❌');

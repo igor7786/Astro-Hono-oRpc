@@ -1,7 +1,9 @@
-import { llmsHtml, llmsTxt, og } from '@/server/contracts/seo.contract';
-import { testClients } from '@/server/contracts/tests-contracts/clients.contract';
-import { redirectTest } from '@/server/contracts/tests-contracts/redirect.contract';
-import { slowTest, test } from '@/server/contracts/tests-contracts/test.contract';
+import { cspReport } from '@/server/contracts/csp/csp';
+import { geoContract } from '@/server/contracts/geo/geo';
+import { llmsHtml, llmsTxt, og } from '@/server/contracts/seo/seo';
+import { testClients } from '@/server/contracts/tests-contracts/clients';
+import { redirectTest } from '@/server/contracts/tests-contracts/redirect';
+import { slowTest, test } from '@/server/contracts/tests-contracts/test';
 
 export const appContract = {
   tests: {
@@ -14,6 +16,12 @@ export const appContract = {
     og,
     llmsHtml,
     llmsTxt,
+  },
+  csp: {
+    cspReport,
+  },
+  geo: {
+    geoContract,
   },
 };
 

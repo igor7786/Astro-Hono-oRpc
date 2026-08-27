@@ -3,7 +3,7 @@ import { z } from 'zod';
 const hex = /^[0-9a-f]+$/;
 export const ogIdTokenSchema = z
   .object({
-    id: z.string().trim().length(32).regex(hex).default('1234567890'),
+    id: z.string().trim().length(32).regex(hex),
     format: z.enum(['webp', 'png']).optional(),
   })
   .strip();

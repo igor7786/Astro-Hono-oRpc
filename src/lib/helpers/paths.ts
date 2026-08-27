@@ -1,15 +1,22 @@
+import { join } from 'node:path';
+
 import { allRouters } from '@/server/routers/all.routers';
 
 // Files/folders to ignore globally when scanning routes
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
 
 // Specific files to ignore exactly (full path match)
-export const IGNORED_EXACT = ['../pages/index.astro'];
+export const IGNORED_EXACT = [
+  '../pages/index.astro',
+  '../pages/404.astro', // Exclude 404 error page
+  '../pages/500.astro', // Exclude 500 error page
+];
 
 // Pages that should always be treated as static (even if not dynamic)
 export const STATIC_FLAT = [
-  '../pages/playground/blog/index.astro',
-  // add flat prerender=true pages here
+  './index.astro',
+  './404.astro', // Catches the current scan path format
+  './500.astro', // Catches the current scan path format
 ];
 
 /**
@@ -196,3 +203,6 @@ export async function discoverRoutes(
 export const openApiBasePath = '/api/openapi';
 export const rpcBasePath = '/api/rpc';
 export const ogPath = allRouters.seo.ogRoute['~orpc'].route.path; // derived from router definition
+
+export const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
+export const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');

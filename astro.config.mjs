@@ -12,6 +12,7 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
 import serverStartup from './src/plugins/clients';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
@@ -21,6 +22,14 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   site: 'https://fast-web-tech.co.uk/',
+  // 🛡️ Add this global security layer to allow your production proxies
+  security: {
+    checkOrigin: true, // Keep it active for great safety
+    allowedDomains: [
+      { hostname: 'fast-web-tech.co.uk', protocol: 'https' },
+      { hostname: 'www.fast-web-tech.co.uk', protocol: 'https' },
+    ],
+  },
   server: {
     host: 'localhost', // ← Bind the interfaces
     port: 4322, // ← Explicit port
@@ -32,7 +41,7 @@ export default defineConfig({
       'localhost',
     ], // ✅ dev only
   },
-  trailingSlash: 'never',
+  trailingSlash: 'ignore',
   compressHTML: false,
 
   devToolbar: {
@@ -96,10 +105,8 @@ export default defineConfig({
   ],
   markdown: {
     // readingTime: true, // ← built-in, no remark plugin needed
-    shikiConfig: {
-      theme: 'dracula',
-    },
-    // Pass your custom options into the native Sätteri compiler
+    syntaxHighlight: 'prism',
+
     processor: satteri({
       features: {
         directive: true,
@@ -110,6 +117,7 @@ export default defineConfig({
     react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
     serverStartup(),
+    cspManifestPlugin(),
     // boneyardPlugin({ /* plugin options */ }),
     // sitemap integration
     sitemap({
@@ -199,6 +207,7 @@ export default defineConfig({
           'react',
           'zod',
           'bun',
+          'neon-icon',
         ],
         skillIcons: ['astro', 'vite-light'],
         selfhst: ['rustfs', 'arcane', 'authentik', 'crowdsec'],

@@ -1,8 +1,10 @@
 import { HeadBucketCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 
-import { test } from '@/lib/drizzle/pg/pg.schema';
-import { test as sqliteTest } from '@/lib/drizzle/sqlite/schema';
+import { test as neonTest } from '@/lib/drizzle/neon/schemas';
+import { test as pgTest } from '@/lib/drizzle/pg/pg.schema';
+import { test as sqliteTest } from '@/lib/drizzle/sqlite/schemas';
+import type { AppContext } from '@/server/procedures/base';
 import { base } from '@/server/procedures/base';
 import type { ClientStatus, TestClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
@@ -28,10 +30,16 @@ async function timed(name: string, fn: () => Promise<boolean>): Promise<ClientSt
   }
 }
 
-async function checkClients(context: any): Promise<TestClientSchema> {
-  const [pg, sqlite, redis, s3, kafka] = await Promise.all([
+async function checkClients(context: AppContext): Promise<TestClientSchema> {
+  const [pg, neon, sqlite, redis, s3, kafka] = await Promise.all([
     timed('PostgreSQL', async () => {
-      const [row] = (await context.pg?.select().from(test).where(eq(test.key, 'Ping')).limit(1)) ?? [];
+      const [row] =
+        (await context.pg?.select().from(pgTest).where(eq(pgTest.key, 'Ping')).limit(1)) ?? [];
+      return !!row;
+    }),
+    timed('Neon', async () => {
+      const [row] =
+        (await context.neon?.select().from(neonTest).where(eq(neonTest.key, 'Ping')).limit(1)) ?? [];
       return !!row;
     }),
     timed('SQLite', async () => {
@@ -48,7 +56,7 @@ async function checkClients(context: any): Promise<TestClientSchema> {
     timed('Kafka', async () => !!(await context.producer?.metadata({ topics: ['health'] }))),
   ]);
 
-  return { pg, sqlite, redis, s3, kafka };
+  return { pg, neon, sqlite, redis, s3, kafka };
 }
 
 export const ClientsRoute = base.tests.testClients.handler(async function* ({ context, signal }) {

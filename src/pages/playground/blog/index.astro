@@ -1,7 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { getReadingTime } from '@/lib/helpers/reading-time';
-import { createSeo } from '@/lib/shared/schemas/seo.schema';
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import BlogCard from '@acomp/playground/blog/BlogCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -27,6 +27,7 @@ const seo = createSeo({
   description: 'Latest posts from Fast Web Tech',
   date: new Date(2026, 3, 15).toISOString(),
   type: 'article',
+  author: 'Igor',
 });
 ---
 

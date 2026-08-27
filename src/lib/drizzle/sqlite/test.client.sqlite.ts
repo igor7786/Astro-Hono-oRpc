@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { closeSqlite, sqliteDb } from '@/lib/drizzle/sqlite/client';
-import { test } from '@/lib/drizzle/sqlite/schema';
+import { test } from '@/lib/drizzle/sqlite/schemas';
 
 await sqliteDb
   .insert(test)

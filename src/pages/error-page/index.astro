@@ -1,0 +1,33 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { ErrorCard } from '@rcomp/playground/ErrorPage';
+
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
+import { ErrorCodeSchema, errorContent } from '@/lib/shared/schemas/errors/page.errors';
+
+export const prerender = false;
+
+const parsed = ErrorCodeSchema.safeParse(Astro.url.searchParams.get('code'));
+
+if (!parsed.success) {
+  return Astro.redirect('/error-page?code=404', 302);
+}
+const code = parsed.data;
+
+const { title, message } = errorContent[code];
+
+Astro.response.status = Number(code);
+
+const isServerError = code.startsWith('5');
+
+const seo = createSeo({
+  title: `${code} — ${title}`,
+  description: message,
+  type: 'website',
+});
+const requestId = Astro.request.headers.get('x-request-id') ?? 'unavailable';
+---
+
+<Layout {...seo}>
+  <ErrorCard slot="main" {code} {title} {message} {requestId} {isServerError} client:load />
+</Layout>

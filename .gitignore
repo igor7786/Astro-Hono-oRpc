@@ -708,9 +708,13 @@ pip-selfcheck.json
 **/*.sqlite
 **/*.sqlite3
 **/pg_data
+**/migrations
 ### redis ###
 **/data_redis
+### csp-manifest ###
+**/csp-manifest.json
 ### react ###
+
 
 ### understand-ai ###
 **/.understand-anything

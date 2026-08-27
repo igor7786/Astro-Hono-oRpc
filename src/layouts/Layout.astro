@@ -1,10 +1,11 @@
 ---
 import DevTools from '@/lib/tanstack-query/QueryDevTools';
 import '@/styles/global.css';
+import 'prismjs/themes/prism-tomorrow.css';
 import { Toaster } from '@rcomp/ui/sonner';
 import HEAD from '@/components/astrocomp/layout/HEAD.astro';
-import type { SEO } from '@/lib/shared/schemas/seo.schema';
-
+import type { SEO } from '@/lib/shared/schemas/seo/seo.schema';
+import { envClient } from '@/lib/env/client.env';
 const props = Astro.props as Partial<SEO>;
 ---
 
@@ -12,20 +13,19 @@ const props = Astro.props as Partial<SEO>;
 <html lang="en" class="scroll-smooth">
   <!-- METADATA, CSS, JS, etc -->
   <HEAD {...props} />
-
   <!-- BODY, CONTENT, FOOTER -->
   <body>
-    <div class="bg-background min-h-screen">
+    <div class="bg-backgrounds min-h-screen">
       <!-- Content -->
       <slot name="header" />
       <slot name="main" />
       <slot name="footer" />
 
       <!-- Toaster for sonner -->
-      <Toaster client:load position="top-right" />
+      <Toaster client:only position="top-right" />
     </div>
 
     <!-- Tanstack Query DevTools -->
-    <DevTools client:only="react" />
+    {!envClient.PRODUCTION && <DevTools client:only />}
   </body>
 </html>
