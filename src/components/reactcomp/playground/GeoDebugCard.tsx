@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 
 import { QueryErrorResetBoundary, useQuery } from '@tanstack/react-query';
 
-import { cn } from '@rcomp/lib/utils';
 // Import Shadcn Card Components
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 

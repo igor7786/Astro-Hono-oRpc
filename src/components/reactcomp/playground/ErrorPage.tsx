@@ -47,12 +47,17 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
             <div className="flex w-full flex-row items-center justify-between">
               {/* Left Corner */}
               <div className="flex items-center gap-2">
-                <span className={cn('h-2.5 w-2.5 rounded-full', accentBg)} />
+                <span
+                  className={cn(
+                    'h-2.5 w-2.5 absolute top-4 left-1.75 size-2 animate-pulse rounded-full',
+                    accentBg
+                  )}
+                />
                 <span className="text-ink-muted font-mono text-xs">fast-web-tech.co.uk</span>
               </div>
 
               {/* Right Corner */}
-              <span className="text-ink-muted font-mono text-xs">HTTP/3</span>
+              <span className="text-green-600 font-mono text-xs">HTTP/3</span>
             </div>
           </CardHeader>
 
@@ -109,7 +114,7 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
             <Button
               nativeButton={false}
               render={<a href="/" className="inline-flex items-center justify-center gap-2" />}
-              className="bg-ink text-background hover:opacity-90 hover:-translate-y-0.5 transition-all"
+              className="bg-amber-500 hover:bg-amber-600 text-background hover:opacity-90  transition-all"
             >
               <span
                 aria-hidden="true"
