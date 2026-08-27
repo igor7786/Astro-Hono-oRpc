@@ -88,7 +88,7 @@
     "@types/react-dom": "^19.2.5",
     "@wyattjoh/astro-bun-adapter": "^2.1.1",
     "add": "^2.0.6",
-    "astro": "7.2.4",
+    "astro": "7.2.8",
     "astro-iconset": "^0.0.6",
     "boneyard-js": "^1.7.7",
     "class-variance-authority": "^0.7.1",
