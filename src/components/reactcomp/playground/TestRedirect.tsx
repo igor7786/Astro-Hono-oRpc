@@ -7,6 +7,7 @@ export default function TestRedirect() {
   const client = getQueryClient();
   const { data, isLoading, error } = useQuery(
     orpc.tests.redirectTest.queryOptions({
+      queryKey: ['test', { name: 'admin' }],
       input: { name: 'admin' },
       retry: false,
     }),
