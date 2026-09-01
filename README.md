@@ -1,470 +1,245 @@
 # Astro-Hono-oRPC Full-Stack Application
 
-A modern full-stack web application combining **Astro v6** for frontend rendering with **Hono v4** and **oRPC v1.13** for type-safe API development. Built with **React 19** (islands architecture), **Tailwind CSS v4**, **shadcn/ui**, **TanStack Query v5**, **Nanostores**, and **Boneyard** skeleton loading.
+A full-stack web application combining **Astro 7** (server output with Bun adapter), **Hono 4** and **oRPC 1.14** for type-safe APIs. Built with **React 19** islands, **Tailwind CSS 4**, **shadcn/ui**, **TanStack Query 5**, **Nanostores**, **Drizzle ORM**, and **Boneyard** skeleton loading.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- **Node.js** >= 22.12.0
-- **Bun** >= 1.2.0 (recommended package manager and runtime)
+- **Bun** >= 1.4.0
 
 ### Installation
 
 ```bash
-# Install dependencies
 bun install
-
-# Copy environment variables and configure
-cp .example.env .env
-# Edit .env with your values
-
-# Generate oRPC contract JSON
+cp .example.env .env   # then configure your values
 bun run generate:contract
-
-# Start development server
 bun run bun:dev
 ```
 
-### Other useful commands
+Dev server runs at `http://localhost:4322`.
 
-```bash
-# Type check
-bun run ts:check
+### Commands
 
-# Format code
-bun run format
+| Command | Description |
+|---------|-------------|
+| `bun run bun:dev` | Start dev server (Bun runtime) |
+| `bun run bun:build` | Production build |
+| `bun run bun:preview` | Preview production build |
+| `bun run ts:check` | TypeScript type check |
+| `bun run format` | Format with Prettier |
+| `bun run knip` | Find unused exports/imports |
+| `bun run generate:contract` | Sync oRPC contract JSON |
+| `bun run og:test` | Test OG image generation |
+| `bun run env:test` | Test environment variable loading |
 
-# Build for production
-bun run bun:build
+### Database Commands
 
-# Preview production build
-bun run bun:preview
-
-# Find unused exports/imports
-bun run knip
-
-# Test OG image generation
-bun run og:test
-```
-
-The dev server runs at `http://localhost:4321`.
+| Command | Description |
+|---------|-------------|
+| `bun run db:sqlite:generate` | Generate SQLite migrations |
+| `bun run db:neon:generate` | Generate Neon DB migrations |
+| `bun run db:pg:generate` | Generate Postgres migrations |
+| `bun run db:sqlite:migrate` | Run SQLite migrations |
+| `bun run db:neon:migrate` | Run Neon DB migrations |
+| `bun run db:pg:migrate` | Run Postgres migrations |
+| `bun run db:sqlite:studio` | Open Drizzle Studio (SQLite) |
+| `bun run db:neon:studio` | Open Drizzle Studio (Neon) |
+| `bun run db:pg:studio` | Open Drizzle Studio (PG) |
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DB_URL` | PostgreSQL connection string (NeonDB) | ✅ |
-| `UPSTASH_REDIS_URL` | Upstash Redis connection URL | ✅ |
-| `BETTER_AUTH_SECRET` | Secret key for session encryption | ✅ |
-| `BETTER_AUTH_URL` | Base URL (e.g., `http://localhost:4321`) | ✅ |
-| `PUBLIC_URL` | Public application URL | ✅ |
-| `PUBLIC_API_URL` | Public API base URL (`/api/rpc`) | ✅ |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID | ✅ |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | ✅ |
-| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID | ✅ |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret | ✅ |
-| `RESEND_EMAIL` | Resend API key for email | ✅ |
-| `ARCJET_KEY` | Arcjet security API key | ✅ |
-| `ARCJET_ENV` | Arcjet environment (`development`/`production`) | ✅ |
-| `CLOUD_TOKEN` | Cloud provider token | ✅ |
-| `QWEN_API_KEY` | Qwen API key for AI features | ✅ |
-
-> **Note:** Environment variables are validated at startup using Zod schemas in `src/lib/env/`.
-
-### Production Build
-
-```bash
-# Build for production
-bun build
-
-# Preview production build locally
-bun preview
-```
-
-Production builds output to `./dist/` and run as a Node.js standalone server.
+Validated at startup via Zod schemas in `src/lib/env/`. Server vars are in `server.env.ts`, client-safe vars (prefixed `PUBLIC_`) in `client.env.ts`. Refer to `.example.env` for the full list.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-├── public/                   # Static assets (fonts, icons, robots.txt)
+├── public/                        # Static assets (fonts, icons, robots.txt)
 ├── src/
-│   ├── assets/               # Images and static assets
-│   ├── bones/                # Boneyard skeleton loading definitions
-│   │   ├── *.bones.json      # Skeleton structures for components
-│   │   └── registry.js       # Boneyard component registry
+│   ├── assets/                    # Images, SVGs, icon sets
+│   ├── bones/                     # Boneyard skeleton definitions
 │   ├── components/
-│   │   ├── astrocomp/        # Astro-native UI components (SSR, no hydration)
-│   │   └── reactcomp/        # React components (islands architecture)
-│   │       ├── lib/          # React utility hooks and helpers
-│   │       ├── playground/   # Interactive component demos
-│   │       ├── shadcn-studio/# shadcn studio integration
-│   │       └── ui/           # shadcn/ui generated components
-│   ├── data/                 # Static data (markdown content, blog posts)
-│   ├── layouts/              # Page layout components
+│   │   ├── astrocomp/             # Astro SSR components (no hydration)
+│   │   │   ├── layout/            #   FONTS, HEAD, SEO
+│   │   │   └── playground/        #   Blog card demos
+│   │   └── reactcomp/             # React islands (hydrated)
+│   │       ├── lib/               #   Utility hooks & helpers
+│   │       ├── playground/        #   Interactive demos
+│   │       ├── shadcn-studio/     #   shadcn studio integration
+│   │       └── ui/                #   shadcn/ui generated components
+│   ├── data/                      # Markdown content (blog posts)
+│   ├── layouts/                   # Page layouts
 │   ├── lib/
-│   │   ├── env/              # Zod-validated environment configs
-│   │   │   ├── client.env.ts # Client-side environment variables
-│   │   │   └── server.env.ts # Server-side environment variables
-│   │   ├── helpers/          # Utilities (logger, paths, theme-checker)
-│   │   ├── queues/           # Redis queue configurations
-│   │   ├── shared/           # Shared schemas and types
-│   │   │   └── schemas/
-│   │   │       └── seo.schema.ts  # SEO-related Zod schemas
-│   │   ├── stores/           # Nanostores (reactive state)
-│   │   └── tanstack-query/   # TanStack Query setup and devtools
+│   │   ├── crypto/                # OG image ID/hashing utilities
+│   │   ├── csp/                   # CSP hash generation & headers
+│   │   ├── drizzle/               # Drizzle ORM clients & schemas
+│   │   │   ├── neon/              #   NeonDB (serverless Postgres)
+│   │   │   ├── pg/                #   VPS Postgres
+│   │   │   └── sqlite/            #   Local SQLite
+│   │   ├── env/                   # Zod-validated env configs
+│   │   ├── helpers/               # Logger, paths, icons, reading-time, llms
+│   │   ├── redis/                 # Redis clients (Upstash, VPS)
+│   │   ├── redpanda-kafka/        # Kafka producer config
+│   │   ├── s3/                    # RustFS (S3-compatible) client
+│   │   ├── shared/schemas/        # Shared Zod schemas (SEO, errors)
+│   │   ├── stores/                # Nanostores (online, SSR state)
+│   │   ├── tanstack-query/        # Query client & devtools
+│   │   ├── tinybird/              # Tinybird analytics client
+│   │   └── tls/                   # mTLS client for VPS services
 │   ├── pages/
-│   │   ├── api/              # Hono API catch-all route
-│   │   ├── playground/       # Component testing pages
-│   │   └── index.astro       # Home page
-│   ├── plugins/              # Remark/Rehype plugins for Astro markdown
-│   ├── server/               # Hono and oRPC server-side logic
-│   │   ├── app.ts            # Main Hono application entry point
-│   │   ├── clients/          # oRPC API clients (server and web)
-│   │   ├── contracts/        # oRPC contract definitions
-│   │   │   ├── all.contracts.ts    # Master contract registry
-│   │   │   ├── oc.base.ts          # Base oRPC with error definitions
-│   │   │   ├── seo.contract.ts     # SEO route contracts
-│   │   │   └── test.contract.ts    # Test route contracts
-│   │   ├── handlers/         # RPC and OpenAPI request handlers
-│   │   ├── middlewares/      # oRPC middlewares (validation, errors)
-│   │   ├── procedures/
-│   │   │   └── base.ts       # Base oRPC procedure with context
-│   │   ├── routers/          # oRPC router implementations
-│   │   │   ├── all.routers.ts      # Router registry
-│   │   │   ├── test.ts             # Test procedures
-│   │   │   └── seo/                # SEO procedures
-│   │   ├── schemas/          # Zod validation schemas
-│   │   │   ├── test.schema.ts      # Test input schemas
-│   │   │   └── openapi.schema.generator.ts
-│   │   └── seo/              # SEO, OG images, LLM documentation
-│   │       ├── og/           # OG image generation components
-│   │       ├── html.handler.ts     # LLM HTML documentation
-│   │       ├── llms.ts             # LLM routes
-│   │       ├── og.handler.ts       # OG image handler
-│   │       └── txt.handler.ts      # LLM text documentation
-│   ├── styles/               # Global CSS and Tailwind configuration
-│   ├── content.config.ts     # Astro content collections config
-│   ├── env.d.ts              # TypeScript ambient declarations
-│   └── middleware.ts         # Astro middleware (cache control)
-├── astro.config.mjs          # Astro configuration
-├── boneyard.config.json      # Boneyard skeleton configuration
-├── components.json           # shadcn/ui configuration
-├── knip.json                 # Unused dependency analysis config
-├── package.json              # Dependencies and scripts
-└── tsconfig.json             # TypeScript configuration
+│   │   ├── api/                   # (Hono catch-all is in server/app.ts)
+│   │   ├── playground/            # Component testing pages
+│   │   ├── error-page/            # Custom error page
+│   │   └── index.astro            # Home
+│   ├── plugins/                   # Astro plugins (CSP manifest, server startup)
+│   ├── server/
+│   │   ├── app.ts                 # Main Hono app (middleware chain + routes)
+│   │   ├── clients/               # oRPC clients (server-side & web)
+│   │   ├── contracts/             # oRPC contract definitions
+│   │   │   ├── all.contracts.ts   #   Master contract registry
+│   │   │   ├── oc.base.ts         #   Base oRPC with error types
+│   │   │   ├── csp/               #   CSP report contract
+│   │   │   ├── geo/               #   Geolocation contract
+│   │   │   ├── seo/               #   OG, llms.txt, llms.html
+│   │   │   ├── tests-contracts/   #   Test, slow test, clients, redirect
+│   │   │   └── helpers/           #   Contract JSON generator
+│   │   ├── handlers/              # RPC & OpenAPI request handlers
+│   │   ├── hono-middleware/       # Hono middleware stack
+│   │   │   ├── cors.ts            #   CORS policy
+│   │   │   ├── csp.ts             #   Content-Security-Policy nonce
+│   │   │   ├── csrf.ts            #   CSRF protection
+│   │   │   ├── geo.ts             #   Geolocation extraction
+│   │   │   ├── inject.clients.ts  #   Inject DB/Redis/Kafka into context
+│   │   │   ├── orpc.ts            #   oRPC + OpenAPI dispatch
+│   │   │   ├── scalar.ts          #   Scalar API docs
+│   │   │   └── ...                #   head, methods, options, trailing-slash, etc.
+│   │   ├── middlewares/           # oRPC middlewares (validation, error stripping)
+│   │   ├── procedures/base.ts     # Base oRPC procedure with typed context
+│   │   ├── routers/               # oRPC router implementations
+│   │   │   ├── all.routers.ts     #   Router registry
+│   │   │   ├── csp/               #   CSP violation reports
+│   │   │   ├── geo/               #   Geolocation lookup
+│   │   │   ├── seo/               #   OG images, llms.txt, llms.html
+│   │   │   └── tests-routers/     #   Test, slow test, clients, redirect
+│   │   ├── schemas/               # Zod schemas for inputs/outputs
+│   │   └── seo/og/                # OG image generation (Satori + React)
+│   ├── styles/                    # Global CSS (Tailwind)
+│   ├── content.config.ts          # Astro content collections
+│   ├── middleware.ts              # Astro middleware (security headers, cache, error redirect)
+│   └── fetch.ts                   # Custom fetch for Astro SSR
+├── astro.config.mjs               # Astro config (Bun adapter, React, Tailwind, fonts)
+├── components.json                # shadcn/ui config (base-vega style)
+├── knip.json                      # Dead code analysis config
+├── tinybird.config.json           # Tinybird analytics config
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
-## 🏗️ Architecture
-
-### Hybrid SSR/Islands Model
+## Architecture
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| Frontend | Astro v6 + React 19 | SSR with selective hydration |
-| Styling | Tailwind CSS v4 + shadcn/ui | Utility-first CSS with base-vega style |
-| API | Hono v4 + oRPC v1.13 | Type-safe RPC with OpenAPI support |
-| State | Nanostores + TanStack Query v5 | Reactive state + data fetching |
-| Validation | Zod v4 | Schema validation for env and API |
-| Docs | Scalar | OpenAPI documentation |
+| Frontend | Astro 7 + React 19 | SSR with selective island hydration |
+| Styling | Tailwind CSS 4 + shadcn/ui | Utility-first CSS, base-vega style |
+| API | Hono 4 + oRPC 1.14 | Type-safe RPC + OpenAPI |
+| State | Nanostores + TanStack Query 5 | Reactive state + server data fetching |
+| Validation | Zod 4 | Env, API input/output schemas |
+| Database | Drizzle ORM | Neon (serverless PG), VPS PG, SQLite |
+| Queue | Redpanda/Kafka | Event streaming |
+| Storage | RustFS (S3) | Object storage |
+| Cache | Redis (Upstash / VPS) | Caching, sessions |
+| Analytics | Tinybird | Real-time analytics |
+| Docs | Scalar | OpenAPI reference UI |
 
-### Key Architectural Decisions
+### Key Decisions
 
-1. **Islands Architecture**: React components are hydrated selectively using `client:load` directive
-2. **Contract-First API**: oRPC contracts define input/output schemas before implementation
-3. **Type Safety End-to-End**: Zod schemas validate environment, API inputs, and outputs
-4. **Server-Side Rendering**: Astro `output: 'server'` mode with Bun adapter for ISR support
+- **Islands Architecture** — React components hydrate selectively via `client:load`
+- **Contract-First API** — oRPC contracts define schemas before implementation
+- **End-to-End Type Safety** — Zod validates env vars, API inputs, and outputs
+- **Multi-Database** — SQLite for local dev, Neon for serverless, Postgres for VPS
+- **Graceful Shutdown** — Astro plugin disconnects all clients (Redis, Kafka, PG, S3, SQLite) on SIGTERM/SIGINT
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
-All API routes are prefixed with `/api/`.
-
-### Core Endpoints
+All routes prefixed with `/api/`.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/health` | Health check (`{ status: 'ok' }`) |
-| `POST` | `/api/rpc/*` | oRPC procedure calls |
-| `GET` | `/api/docs` | Scalar API documentation (all APIs combined) |
-| `GET` | `/api/openapi/orpc-docs` | Scalar documentation (oRPC only) |
-| `GET` | `/api/openapi/generate-schema` | Raw OpenAPI JSON spec for oRPC |
-| `GET` | `/api/llms.txt` | AI-optimized documentation (Markdown) |
-| `GET` | `/api/llms.html` | Human-readable documentation (PicoCSS) |
-| `GET` | `/api/og` | Dynamic OG image generation |
+| `GET` | `/api/health` | Health check |
+| `*` | `/api/rpc/*` | oRPC procedure calls |
+| `GET` | `/api/docs` | Scalar API documentation |
+| `GET` | `/api/openapi/generate-schema` | Raw OpenAPI JSON spec |
 
 ### oRPC Procedures
 
-Procedures are defined in `src/server/routers/` with contracts in `src/server/contracts/`.
-
-#### Test Procedures
-
-| Procedure | Method | Path | Description |
-|-----------|--------|------|-------------|
-| `tests.test` | `GET` | `/api/rpc/tests/test` | Basic connectivity test |
-| `tests.slowTest` | `POST` | `/api/rpc/tests/slow-test` | Long-running task (6s) for testing cancellation |
-
-#### SEO Procedures
-
-| Procedure | Method | Path | Description |
-|-----------|--------|------|-------------|
-| `seo.og` | `GET` | `/api/rpc/seo/og` | Generate OG image |
-| `seo.llmsHtml` | `GET` | `/api/rpc/seo/llms.html` | Generate LLM HTML docs |
-| `seo.llmsTxt` | `GET` | `/api/rpc/seo/llms.txt` | Generate LLM text docs |
-
-### Adding New oRPC Procedures
-
-**Step 1:** Create a Zod schema in `src/server/schemas/`:
-
-```typescript
-// src/server/schemas/my.schema.ts
-import { z } from 'zod';
-
-export const mySchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(3),
-});
-```
-
-**Step 2:** Define the contract in `src/server/contracts/`:
-
-```typescript
-// src/server/contracts/my.contract.ts
-import { baseOc } from '@/server/contracts/oc.base';
-import { mySchema } from '@/server/schemas/my.schema';
-
-export const myProcedure = baseOc
-  .route({
-    method: 'GET',
-    path: '/my-endpoint',
-    description: 'Description of what this does',
-    summary: 'Short summary',
-    tags: ['MyTag'],
-    successDescription: 'Success response description',
-    successStatus: 200,
-  })
-  .input(mySchema)
-  .output(mySchema);
-```
-
-**Step 3:** Export the contract in `src/server/contracts/all.contracts.ts`:
-
-```typescript
-import { myProcedure } from '@/server/contracts/my.contract';
-
-export const appContract = {
-  // ...existing
-  my: {
-    myProcedure,
-  },
-};
-```
-
-**Step 4:** Implement the router in `src/server/routers/`:
-
-```typescript
-// src/server/routers/my.ts
-import { base } from '@/server/procedures/base';
-import { myProcedure } from '@/server/contracts/my.contract';
-
-export const myRoute = base.my.myProcedure.handler(async ({ input, context, errors }) => {
-  // Handler logic
-  return { id: input.id, name: input.name };
-});
-```
-
-**Step 5:** Export the router in `src/server/routers/all.routers.ts`:
-
-```typescript
-import { myRoute } from '@/server/routers/my';
-
-export const allRouters = {
-  // ...existing
-  my: {
-    myRoute,
-  },
-};
-```
-
-**Step 6:** Call from client using the oRPC client:
-
-```typescript
-import { client } from '@/lib/server/web.client';
-
-const result = await client.my.myProcedure({ id: '123', name: 'Test' });
-```
+| Procedure | Path | Description |
+|-----------|------|-------------|
+| `tests.test` | `/tests/test` | Connectivity test |
+| `tests.slowTest` | `/tests/slow-test` | Long-running task (cancellation testing) |
+| `tests.testClients` | `/tests/clients` | DB/Redis/S3 client connectivity test |
+| `tests.redirectTest` | `/tests/redirect` | Redirect behavior test |
+| `seo.og` | `/seo/og` | OG image generation |
+| `seo.llmsHtml` | `/seo/llms.html` | LLM-friendly HTML docs |
+| `seo.llmsTxt` | `/seo/llms.txt` | LLM-friendly Markdown docs |
+| `csp.cspReport` | `/csp/report` | CSP violation reports |
+| `geo.geoContract` | `/geo` | Client geolocation lookup |
 
 ---
 
-## 🖼️ Dynamic OG Image Generation
+## Hono Middleware Chain
 
-Social cards are generated on-the-fly using React components and Satori.
+The Hono app (`src/server/app.ts`) applies middleware in this order:
 
-### Features
-
-- **Template**: `src/server/seo/og/Generate.tsx`
-- **Caching**: Redis-backed cache with 7-day TTL
-- **Format**: Auto-detects WebP support, falls back to PNG for bots
-- **Headers**: Sets proper `Cache-Control`, `Content-Type`, and `Content-Disposition`
-
-### Usage
-
-```tsx
-// In Astro component
-<meta property="og:image" content={`/api/og?title=${encodeURIComponent(title)}`} />
-```
-
-### Query Parameters
-
-| Parameter | Type | Required | Default |
-|-----------|------|----------|---------|
-| `title` | string | ✅ | "Fast Web Tech" |
-| `description` | string | ✅ | "My awesome app" |
-| `author` | string | ❌ | "Alberto" |
-| `date` | ISO date | ❌ | Current date |
+1. **CSP** — Content-Security-Policy nonce generation
+2. **Trailing slash** — Normalization
+3. **Inject clients** — Attaches SQLite, PG, Neon, Redis, Kafka, RustFS to context
+4. **HEAD / OPTIONS** — Global handling
+5. **CORS** — Origin policy
+6. **CSRF** — Cross-site request forgery protection
+7. **Pretty logger** — Request logging
+8. **oRPC + OpenAPI** — RPC dispatch and OpenAPI handler
 
 ---
 
-## 🤖 LLM-Friendly Documentation
+## Adding a New oRPC Procedure
 
-The project exports API documentation in formats optimized for Large Language Models.
-
-### Endpoints
-
-| Endpoint | Format | Use Case |
-|----------|--------|----------|
-| `/api/llms.txt` | Markdown | AI prompts, Cursor, Claude context |
-| `/api/llms.html` | HTML (PicoCSS) | Human-readable browser view |
-
-### Implementation
-
-- Uses `@scalar/openapi-to-markdown` to convert oRPC contracts
-- Includes full API surface area with types and descriptions
-- Ideal for providing full API awareness to AI assistants
+1. **Schema** → `src/server/schemas/my.schema.ts`
+2. **Contract** → `src/server/contracts/my/my.ts` (using `baseOc` from `oc.base.ts`)
+3. **Register contract** → `src/server/contracts/all.contracts.ts`
+4. **Router** → `src/server/routers/my/my.ts` (using `base` from `procedures/base.ts`)
+5. **Register router** → `src/server/routers/all.routers.ts`
+6. **Call** → `client.my.myProcedure(input)` via oRPC web client
 
 ---
 
-## 🧩 Agent Skills
+## Error Types
 
-This project includes a modular skills system for AI assistants.
+Defined in `src/server/contracts/oc.base.ts`:
 
-### Location
-
-- **Skills Directory**: `.agents/skills/`
-- **Pre-installed**: `qwen-coder-docs` for code generation and documentation
-
-### Adding Custom Skills
-
-Create a new folder in `.agents/skills/` with a `SKILL.md` file:
-
-```
-.agents/skills/
-└── my-custom-skill/
-    └── SKILL.md  # Skill definition and instructions
-```
+| Error | Status |
+|-------|--------|
+| `BAD_REQUEST` | 400 |
+| `UNAUTHORIZED` | 401 |
+| `FORBIDDEN` | 403 |
+| `NOT_FOUND` | 404 |
+| `METHOD_NOT_SUPPORTED` | 405 |
+| `CONFLICT` | 409 |
+| `TOO_MANY_REQUESTS` | 429 |
+| `INPUT_VALIDATION_FAILED` | 422 |
+| `OUTPUT_VALIDATION_FAILED` | 500 |
+| `INTERNAL_SERVER_ERROR` | 500 |
+| `CLIENT_CLOSED_REQUEST` | 499 |
+| `REDIRECT_REQUEST` | 403 |
 
 ---
 
-## 🔧 Development Guidelines
-
-### Qwen Coder Style
-
-This project follows the **Qwen Coder Documentation Skill** rules:
-
-| Rule | Description |
-|------|-------------|
-| **Explicit over Implicit** | Define types and imports clearly |
-| **Typed Everything** | No usage of `any` |
-| **Named Exports** | Prefer named exports for reliable symbol tracking |
-| **Intent Comments** | Add JSDoc explaining *why* a function exists |
-
-### Component Patterns
-
-#### Astro Components
-
-```astro
----
-// Always define Props interface
-interface Props {
-  title: string;
-  count?: number;
-}
-
-const { title, count = 0 }: Props = Astro.props;
----
-
-<div>
-  <h1>{title}</h1>
-  <p>Count: {count}</p>
-</div>
-```
-
-#### React Islands
-
-```tsx
-'use client';
-
-import { useState } from 'react';
-
-interface CounterProps {
-  initialValue?: number;
-}
-
-export function Counter({ initialValue = 0 }: CounterProps) {
-  const [count, setCount] = useState(initialValue);
-
-  return (
-    <button onClick={() => setCount((c) => c + 1)}>
-      {count}
-    </button>
-  );
-}
-```
-
-#### oRPC Procedures
-
-```typescript
-import { base } from '@/server/procedures/base';
-import { mySchema } from '@/server/schemas/my.schema';
-
-export const myRoute = base
-  .route({
-    method: 'GET',
-    path: '/my-endpoint',
-    description: 'Description of what this does',
-    tags: ['MyTag'],
-  })
-  .input(mySchema)
-  .output(mySchema)
-  .handler(async ({ input, context, errors }) => {
-    // Handler implementation
-    return { result: 'success' };
-  });
-```
-
-### Error Handling
-
-oRPC errors are defined in `src/server/contracts/oc.base.ts`:
-
-| Error | Status | Description |
-|-------|--------|-------------|
-| `BAD_REQUEST` | 400 | Invalid or malformed request |
-| `UNAUTHORIZED` | 401 | Authentication required/failed |
-| `FORBIDDEN` | 403 | Permission denied |
-| `NOT_FOUND` | 404 | Resource not found |
-| `CONFLICT` | 409 | Resource conflict |
-| `INPUT_VALIDATION_FAILED` | 422 | Input validation failed |
-| `OUTPUT_VALIDATION_FAILED` | 500 | Invalid response format |
-| `TOO_MANY_REQUESTS` | 429 | Rate limit exceeded |
-| `INTERNAL_SERVER_ERROR` | 500 | Unexpected server error |
-| `CLIENT_CLOSED_REQUEST` | 499 | Client terminated request |
-
-### Path Aliases
+## Path Aliases
 
 | Alias | Path |
 |-------|------|
@@ -475,60 +250,46 @@ oRPC errors are defined in `src/server/contracts/oc.base.ts`:
 
 ---
 
-## 🧪 Testing & Validation
+## OG Image Generation
 
-### Commands
+Social cards rendered on-the-fly via React + Satori (`src/server/seo/og/`).
 
-| Command | Description |
-|---------|-------------|
-| `bun ts:check` | TypeScript type checking |
-| `bun format` | Format code with Prettier |
-| `bun knip` | Find unused code and dependencies |
-| `bun knip:fix` | Auto-fix unused code issues |
-| `bun run generate:contract` | Sync oRPC contract JSON |
-| `bun run og:test` | Test OG image generation |
+- **Template**: `Generate.tsx` / `SocialCard.tsx`
+- **Caching**: Redis-backed with TTL
+- **Fonts**: Cached via `cache.fonts.ts`
 
-### Code Quality Tools
-
-- **TypeScript**: Strict mode enabled
-- **Prettier**: Multi-plugin setup (Astro, Tailwind, classnames, merge, import-sort)
-- **Knip**: Dead code and dependency detection
-- **Husky**: Pre-commit hooks for formatting
+```tsx
+<meta property="og:image" content={`/api/og?title=${encodeURIComponent(title)}`} />
+```
 
 ---
 
-## 📦 Dependencies
+## Security
 
-### Core
+Astro middleware (`src/middleware.ts`) applies to every response:
 
-- `astro` v6.1.9
-- `react` v19.2.4
-- `hono` v4.12.8
-- `@orpc/*` v1.13.x
-- `zod` v4.3.6
-- `tailwindcss` v4.2.2
-
-### UI
-
-- `shadcn` v4.0.8 (base-vega style)
-- `@base-ui/react` v1.3.0
-- `lucide-react` v1.8.0
-- `sonner` v2.0.7 (toast notifications)
-
-### State & Data
-
-- `nanostores` v1.2.0
-- `@tanstack/react-query` v5.94.5
-- `idb-keyval` v6.2.2 (IndexedDB persistence)
-
-### Infrastructure
-
-- `@hono/node-server` v1.19.11
-- `ioredis` v5.10.1
-- `@wyattjoh/astro-bun-adapter` v2.0.1
+- **CSP** — Production-only, hash-based for Astro-rendered HTML
+- **Permissions-Policy**, **X-Content-Type-Options**, **Referrer-Policy**, **X-Frame-Options**
+- **Cache-Control** — `no-store` for dynamic HTML
+- **Error redirect** — Non-API error statuses redirect to `/error-page`
+- **checkOrigin** — Astro's built-in CSRF protection for server output
 
 ---
 
-## 📄 License
+## Dependencies
 
-MIT License
+| Category | Packages |
+|----------|----------|
+| Core | `astro` 7, `react` 19, `hono` 4, `@orpc/*` 1.14, `zod` 4, `tailwindcss` 4 |
+| UI | `shadcn` (base-vega), `@base-ui/react`, `lucide-react`, `sonner`, `next-themes` |
+| State/Data | `nanostores`, `@tanstack/react-query` 5, `idb-keyval`, `superjson` |
+| Database | `drizzle-orm`, `postgres`, `pg`, `@libsql/client` |
+| Infrastructure | `ioredis`, `@platformatic/kafka`, `@aws-sdk/client-s3`, `@tinybirdco/sdk` |
+| Server | `@hono/node-server`, `@wyattjoh/astro-bun-adapter`, `sharp`, `satori` |
+| Docs | `@scalar/hono-api-reference`, `@scalar/openapi-to-markdown` |
+
+---
+
+## License
+
+MIT
