@@ -15,15 +15,15 @@ export const allRouters = {
     redirectTest: testRedirect,
   },
   seo: {
-    ogRoute: ogRoute,
-    llmsRoute: llmsRoute,
-    llmsTxtRoute: llmsTxtRoute,
+    og: ogRoute,
+    llmsHtml: llmsRoute,
+    llmsTxt: llmsTxtRoute,
   },
   csp: {
-    cspRoute: cspRoute,
+    cspReport: cspRoute,
   },
   geo: {
-    geoRoute: geoRoute,
+    geoContract: geoRoute,
   },
 };
 export type AppRouter = typeof allRouters;
