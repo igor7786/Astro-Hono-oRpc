@@ -172,7 +172,7 @@ All routes prefixed with `/api/`.
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/health` | Health check |
-| `*` | `/api/rpc/*` | oRPC procedure calls |
+| `GET` | `/api/openapi/*` | OpenAPI procedure calls (primary client path) |
 | `GET` | `/api/docs` | Scalar API documentation |
 | `GET` | `/api/openapi/generate-schema` | Raw OpenAPI JSON spec |
 
@@ -180,15 +180,15 @@ All routes prefixed with `/api/`.
 
 | Procedure | Path | Description |
 |-----------|------|-------------|
-| `tests.test` | `/tests/test` | Connectivity test |
-| `tests.slowTest` | `/tests/slow-test` | Long-running task (cancellation testing) |
-| `tests.testClients` | `/tests/clients` | DB/Redis/S3 client connectivity test |
-| `tests.redirectTest` | `/tests/redirect` | Redirect behavior test |
-| `seo.og` | `/seo/og` | OG image generation |
-| `seo.llmsHtml` | `/seo/llms.html` | LLM-friendly HTML docs |
-| `seo.llmsTxt` | `/seo/llms.txt` | LLM-friendly Markdown docs |
-| `csp.cspReport` | `/csp/report` | CSP violation reports |
-| `geo.geoContract` | `/geo` | Client geolocation lookup |
+| `tests.test` | `/api/openapi/tests/test` | Connectivity test |
+| `tests.slowTest` | `/api/openapi/tests/slow-test` | Long-running task (cancellation testing) |
+| `tests.testClients` | `/api/openapi/tests/clients` | DB/Redis/S3 client connectivity test |
+| `tests.redirectTest` | `/api/openapi/tests/redirect` | Redirect behavior test |
+| `seo.og` | `/api/openapi/seo/og/v1` | OG image generation |
+| `seo.llmsHtml` | `/api/openapi/seo/llms.html` | LLM-friendly HTML docs |
+| `seo.llmsTxt` | `/api/openapi/seo/llms.txt` | LLM-friendly Markdown docs |
+| `csp.cspReport` | `/api/openapi/csp/report` | CSP violation reports |
+| `geo.geoContract` | `/api/openapi/geo` | Client geolocation lookup |
 
 ---
 
@@ -259,7 +259,8 @@ Social cards rendered on-the-fly via React + Satori (`src/server/seo/og/`).
 - **Fonts**: Cached via `cache.fonts.ts`
 
 ```tsx
-<meta property="og:image" content={`/api/og?title=${encodeURIComponent(title)}`} />
+// Generate an HMAC-signed token server-side, then use it:
+<meta property="og:image" content={`/api/openapi/seo/og/v1?id=${token}`} />
 ```
 
 ---
