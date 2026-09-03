@@ -1,4 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { useState } from 'react';
 
@@ -12,54 +15,46 @@ import {
   CardTitle,
 } from '@/components/reactcomp/ui/card';
 import { Checkbox } from '@/components/reactcomp/ui/checkbox';
-import { Input } from '@/components/reactcomp/ui/input';
-import { Label } from '@/components/reactcomp/ui/label';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/reactcomp/ui/field';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/reactcomp/ui/input-group';
 import { Separator } from '@/components/reactcomp/ui/separator';
-import { type LoginInput, loginSchema } from '@/lib/shared/schemas/auth/auth.schema';
+import { loginSchema } from '@/lib/shared/schemas/auth/auth.schema';
+
+// Use z.input to match the schema's input type (rememberMe is optional with default)
+type FormValues = z.input<typeof loginSchema>;
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof LoginInput, string>>>({});
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setErrors({});
+  const form = useForm<FormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
 
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      rememberMe: formData.get('rememberMe') === 'on',
-    };
+  const {
+    formState: { isSubmitting },
+  } = form;
 
-    const validation = loginSchema.safeParse(data);
-    if (!validation.success) {
-      const fieldErrors: Partial<Record<keyof LoginInput, string>> = {};
-      validation.error.issues.forEach((err) => {
-        const field = err.path[0] as keyof LoginInput;
-        if (!fieldErrors[field]) {
-          fieldErrors[field] = err.message;
-        }
-      });
-      setErrors(fieldErrors);
-      setIsSubmitting(false);
-      return;
-    }
-
+  async function onSubmit(data: FormValues) {
     try {
       // TODO: Implement actual login logic
-      console.log('Login data:', validation.data);
+      console.log('Login data:', data);
       const { promise, resolve } = Promise.withResolvers<void>();
       setTimeout(resolve, 1000); // Simulate API call
       await promise;
     } catch (error) {
       console.error('Login failed:', error);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted/30 p-4">
@@ -69,72 +64,99 @@ export function LoginPage() {
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="size-4 text-muted-foreground" />
-                Email
-              </Label>
-              <Input
-                id="email"
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Controller
                 name="email"
-                type="email"
-                placeholder="you@example.com"
-                autoComplete="email"
-                aria-invalid={errors.email ? 'true' : undefined}
-                disabled={isSubmitting}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-email" className="flex items-center gap-2">
+                      <Mail className="size-4 text-muted-foreground" />
+                      Email
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="login-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
               />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-            </div>
 
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <Lock className="size-4 text-muted-foreground" />
-                Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
-                  aria-invalid={errors.password ? 'true' : undefined}
-                  disabled={isSubmitting}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  disabled={isSubmitting}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
-              </div>
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-            </div>
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-password" className="flex items-center gap-2">
+                      <Lock className="size-4 text-muted-foreground" />
+                      Password
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="login-password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={isSubmitting}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                        </InputGroupButton>
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox id="rememberMe" name="rememberMe" />
-                <Label htmlFor="rememberMe" className="text-sm font-normal">
-                  Remember me
-                </Label>
-              </div>
-              <a
-                href="/forgot-password"
-                className="text-sm text-primary hover:underline underline-offset-4"
-              >
-                Forgot password?
-              </a>
-            </div>
+              <Controller
+                name="rememberMe"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="rememberMe"
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                      <FieldLabel htmlFor="rememberMe" className="text-sm font-normal">
+                        Remember me
+                      </FieldLabel>
+                    </div>
+                    <a
+                      href="/forgot-password"
+                      className="text-sm text-primary hover:underline underline-offset-4"
+                    >
+                      Forgot password?
+                    </a>
+                  </div>
+                )}
+              />
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              <LogIn data-icon="inline-start" />
-              {isSubmitting ? 'Signing in...' : 'Sign In'}
-            </Button>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <LogIn data-icon="inline-start" />
+                {isSubmitting ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </FieldGroup>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">

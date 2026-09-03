@@ -1,4 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { useState } from 'react';
 
@@ -12,216 +15,252 @@ import {
   CardTitle,
 } from '@/components/reactcomp/ui/card';
 import { Checkbox } from '@/components/reactcomp/ui/checkbox';
-import { Input } from '@/components/reactcomp/ui/input';
-import { Label } from '@/components/reactcomp/ui/label';
-import { Separator } from '@/components/reactcomp/ui/separator';
 import {
-  getPasswordStrength,
-  type RegisterInput,
-  registerSchema,
-} from '@/lib/shared/schemas/auth/auth.schema';
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/reactcomp/ui/field';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/reactcomp/ui/input-group';
+import { Separator } from '@/components/reactcomp/ui/separator';
+import { getPasswordStrength, registerSchema } from '@/lib/shared/schemas/auth/auth.schema';
+
+// Use z.input to match the schema's input type (acceptTerms is optional with refinement)
+type FormValues = z.input<typeof registerSchema>;
 
 export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof RegisterInput, string>>>({});
-  const [passwordValue, setPasswordValue] = useState('');
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      acceptTerms: false,
+    },
+  });
+
+  const {
+    formState: { isSubmitting },
+    watch,
+  } = form;
+
+  const passwordValue = watch('password') ?? '';
   const passwordStrength = getPasswordStrength(passwordValue);
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setErrors({});
-
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      confirmPassword: formData.get('confirmPassword') as string,
-      name: formData.get('name') as string,
-      acceptTerms: formData.get('acceptTerms') === 'on',
-    };
-
-    const validation = registerSchema.safeParse(data);
-    if (!validation.success) {
-      const fieldErrors: Partial<Record<keyof RegisterInput, string>> = {};
-      validation.error.issues.forEach((err) => {
-        const field = err.path[0] as keyof RegisterInput;
-        if (!fieldErrors[field]) {
-          fieldErrors[field] = err.message;
-        }
-      });
-      setErrors(fieldErrors);
-      setIsSubmitting(false);
-      return;
-    }
-
+  async function onSubmit(data: FormValues) {
     try {
       // TODO: Implement actual registration logic
-      console.log('Register data:', validation.data);
+      console.log('Register data:', data);
       const { promise, resolve } = Promise.withResolvers<void>();
       setTimeout(resolve, 1000); // Simulate API call
       await promise;
     } catch (error) {
       console.error('Registration failed:', error);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted/30 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-heading">Create Account</CardTitle>
           <CardDescription>Join us today and get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name" className="flex items-center gap-2">
-                <User className="size-4 text-muted-foreground" />
-                Full Name
-              </Label>
-              <Input
-                id="name"
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Controller
                 name="name"
-                type="text"
-                placeholder="John Doe"
-                autoComplete="name"
-                aria-invalid={errors.name ? 'true' : undefined}
-                disabled={isSubmitting}
-              />
-              {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="size-4 text-muted-foreground" />
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                autoComplete="email"
-                aria-invalid={errors.email ? 'true' : undefined}
-                disabled={isSubmitting}
-              />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <Lock className="size-4 text-muted-foreground" />
-                Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Create a strong password"
-                  autoComplete="new-password"
-                  aria-invalid={errors.password ? 'true' : undefined}
-                  disabled={isSubmitting}
-                  className="pr-10"
-                  onChange={(e) => setPasswordValue(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  disabled={isSubmitting}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
-              </div>
-              {passwordValue && (
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1 flex-1">
-                    {[1, 2, 3, 4, 5, 6].map((level) => (
-                      <div
-                        key={level}
-                        className={`h-1 flex-1 rounded-full transition-colors ${
-                          level <= passwordStrength.score
-                            ? passwordStrength.color === 'text-destructive'
-                              ? 'bg-destructive'
-                              : passwordStrength.color === 'text-yellow-500'
-                                ? 'bg-yellow-500'
-                                : 'bg-green-500'
-                            : 'bg-muted'
-                        }`}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="register-name" className="flex items-center gap-2">
+                      <User className="size-4 text-muted-foreground" />
+                      Full Name
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="register-name"
+                        type="text"
+                        placeholder="John Doe"
+                        autoComplete="name"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
                       />
-                    ))}
-                  </div>
-                  <span className={`text-xs font-medium ${passwordStrength.color}`}>
-                    {passwordStrength.label}
-                  </span>
-                </div>
-              )}
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="confirmPassword" className="flex items-center gap-2">
-                <Lock className="size-4 text-muted-foreground" />
-                Confirm Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="Confirm your password"
-                  autoComplete="new-password"
-                  aria-invalid={errors.confirmPassword ? 'true' : undefined}
-                  disabled={isSubmitting}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  disabled={isSubmitting}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="acceptTerms"
-                name="acceptTerms"
-                aria-invalid={errors.acceptTerms ? 'true' : undefined}
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
               />
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="acceptTerms" className="text-sm font-normal leading-tight">
-                  I agree to the{' '}
-                  <a href="/terms" className="text-primary hover:underline underline-offset-4">
-                    Terms of Service
-                  </a>{' '}
-                  and{' '}
-                  <a href="/privacy" className="text-primary hover:underline underline-offset-4">
-                    Privacy Policy
-                  </a>
-                </Label>
-                {errors.acceptTerms && <p className="text-sm text-destructive">{errors.acceptTerms}</p>}
-              </div>
-            </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              <UserPlus data-icon="inline-start" />
-              {isSubmitting ? 'Creating account...' : 'Create Account'}
-            </Button>
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="register-email" className="flex items-center gap-2">
+                      <Mail className="size-4 text-muted-foreground" />
+                      Email
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="register-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="register-password" className="flex items-center gap-2">
+                      <Lock className="size-4 text-muted-foreground" />
+                      Password
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="register-password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Create a strong password"
+                        autoComplete="new-password"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={isSubmitting}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                        </InputGroupButton>
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {passwordValue && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1 flex-1">
+                          {[1, 2, 3, 4, 5, 6].map((level) => (
+                            <div
+                              key={level}
+                              className={`h-1 flex-1 rounded-full transition-colors ${
+                                level <= passwordStrength.score
+                                  ? passwordStrength.color === 'text-destructive'
+                                    ? 'bg-destructive'
+                                    : passwordStrength.color === 'text-yellow-500'
+                                      ? 'bg-yellow-500'
+                                      : 'bg-green-500'
+                                  : 'bg-muted'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className={`text-xs font-medium ${passwordStrength.color}`}>
+                          {passwordStrength.label}
+                        </span>
+                      </div>
+                    )}
+                    <FieldDescription>
+                      Must contain at least one uppercase letter, one lowercase letter, and one number.
+                    </FieldDescription>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="register-confirm-password" className="flex items-center gap-2">
+                      <Lock className="size-4 text-muted-foreground" />
+                      Confirm Password
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="register-confirm-password"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="Confirm your password"
+                        autoComplete="new-password"
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          disabled={isSubmitting}
+                          aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showConfirmPassword ? <EyeOff /> : <Eye />}
+                        </InputGroupButton>
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="acceptTerms"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <div className="flex items-start gap-2">
+                      <Checkbox
+                        id="acceptTerms"
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                        aria-invalid={fieldState.invalid}
+                        disabled={isSubmitting}
+                      />
+                      <div className="flex flex-col gap-1">
+                        <FieldLabel htmlFor="acceptTerms" className="text-sm font-normal leading-tight">
+                          I agree to the{' '}
+                          <a href="/terms" className="text-primary hover:underline underline-offset-4">
+                            Terms of Service
+                          </a>{' '}
+                          and{' '}
+                          <a href="/privacy" className="text-primary hover:underline underline-offset-4">
+                            Privacy Policy
+                          </a>
+                        </FieldLabel>
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </div>
+                    </div>
+                  </Field>
+                )}
+              />
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <UserPlus data-icon="inline-start" />
+                {isSubmitting ? 'Creating account...' : 'Create Account'}
+              </Button>
+            </FieldGroup>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
