@@ -4,6 +4,7 @@ import { createMiddleware } from 'hono/factory';
 import { randomBytes } from 'node:crypto';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
+import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 type CspVariables = {
   cspNonce: string;
@@ -35,7 +36,7 @@ function buildScalarCsp(nonce: string) {
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
-    'report-uri /api/openapi/csp',
+    `report-uri '${openApiBasePath + cspPath}'`,
   ].join('; ');
 }
 

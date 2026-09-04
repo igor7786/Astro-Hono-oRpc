@@ -1,4 +1,5 @@
 import { scriptHashes, styleHashes } from '@/lib/csp/hashes';
+import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 export const csp = [
   "default-src 'self'",
@@ -11,7 +12,7 @@ export const csp = [
   "form-action 'self'",
   `script-src 'self' ${scriptHashes}`,
   `style-src ${styleHashes}`,
-  'report-uri /api/openapi/csp',
+  `report-uri '${openApiBasePath + cspPath}'`,
 ].join('; ');
 
 /**
