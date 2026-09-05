@@ -3,8 +3,6 @@ import { Scalar } from '@scalar/hono-api-reference';
 
 const scalar = Scalar<{ Variables: { cspNonce: string } }>((c) => {
   const nonce = c.get('cspNonce');
-  console.log('Scalar nonce:', nonce);
-
   return {
     sources: [
       { url: '/api/openapi/generate-schema', title: 'App API' },

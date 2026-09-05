@@ -6,6 +6,9 @@ import { z } from 'zod';
 const EnvClientSchema = z.object({
   PUBLIC_URL: z.string().min(1, 'ENV: PUBLIC_URL is required and must be a non-empty string'),
   PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string'),
+  PUBLIC_API_VERSION: z
+    .string()
+    .min(1, 'ENV: PUBLIC_API_VERSION is required and must be a non-empty string'),
   PRODUCTION: z.boolean(),
 });
 
@@ -15,6 +18,7 @@ export function getClientEnv(): ClientEnv {
   const parsed = EnvClientSchema.parse({
     PUBLIC_URL: import.meta.env.PUBLIC_URL,
     PUBLIC_API_URL: import.meta.env.PUBLIC_API_URL,
+    PUBLIC_API_VERSION: import.meta.env.PUBLIC_API_VERSION,
     // Vite's built-in boolean, always defined client-side
     PRODUCTION: import.meta.env.PROD,
   });

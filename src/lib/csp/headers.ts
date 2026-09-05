@@ -12,7 +12,7 @@ export const csp = [
   "form-action 'self'",
   `script-src 'self' ${scriptHashes}`,
   `style-src ${styleHashes}`,
-  `report-uri '${openApiBasePath + cspPath}'`,
+  `report-uri ${openApiBasePath + cspPath}`,
 ].join('; ');
 
 /**
