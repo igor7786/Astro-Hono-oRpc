@@ -36,7 +36,7 @@ function buildScalarCsp(nonce: string) {
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
-    `report-uri '${openApiBasePath + cspPath}'`,
+    `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 
@@ -50,7 +50,7 @@ function buildStaticCsp(nonce: string) {
     "img-src 'self' data:",
     "frame-ancestors 'none'",
     "base-uri 'none'",
-    `report-uri '${openApiBasePath + cspPath}'`,
+    `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 

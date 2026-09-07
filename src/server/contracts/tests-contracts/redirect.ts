@@ -1,7 +1,7 @@
 import { envClient } from '@/lib/env/client.env';
 import { baseOc } from '@/server/contracts/oc.base';
-import { outputSchema } from '@/server/schemas/tests-schema/redirect.schema';
-import { redirectSchema } from '@/server/schemas/tests-schema/redirect.schema';
+import { redirectOutputSchema } from '@/server/schemas/tests-schema/redirect.schema';
+import { redirectInputSchema } from '@/server/schemas/tests-schema/redirect.schema';
 
 export const redirectTest = baseOc
   .route({
@@ -11,7 +11,7 @@ export const redirectTest = baseOc
     summary: 'Redirect route',
     tags: ['Tests'],
     successDescription: 'Redirect route successful',
-    successStatus: 200,
+    outputStructure: 'detailed',
   })
-  .input(redirectSchema)
-  .output(outputSchema);
+  .input(redirectInputSchema)
+  .output(redirectOutputSchema);

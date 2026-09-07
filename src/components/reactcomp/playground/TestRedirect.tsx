@@ -19,9 +19,11 @@ export default function TestRedirect() {
   }
 
   // If a completely different error occurs, handle it here
-  if (error && error.name !== 'REDIRECT_TO_HOME') {
+  if (error) {
     return <div>An unrelated error occurred: {error.message}</div>;
   }
 
-  return <div>{data?.name}</div>;
+  if (data?.status === 200) {
+    return <div>{data.body.name}</div>;
+  }
 }
