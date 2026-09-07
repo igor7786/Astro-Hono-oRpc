@@ -40,16 +40,17 @@ function buildScalarCsp(nonce: string) {
   ].join('; ');
 }
 
-function buildStaticCsp() {
+function buildStaticCsp(nonce: string) {
   return [
     "default-src 'none'",
-    "style-src 'self'",
+    `script-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'nonce-${nonce}'`,
     "font-src 'self'",
     "connect-src 'self'",
     "img-src 'self' data:",
     "frame-ancestors 'none'",
     "base-uri 'none'",
-    'report-uri /api/openapi/csp',
+    `report-uri '${openApiBasePath + cspPath}'`,
   ].join('; ');
 }
 
@@ -62,7 +63,7 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
   const contentType = c.res.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) return; // JSON, images, etc. — no CSP needed
 
-  const cspValue = SCALAR_PATHS.has(c.req.path) ? buildScalarCsp(nonce) : buildStaticCsp();
+  const cspValue = SCALAR_PATHS.has(c.req.path) ? buildScalarCsp(nonce) : buildStaticCsp(nonce);
   c.res.headers.set('Content-Security-Policy', cspValue);
 
   for (const [key, value] of Object.entries(SHARED_HEADERS)) {
