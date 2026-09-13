@@ -6,11 +6,11 @@ import {
   outputOgSchema,
 } from '@/server/schemas/seo.og.html.txt';
 
-const pathPrefix = '/seo'; // ✅ added path prefix
+const pathPrefix = '/seo';
 export const og = baseOc
   .route({
     method: 'GET',
-    path: `${pathPrefix}/og/v1`, // ✅ added path
+    path: `${pathPrefix}/og`,
     summary: 'Generates og images',
     description: 'Og image',
     tags: ['SEO'],

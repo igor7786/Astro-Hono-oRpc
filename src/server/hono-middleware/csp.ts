@@ -4,6 +4,7 @@ import { createMiddleware } from 'hono/factory';
 import { randomBytes } from 'node:crypto';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
+import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 type CspVariables = {
   cspNonce: string;
@@ -28,27 +29,30 @@ function buildScalarCsp(nonce: string) {
     // Scalar ships a fix — check https://github.com/scalar/scalar/issues for "unsafe-eval".
     `script-src 'self' 'nonce-${nonce}' 'unsafe-eval'`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
+    "img-src 'self' data: https: blob:",
     "connect-src 'self' https:",
     "font-src 'self' https:",
     'frame-src blob:',
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
-    'report-uri /api/openapi/csp',
+    `report-to ${openApiBasePath + cspPath}`,
+    `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 
-function buildStaticCsp() {
+function buildStaticCsp(nonce: string) {
   return [
     "default-src 'none'",
-    "style-src 'self'",
+    `script-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'nonce-${nonce}'`,
     "font-src 'self'",
     "connect-src 'self'",
     "img-src 'self' data:",
     "frame-ancestors 'none'",
     "base-uri 'none'",
-    'report-uri /api/openapi/csp',
+    `report-uri ${openApiBasePath + cspPath}`,
+    `report-to ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 
@@ -61,7 +65,7 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
   const contentType = c.res.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) return; // JSON, images, etc. — no CSP needed
 
-  const cspValue = SCALAR_PATHS.has(c.req.path) ? buildScalarCsp(nonce) : buildStaticCsp();
+  const cspValue = SCALAR_PATHS.has(c.req.path) ? buildScalarCsp(nonce) : buildStaticCsp(nonce);
   c.res.headers.set('Content-Security-Policy', cspValue);
 
   for (const [key, value] of Object.entries(SHARED_HEADERS)) {

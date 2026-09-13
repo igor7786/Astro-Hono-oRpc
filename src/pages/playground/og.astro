@@ -16,22 +16,20 @@ const seo = {
 
 <Layout {...seo}>
   <div slot="main" class="mx-auto flex min-h-screen flex-col items-center justify-center gap-4">
-    {
-      cases.map(({ title, description, author, date }) => {
-        const params = new URLSearchParams();
+    {cases.map(({ title, description, author, date }) => {
+      const params = new URLSearchParams();
 
-        if (title) params.set('title', title);
-        if (description) params.set('description', description);
-        if (author) params.set('author', author);
-        if (date) params.set('date', date);
+      if (title) params.set('title', title);
+      if (description) params.set('description', description);
+      if (author) params.set('author', author);
+      if (date) params.set('date', date);
 
-        return (
-          <img
-            src={`${openApiBasePath}${ogPath}?${params.toString()}`}
-            style="width: 600px; border-radius: 8px;"
-          />
-        );
-      })
-    }
+      return (
+        <img
+          src={`${openApiBasePath}${ogPath}?${params.toString()}`}
+          style="width: 600px; border-radius: 8px;"
+        />
+      );
+    })}
   </div>
 </Layout>

@@ -12,7 +12,7 @@ import { type AppContract, appContract } from '@/server/contracts/all.contracts'
 
 const link = new OpenAPILink(appContract, {
   // <--- Added allRouters as 1st argument
-  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi`,
+  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi/v1`, // Adjust the URL to your OpenAPI endpoint
 
   fetch: async (url, init) => {
     return await fetch(url, {
@@ -35,16 +35,16 @@ const link = new OpenAPILink(appContract, {
 
       console.error(`[oRPC Client] ${error.code} - ${error.message}`);
 
-      if (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN') {
-        // Extract the destination string safely from our typed error payload
-        const data = error.data as { redirect?: boolean; url?: string };
+      // if (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN') {
+      //   // Extract the destination string safely from our typed error payload
+      //   const data = error.data as { redirect?: boolean; url?: string };
 
-        if (data?.redirect) {
-          const targetUrl = data.url?.startsWith('/') && !data.url.startsWith('//') ? data.url : '/';
-          console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
-          window.location.replace(targetUrl);
-        }
-      }
+      //   if (data?.redirect) {
+      //     const targetUrl = data.url?.startsWith('/') && !data.url.startsWith('//') ? data.url : '/';
+      //     console.warn(`Redirect intercepted! Navigating to: ${targetUrl}`);
+      //     window.location.replace(targetUrl);
+      //   }
+      // }
     }),
   ],
 });

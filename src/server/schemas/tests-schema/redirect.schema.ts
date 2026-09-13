@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const redirectSchema = z.object({
+export const redirectInputSchema = z.object({
   name: z
     .string()
     .trim()
@@ -8,8 +8,20 @@ export const redirectSchema = z.object({
     .max(200, { message: 'Name must be at most 200 characters long' }),
 });
 
-export type RedirectInput = z.infer<typeof redirectSchema>;
+export type RedirectInput = z.infer<typeof redirectInputSchema>;
 
-export const outputSchema = redirectSchema;
+// ✅ FIXED: Removed the invalid z.object wrapper around the union
+export const redirectOutputSchema = z.union([
+  z.object({
+    status: z.literal(200),
+    body: redirectInputSchema,
+  }),
+  z.object({
+    status: z.literal(307),
+    headers: z.object({
+      location: z.string(),
+    }),
+  }),
+]);
 
-export type RedirectOutput = z.infer<typeof outputSchema>;
+export type RedirectOutput = z.infer<typeof redirectOutputSchema>;

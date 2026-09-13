@@ -1,6 +1,6 @@
 // astro-csp-manifest.ts
 import type { AstroIntegration } from 'astro';
-import { eq } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -34,50 +34,56 @@ export default function cspManifestPlugin(): AstroIntegration {
         const scriptHashes = new Set<string>();
         const styleHashes = new Set<string>();
 
-        const scriptRegex = /<script(?![^>]*\bsrc\b)[^>]*>([\s\S]*?)<\/script>/gi;
-        const styleRegex = /<style(?![^>]*\bhref\b)[^>]*>([\s\S]*?)<\/style>/gi;
+        // Require src/href as an actual attribute (preceded by whitespace or
+        // a quote, followed by =) so `data-src-map`, `data-hydrate-src`, etc.
+        // on an otherwise-inline <script> don't get misread as "external"
+        // and silently skipped.
+        const scriptRegex = /<script(?![^>]*[\s"']src=)[^>]*>([\s\S]*?)<\/script>/gi;
+        // Note: <style> tags never carry an href attribute (that's <link>),
+        // so no exclusion lookahead is needed here.
+        const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 
         for (const file of htmlFiles) {
           const htmlContent = readFileSync(file, 'utf-8');
           let match;
 
           while ((match = scriptRegex.exec(htmlContent)) !== null) {
-            const rawContent = match[1]?.trim();
-            if (!rawContent) continue;
+            const rawContent = match[1];
+            // CSP hashes cover the exact text between tags — never trim what gets hashed
+            if (!rawContent || rawContent.trim() === '') continue;
             const hash = createHash('sha256').update(rawContent, 'utf-8').digest('base64');
             scriptHashes.add(`sha256-${hash}`);
           }
 
           while ((match = styleRegex.exec(htmlContent)) !== null) {
-            const rawContent = match[1]?.trim();
-            if (!rawContent) continue;
+            const rawContent = match[1];
+            if (!rawContent || rawContent.trim() === '') continue;
             const hash = createHash('sha256').update(rawContent, 'utf-8').digest('base64');
-            scriptHashes.add(`sha256-${hash}`);
+            styleHashes.add(`sha256-${hash}`);
           }
         }
-
-        // Clear-and-reinsert per format so removed scripts/styles don't
-        // linger as stale permitted hashes forever
-        await neonDb.delete(hashes).where(eq(hashes.format, 'script'));
-        await neonDb.delete(hashes).where(eq(hashes.format, 'style'));
 
         const now = new Date();
         const rows = [
           ...Array.from(scriptHashes).map((hash) => ({
-            id: hash,
+            id: `script:${hash}`,
             hash,
             format: 'script' as const,
             createdAt: now,
             updatedAt: now,
           })),
           ...Array.from(styleHashes).map((hash) => ({
-            id: hash,
+            id: `style:${hash}`,
             hash,
             format: 'style' as const,
             createdAt: now,
             updatedAt: now,
           })),
         ];
+
+        // Clear-and-reinsert per format so removed scripts/styles don't
+        // linger as stale permitted hashes forever.
+        await neonDb.delete(hashes).where(inArray(hashes.format, ['script', 'style']));
 
         if (rows.length > 0) {
           await neonDb.insert(hashes).values(rows);

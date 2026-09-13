@@ -15,8 +15,8 @@ export const IGNORED_EXACT = [
 // Pages that should always be treated as static (even if not dynamic)
 export const STATIC_FLAT = [
   './index.astro',
-  './404.astro', // Catches the current scan path format
-  './500.astro', // Catches the current scan path format
+  // './404.astro', // Catches the current scan path format
+  // './500.astro', // Catches the current scan path format
 ];
 
 /**
@@ -200,9 +200,10 @@ export async function discoverRoutes(
   return { ssrRoutes, staticRoutes, allRoutes };
 }
 
-export const openApiBasePath = '/api/openapi';
+export const openApiBasePath = '/api/openapi/v1';
 export const rpcBasePath = '/api/rpc';
-export const ogPath = allRouters.seo.ogRoute['~orpc'].route.path; // derived from router definition
+export const ogPath = allRouters.seo.og['~orpc'].route.path; // derived from router definition
+export const cspPath = allRouters.csp.cspReport['~orpc'].route.path; // derived from router definition
 
 export const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
 export const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');

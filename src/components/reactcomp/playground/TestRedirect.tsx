@@ -7,6 +7,7 @@ export default function TestRedirect() {
   const client = getQueryClient();
   const { data, isLoading, error } = useQuery(
     orpc.tests.redirectTest.queryOptions({
+      queryKey: ['test', { name: 'admin' }],
       input: { name: 'admin' },
       retry: false,
     }),
@@ -18,9 +19,15 @@ export default function TestRedirect() {
   }
 
   // If a completely different error occurs, handle it here
-  if (error && error.name !== 'REDIRECT_TO_HOME') {
+  if (error) {
+    if (error.message === 'MALFORMED_ORPC_ERROR_RESPONSE') {
+      return window.location.replace('/');
+    }
+
     return <div>An unrelated error occurred: {error.message}</div>;
   }
 
-  return <div>{data?.name}</div>;
+  if (data?.status === 200) {
+    return <div>{data.body.name}</div>;
+  }
 }
