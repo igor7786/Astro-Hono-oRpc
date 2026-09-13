@@ -36,6 +36,7 @@ function buildScalarCsp(nonce: string) {
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
+    `report-to ${openApiBasePath + cspPath}`,
     `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
