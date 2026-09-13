@@ -199,7 +199,10 @@ export function LoginPage() {
 
           <p className="text-sm text-center text-muted-foreground">
             Don't have an account?{' '}
-            <a href="/register" className="text-primary hover:underline underline-offset-4 font-medium">
+            <a
+              href="/auth/register"
+              className="text-primary hover:underline underline-offset-4 font-medium"
+            >
               Sign up
             </a>
           </p>

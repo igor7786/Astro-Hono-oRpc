@@ -6,7 +6,7 @@ export const testRedirect = base.tests.redirectTest.handler(async ({ input }) =>
     return {
       status: 307,
       headers: {
-        location: '/login',
+        location: '/auth/login',
       },
     };
   }

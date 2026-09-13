@@ -303,7 +303,10 @@ export function RegisterPage() {
 
           <p className="text-sm text-center text-muted-foreground">
             Already have an account?{' '}
-            <a href="/login" className="text-primary hover:underline underline-offset-4 font-medium">
+            <a
+              href="/auth/login"
+              className="text-primary hover:underline underline-offset-4 font-medium"
+            >
               Sign in
             </a>
           </p>
