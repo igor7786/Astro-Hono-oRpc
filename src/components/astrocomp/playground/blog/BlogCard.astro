@@ -17,7 +17,7 @@ const formattedDate = formatDate(date?.toISOString());
   <article class="border-border flex flex-col gap-3 border-b pb-10">
     {tags && (
       <div class="flex gap-2">
-        {tags.map((tag) => (
+        {tags.map((tag: string) => (
           <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
         ))}
       </div>
