@@ -23,7 +23,14 @@ const hex = /^[0-9a-f]+$/;
 //   aren't strings.
 // --------------------------------------------------------------------
 function decodeField(value: unknown): unknown {
-  return typeof value === 'string' ? decodeURIComponent(decode(value)) : value;
+  if (typeof value !== 'string') return value;
+
+  try {
+    return decodeURIComponent(decode(value));
+  } catch (error) {
+    if (error instanceof URIError) return value; // let the schema's own validation reject it
+    throw error; // re-throw anything unexpected (shouldn't happen here, but don't swallow silently)
+  }
 }
 
 // --------------------------------------------------------------------
