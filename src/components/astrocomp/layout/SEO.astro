@@ -68,6 +68,22 @@ const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
 ogUrl.searchParams.set('id', id);
 ogUrl.searchParams.set('format', 'png');
 const ogImageUrl = ogUrl.toString();
+
+// JSON-LD STRUCTURED DATA
+const data = {
+  '@context': 'https://schema.org',
+  '@type': type === 'article' ? 'Article' : 'WebSite',
+  '@id': siteUrl,
+  name: title,
+  url: siteUrl,
+  description,
+  ...(author && { author: { '@type': 'Person', name: author } }),
+  ...(date && { datePublished: date }),
+};
+
+// The only place this escaping logic needs to exist — every page
+// that renders JSON-LD goes through here, so nobody can forget it.
+const safeJson = JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 ---
 
 <!-- BASIC SEO -->
@@ -105,24 +121,4 @@ const ogImageUrl = ogUrl.toString();
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- JSON-LD STRUCTURED DATA -->
-<script
-  is:inline
-  type="application/ld+json"
-  set:html={JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': type === 'article' ? 'Article' : 'WebSite',
-    '@id': siteUrl,
-    name: title,
-    url: siteUrl,
-    description,
-    ...(author && {
-      author: {
-        '@type': 'Person',
-        name: author,
-      },
-    }),
-    ...(date && {
-      datePublished: date,
-    }),
-  })}
-></script>
+<script is:inline type="application/ld+json" set:html={safeJson}></script>
