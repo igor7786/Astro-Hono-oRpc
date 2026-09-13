@@ -20,6 +20,10 @@ export default function TestRedirect() {
 
   // If a completely different error occurs, handle it here
   if (error) {
+    if (error.message === 'MALFORMED_ORPC_ERROR_RESPONSE') {
+      return window.location.replace('/');
+    }
+
     return <div>An unrelated error occurred: {error.message}</div>;
   }
 

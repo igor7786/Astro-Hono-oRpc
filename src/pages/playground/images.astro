@@ -26,7 +26,8 @@ const seo = createSeo({
 <Layout {...seo}>
   # Image Test
   <div slot="main" class="mx-auto py-5 text-center text-2xl">
-    Astro Component<Image
+    Astro Component
+    <Image
       src={myImage}
       alt="My Image"
       width={1200}
@@ -38,8 +39,8 @@ const seo = createSeo({
       class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
     />
   </div>
-  <TestImage slot="main" client:load
-    ><Image
+  <TestImage slot="main" client:load>
+    <Image
       src={myImage}
       alt="My Image"
       width={1200}
@@ -49,10 +50,10 @@ const seo = createSeo({
       decoding="async"
       loading="lazy"
       class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
-    /></TestImage
-  >
-  <TestImage slot="main" client:load
-    ><Picture
+    />
+  </TestImage>
+  <TestImage slot="main" client:load>
+    <Picture
       src={myImage}
       alt="My Image"
       formats={['webp', 'avif', 'jpg', 'png']}
@@ -62,8 +63,8 @@ const seo = createSeo({
       decoding="async"
       loading="lazy"
       class="mx-auto my-4 h-auto w-1/2 rounded-lg shadow-lg"
-    /></TestImage
-  >
+    />
+  </TestImage>
   <ButtonSocialDemo
     slot="main"
     client:load

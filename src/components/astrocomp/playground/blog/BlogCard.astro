@@ -15,19 +15,15 @@ const formattedDate = formatDate(date?.toISOString());
 
 <a href={`/playground/blog/${id}`} class="group">
   <article class="border-border flex flex-col gap-3 border-b pb-10">
-    {
-      tags && (
-        <div class="flex gap-2">
-          {tags.map((tag) => (
-            <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
-          ))}
-        </div>
-      )
-    }
+    {tags && (
+      <div class="flex gap-2">
+        {tags.map((tag) => (
+          <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+        ))}
+      </div>
+    )}
 
-    <h2 class="font-heading group-hover:text-primary text-3xl font-bold transition-colors">
-      {title}
-    </h2>
+    <h2 class="font-heading group-hover:text-primary text-3xl font-bold transition-colors">{title}</h2>
 
     {description && <p class="text-muted-foreground text-lg">{description}</p>}
 

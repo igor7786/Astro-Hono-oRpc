@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-/**
- * 1. Input Schema
- * Renamed to clearly indicate it represents the incoming request payload.
- */
 export const redirectInputSchema = z.object({
   name: z
     .string()
@@ -14,25 +10,18 @@ export const redirectInputSchema = z.object({
 
 export type RedirectInput = z.infer<typeof redirectInputSchema>;
 
-/**
- * 2. Detailed Structure Variants
- * Explicitly named based on their HTTP roles and oRPC's detailed output format.
- */
-const successDetailedOutputSchema = z.object({
-  status: z.literal(200),
-  body: redirectInputSchema, // Reuses the input shape for the response body data
-});
-
-const redirectDetailedOutputSchema = z.object({
-  status: z.literal(301),
-  headers: z.object({
-    location: z.string(),
+// ✅ FIXED: Removed the invalid z.object wrapper around the union
+export const redirectOutputSchema = z.union([
+  z.object({
+    status: z.literal(200),
+    body: redirectInputSchema,
   }),
-});
-
-/**
- * 3. Final Combined Output Schema
- */
-export const redirectOutputSchema = z.union([successDetailedOutputSchema, redirectDetailedOutputSchema]);
+  z.object({
+    status: z.literal(307),
+    headers: z.object({
+      location: z.string(),
+    }),
+  }),
+]);
 
 export type RedirectOutput = z.infer<typeof redirectOutputSchema>;
