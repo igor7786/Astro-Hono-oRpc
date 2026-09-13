@@ -1,0 +1,5 @@
+---
+// src/pages/404.astro
+export const prerender = false;
+return Astro.rewrite('/error-page?code=404');
+---

@@ -15,8 +15,8 @@ export const IGNORED_EXACT = [
 // Pages that should always be treated as static (even if not dynamic)
 export const STATIC_FLAT = [
   './index.astro',
-  './404.astro', // Catches the current scan path format
-  './500.astro', // Catches the current scan path format
+  // './404.astro', // Catches the current scan path format
+  // './500.astro', // Catches the current scan path format
 ];
 
 /**

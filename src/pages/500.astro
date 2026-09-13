@@ -1,0 +1,5 @@
+---
+// src/pages/500.astro
+export const prerender = false;
+return Astro.rewrite('/error-page?code=500');
+---
