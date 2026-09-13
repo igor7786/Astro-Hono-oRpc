@@ -1,4 +1,3 @@
-import { envClient } from '@/lib/env/client.env';
 import { baseOc } from '@/server/contracts/oc.base';
 import {
   llmsHtmlOutputSchema,
@@ -7,11 +6,11 @@ import {
   outputOgSchema,
 } from '@/server/schemas/seo.og.html.txt';
 
-const pathPrefix = '/seo'; // ✅ added path prefix
+const pathPrefix = '/seo';
 export const og = baseOc
   .route({
     method: 'GET',
-    path: `${pathPrefix}/og${envClient.PUBLIC_API_VERSION}`, // ✅ added path
+    path: `${pathPrefix}/og`,
     summary: 'Generates og images',
     description: 'Og image',
     tags: ['SEO'],

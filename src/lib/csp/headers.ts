@@ -13,6 +13,7 @@ export const csp = [
   `script-src 'self' ${scriptHashes}`,
   `style-src ${styleHashes}`,
   `report-uri ${openApiBasePath + cspPath}`,
+  `report-to ${openApiBasePath + cspPath}`,
 ].join('; ');
 
 /**

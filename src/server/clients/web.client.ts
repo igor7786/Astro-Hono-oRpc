@@ -12,7 +12,7 @@ import { type AppContract, appContract } from '@/server/contracts/all.contracts'
 
 const link = new OpenAPILink(appContract, {
   // <--- Added allRouters as 1st argument
-  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi`,
+  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321'}/api/openapi/v1`, // Adjust the URL to your OpenAPI endpoint
 
   fetch: async (url, init) => {
     return await fetch(url, {

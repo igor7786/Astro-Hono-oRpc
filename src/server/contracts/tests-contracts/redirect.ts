@@ -1,4 +1,3 @@
-import { envClient } from '@/lib/env/client.env';
 import { baseOc } from '@/server/contracts/oc.base';
 import {
   redirectInputSchema,
@@ -8,7 +7,7 @@ import {
 export const redirectTest = baseOc
   .route({
     method: 'GET',
-    path: `/tests/redirects${envClient.PUBLIC_API_VERSION}`, // ✅ added path
+    path: '/tests/redirects',
     description: 'If name is admin, redirect to root(/) code 307, else return code 200',
     summary: 'Redirect route',
     tags: ['Tests'],

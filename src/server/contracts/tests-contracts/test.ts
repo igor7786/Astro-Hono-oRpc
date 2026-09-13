@@ -1,12 +1,11 @@
-import { envClient } from '@/lib/env/client.env';
 import { baseOc } from '@/server/contracts/oc.base';
 import { testSchema } from '@/server/schemas/tests-schema/test.schema';
 
-const pathPrefix = '/tests'; // ✅ added path prefix
+const pathPrefix = '/tests';
 export const test = baseOc
   .route({
     method: 'GET',
-    path: `${pathPrefix}/test${envClient.PUBLIC_API_VERSION}`, // ✅ added path
+    path: `${pathPrefix}/test`,
     summary: 'Dummy test',
     description: 'Returning query params , name and sets cookie dummy cookie abc123',
     tags: ['Tests'],
@@ -19,7 +18,7 @@ export const test = baseOc
 export const slowTest = baseOc
   .route({
     method: 'POST',
-    path: `${pathPrefix}/slow-test${envClient.PUBLIC_API_VERSION}`, // ✅ added path
+    path: `${pathPrefix}/slow-test`,
     description: 'Slow test route, sleeps for 6 seconds',
     summary: 'Slow test',
     tags: ['Tests'],

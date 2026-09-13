@@ -1,11 +1,13 @@
 // src/server/hono-middleware/scalar.ts
 import { Scalar } from '@scalar/hono-api-reference';
 
+import { openApiBasePath } from '@/lib/helpers/paths';
+
 const scalar = Scalar<{ Variables: { cspNonce: string } }>((c) => {
   const nonce = c.get('cspNonce');
   return {
     sources: [
-      { url: '/api/openapi/generate-schema', title: 'App API' },
+      { url: `${openApiBasePath}/generate-schema`, title: 'App API' },
       // { url: '/api/auth/open-api/generate-schema', title: 'Better Auth API' },
     ],
     nonce,

@@ -1,13 +1,12 @@
 import { eventIterator } from '@orpc/server';
 
-import { envClient } from '@/lib/env/client.env';
 import { baseOc } from '@/server/contracts/oc.base';
 import { testClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
 export const testClients = baseOc
   .route({
     method: 'GET',
-    path: `/tests/clients${envClient.PUBLIC_API_VERSION}`, // ✅ added path
+    path: '/tests/clients',
     description:
       'This route is used to test the clients SSE (SQLite, PostgreSQL, S3, Kafka, Redis ...) functionality as well as the server response. It is designed to ensure that the all clients can successfully communicate with the server and receive the expected data.',
     summary: 'Clients test SSE (SQlite, Postgres, Redis, .....)',

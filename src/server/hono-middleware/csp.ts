@@ -51,6 +51,7 @@ function buildStaticCsp(nonce: string) {
     "frame-ancestors 'none'",
     "base-uri 'none'",
     `report-uri ${openApiBasePath + cspPath}`,
+    `report-to ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 
