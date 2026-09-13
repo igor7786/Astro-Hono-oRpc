@@ -29,7 +29,7 @@ function buildScalarCsp(nonce: string) {
     // Scalar ships a fix — check https://github.com/scalar/scalar/issues for "unsafe-eval".
     `script-src 'self' 'nonce-${nonce}' 'unsafe-eval'`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
+    "img-src 'self' data: https: blob:",
     "connect-src 'self' https:",
     "font-src 'self' https:",
     'frame-src blob:',

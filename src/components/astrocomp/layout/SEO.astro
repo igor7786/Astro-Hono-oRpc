@@ -87,7 +87,7 @@ const ogImageUrl = ogUrl.toString();
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={siteUrl} />
-<Fragment set:html={`<meta property="og:image" content="${ogImageUrl}" />`} />
+<meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -100,7 +100,7 @@ const ogImageUrl = ogUrl.toString();
 <meta name="twitter:creator" content="@IGrimuta" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<Fragment set:html={`<meta name="twitter:image" content="${ogImageUrl}" />`} />
+<meta name="twitter:image" content={ogImageUrl} />
 <!-- SITEMAP -->
 <link rel="sitemap" href="/sitemap-index.xml" />
 
