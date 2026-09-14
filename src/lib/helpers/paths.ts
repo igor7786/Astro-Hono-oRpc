@@ -6,18 +6,10 @@ import { allRouters } from '@/server/routers/all.routers';
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
 
 // Specific files to ignore exactly (full path match)
-export const IGNORED_EXACT = [
-  '../pages/index.astro',
-  '../pages/404.astro', // Exclude 404 error page
-  '../pages/500.astro', // Exclude 500 error page
-];
+export const IGNORED_EXACT = ['./index.astro', './404.astro', './500.astro'];
 
 // Pages that should always be treated as static (even if not dynamic)
-export const STATIC_FLAT = [
-  './index.astro',
-  // './404.astro', // Catches the current scan path format
-  // './500.astro', // Catches the current scan path format
-];
+export const STATIC_FLAT = ['./index.astro'];
 
 /**
  * Determines whether a file path should be ignored.
