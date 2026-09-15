@@ -13,9 +13,9 @@ type CspVariables = {
 // Paths that render Scalar's interactive docs — need the nonce-based policy
 const SCALAR_PATHS = new Set(['/api/docs', '/api/rpc/orpc-docs']);
 
-const SHARED_HEADERS: Record<string, string> = {
+// Headers that only make sense on HTML responses
+const HTML_ONLY_HEADERS: Record<string, string> = {
   'Permissions-Policy': permissionsPolicy,
-  'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Frame-Options': 'DENY',
 };
@@ -36,7 +36,7 @@ function buildScalarCsp(nonce: string) {
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
-    `report-to ${openApiBasePath + cspPath}`,
+    `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
 
@@ -60,13 +60,16 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
 
   await next();
 
+  // Every response gets this — MIME-sniffing protection isn't HTML-specific.
+  c.res.headers.set('X-Content-Type-Options', 'nosniff');
+
   const contentType = c.res.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) return; // JSON, images, etc. — no CSP needed
 
   const cspValue = SCALAR_PATHS.has(c.req.path) ? buildScalarCsp(nonce) : buildStaticCsp(nonce);
   c.res.headers.set('Content-Security-Policy', cspValue);
 
-  for (const [key, value] of Object.entries(SHARED_HEADERS)) {
+  for (const [key, value] of Object.entries(HTML_ONLY_HEADERS)) {
     c.res.headers.set(key, value);
   }
 });

@@ -10,7 +10,7 @@ const corsMiddleware = cors({
 
     // ✅ If allowed, return the explicit origin string to pass CORS
     if (allowedOrigins.includes(cleanOrigin)) {
-      return origin;
+      return cleanOrigin;
     }
 
     // ❌ Explicitly return null to block the cross-site request

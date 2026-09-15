@@ -8,16 +8,17 @@ import type { Env } from '@/server/hono-middleware/env';
 import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
 import allowedMethods from '@/server/hono-middleware/methods';
-import options from '@/server/hono-middleware/options';
 import orpcMiddleware from '@/server/hono-middleware/orpc';
 import scalar from '@/server/hono-middleware/scalar';
 import trailingSlash from '@/server/hono-middleware/trailing.slash';
+import varyHardening from '@/server/hono-middleware/vary.hardening';
 
 // GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
 app.get('/', (c) => c.json({ status: 'ok' }));
 // CSP Headers
 app.use('*', csp);
+// Scalar docs
 app.get('/docs', scalar);
 // Trailing slash
 app.use('*', trailingSlash);
@@ -26,22 +27,20 @@ app.use('*', injectClients);
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', head);
 
-// Handle OPTIONS requests globally to ensure they are processed correctly by all handlers
-app.use('*', options);
+// Vary-header hardening: if a response already varies on Origin (set by CORS),
+// also vary on Accept so caches don't mix up JSON vs HTML responses for the same path
+app.use('*', varyHardening);
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 app.use('*', corsMiddleware);
 
 // ─── CSRF ──────────────────────────────────────────────────────────
-app.use(csrfMiddleware);
+app.use('*', csrfMiddleware);
 
 // ─── Pretty logger ──────────────────────────────────────────────────────────
-app.use(prettyLogger);
+app.use('*', prettyLogger);
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', orpcMiddleware);
-
-// ─── Scalar docs ─────────────────────────────────────────────────────────────
-// app.get('/docs', scalar);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', async (c) => c.json({ status: 'ok' }));
