@@ -5,6 +5,7 @@ import corsMiddleware from '@/server/hono-middleware/cors';
 import { csp } from '@/server/hono-middleware/csp';
 import { csrfMiddleware } from '@/server/hono-middleware/csrf';
 import type { Env } from '@/server/hono-middleware/env';
+import etagMiddleware from '@/server/hono-middleware/etag';
 import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
 import allowedMethods from '@/server/hono-middleware/methods';
@@ -39,6 +40,9 @@ app.use('*', csrfMiddleware);
 
 // ─── Pretty logger ──────────────────────────────────────────────────────────
 app.use('*', prettyLogger);
+// ─── ETag (HTTP caching / revalidation) ─────────────────────────────────────
+app.use('*', etagMiddleware);
+
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/*', orpcMiddleware);
 
