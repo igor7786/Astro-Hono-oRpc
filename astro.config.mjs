@@ -23,6 +23,7 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   site: 'https://fast-web-tech.co.uk/',
   // 🛡️ Add this global security layer to allow your production proxies
+  base: '/',
   security: {
     checkOrigin: true, // Keep it active for great safety
     allowedDomains: [
