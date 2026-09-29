@@ -95,11 +95,16 @@ bun run db:pg:studio
 │   ├── components/
 │   │   ├── astrocomp/              # Astro components
 │   │   └── reactcomp/              # Hydrated React islands and UI
+│   ├── data/                       # Astro content collections
+│   ├── content.config.ts           # Content collection config
 │   ├── layouts/                    # Astro layouts
 │   ├── pages/                      # Astro routes, auth pages, and playground pages
 │   ├── styles/                     # Global Tailwind CSS
 │   ├── lib/                        # Environment, database, clients, state, and helpers
 │   ├── plugins/                    # Astro startup and CSP integrations
+│   ├── env.d.ts                    # Astro type references
+│   ├── fetch.ts                    # Hono root: sessions, actions, pages, and the /api app
+│   ├── middleware.ts               # Astro middleware: security headers, CSP, error redirects
 │   └── server/
 │       ├── app.ts                  # Hono app mounted at /api
 │       ├── clients/                # Typed web client
@@ -174,7 +179,7 @@ The same procedures are available through the `/api/rpc` transport. Procedure ro
 
 `src/server/app.ts` applies middleware in this order:
 
-1. Base `/api` routing and CSP nonce setup
+1. Base `/api` routing, status route, and CSP nonce setup
 2. Scalar documentation route
 3. Trailing-slash normalization
 4. Infrastructure client injection
