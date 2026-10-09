@@ -20,7 +20,7 @@ interface Props {
   masked?: boolean;
 }
 
-const { accent, badgeLabel, title, items, masked } = Astro.props;
+const { accent, badgeLabel, title, items, masked } = Astro.props as Props;
 
 const accentStyles: Record<
   RouteAccent,
