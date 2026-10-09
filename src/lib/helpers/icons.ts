@@ -5,6 +5,12 @@ const adminRoutes = [
     label: 'Ionos-Admin',
     size: 28,
   },
+  {
+    icon: 'ui:3xui',
+    route: 'https://3xui.fast-web-tech.co.uk/',
+    label: '3xui-Admin',
+    size: 32,
+  },
   { icon: 'selfhst:arcane', route: 'https://arcane.fast-web-tech.co.uk/', label: 'Arcane', size: 24 },
   { icon: 'logos:nginx', route: 'https://npm.fast-web-tech.co.uk/', label: 'Npm Admin', size: 24 },
   {
