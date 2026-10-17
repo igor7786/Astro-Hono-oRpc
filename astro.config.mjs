@@ -87,7 +87,7 @@ export default defineConfig({
       name: 'Playfair Display',
       cssVariable: '--font-heading',
       fallbacks: ['Georgia', 'ui-serif', 'serif'],
-      weights: ['100 900'],
+      weights: ['400 900'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
     },
@@ -99,7 +99,7 @@ export default defineConfig({
       name: 'JetBrains Mono',
       cssVariable: '--font-mono',
       fallbacks: ['ui-monospace', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-      weights: ['100 900'],
+      weights: ['100 800'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
     },
@@ -117,7 +117,7 @@ export default defineConfig({
   integrations: [
     react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
-    // serverStartup(),
+    serverStartup(),
     cspManifestPlugin(),
     // boneyardPlugin({ /* plugin options */ }),
     // sitemap integration
