@@ -1,9 +1,10 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import { envServer } from '@/lib/env/server.env';
 import { ErrorCard } from '@rcomp/playground/ErrorPage';
 
-import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import { ErrorCodeSchema, errorContent } from '@/lib/shared/schemas/errors/page.errors';
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 
 export const prerender = false;
 
@@ -26,8 +27,9 @@ const seo = createSeo({
   type: 'website',
 });
 const requestId = Astro.request.headers.get('x-request-id') ?? 'unavailable';
+const href = envServer.PRODUCTION === 'true' ? envServer.PUBLIC_URL : '/';
 ---
 
 <Layout {...seo}>
-  <ErrorCard slot="main" {code} {title} {message} {requestId} {isServerError} client:load />
+  <ErrorCard slot="main" {href} {code} {title} {message} {requestId} {isServerError} client:load />
 </Layout>

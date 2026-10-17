@@ -6,7 +6,7 @@ import { Separator } from '@rcomp/ui/separator';
 
 import type { ErrorCardProps } from '@/lib/shared/schemas/errors/page.errors';
 
-export function ErrorCard({ code, title, message, requestId, isServerError }: ErrorCardProps) {
+export function ErrorCard({ href, code, title, message, requestId, isServerError }: ErrorCardProps) {
   const accentText = isServerError ? 'text-error-server' : 'text-error-client';
   const accentBg = isServerError ? 'bg-error-server' : 'bg-error-client';
   const accentBorder = isServerError ? 'border-error-server-dim' : 'border-error-client-dim';
@@ -27,29 +27,14 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
       />
 
       <section className="relative w-full max-w-2xl" aria-labelledby="error-title">
-        <Card
-          className="
-    bg-panel/90
-    overflow-hidden
-    rounded-2xl
-    border
-    border-border
-    py-0
-    shadow-2xl
-    shadow-black/20
-    backdrop-blur-xl
-    transition-colors
-    duration-200
-    hover:border-primary
-  "
-        >
+        <Card className="bg-panel/90 border-border hover:border-primary overflow-hidden rounded-2xl border py-0 shadow-2xl shadow-black/20 backdrop-blur-xl transition-colors duration-200">
           <CardHeader className="items-center gap-0 border-b border-white/10 px-5 py-3">
             <div className="flex w-full flex-row items-center justify-between">
               {/* Left Corner */}
               <div className="flex items-center gap-2">
                 <span
                   className={cn(
-                    'h-2.5 w-2.5 absolute top-4 left-1.75 size-2 animate-pulse rounded-full',
+                    'absolute top-4 left-1.75 size-2 h-2.5 w-2.5 animate-pulse rounded-full',
                     accentBg
                   )}
                 />
@@ -57,7 +42,7 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
               </div>
 
               {/* Right Corner */}
-              <span className="text-green-600 font-mono text-xs">HTTP/3</span>
+              <span className="font-mono text-xs text-green-600">HTTP/3</span>
             </div>
           </CardHeader>
 
@@ -81,7 +66,7 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
               </Badge>
             </div>
 
-            <Separator className={cn('mb-8 bg-transparent border-t border-dashed', accentBorder)} />
+            <Separator className={cn('mb-8 border-t border-dashed bg-transparent', accentBorder)} />
 
             {/* Message */}
             <div className="max-w-xl">
@@ -113,8 +98,8 @@ export function ErrorCard({ code, title, message, requestId, isServerError }: Er
           <CardFooter className="flex-col items-stretch gap-3 border-t border-white/10 px-6 py-6 sm:flex-row sm:px-10">
             <Button
               nativeButton={false}
-              render={<a href="/" className="inline-flex items-center justify-center gap-2" />}
-              className="bg-amber-500 hover:bg-amber-600 text-background hover:opacity-90  transition-all"
+              render={<a href={href} className="inline-flex items-center justify-center gap-2" />}
+              className="text-background bg-amber-500 transition-all hover:bg-amber-600 hover:opacity-90"
             >
               <span
                 aria-hidden="true"
