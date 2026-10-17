@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.6",
   "engines": {
-    "bun": "^1.4.0"
+    "bun": "^1.4.3"
   },
-  "packageManager": "bun@1.4.2",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -16,8 +16,8 @@
     "bun:preview": "HOST=0.0.0.0 PORT=4321 bun --env-file=.env --bun run ./dist/server/entry.mjs",
     "check:astro": "prettier --check \"./**/*.astro\"",
     "check:lint": "vp lint --fix",
-    "ts:check": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
-    "check": "bun run check:lint && bun run ts:check && bun run check:astro",
+    "check:ts": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
+    "check": "bun run check:lint && bun run check:ts && bun run check:astro",
     "format:vite+": "vp fmt . --write",
     "format:astro": "prettier --write \"src/**/*.astro\"",
 
