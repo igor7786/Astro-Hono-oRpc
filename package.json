@@ -16,8 +16,8 @@
     "bun:preview": "HOST=0.0.0.0 PORT=4321 bun --env-file=.env --bun run ./dist/server/entry.mjs",
     "check:astro": "prettier --check \"./**/*.astro\"",
     "check:lint": "vp lint --fix",
-    "check:ts": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
-    "check": "bun run check:lint && bun run check:ts && bun run check:astro",
+    "ts:check": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
+    "check": "bun run check:lint && bun run ts:check && bun run check:astro",
     "format:vite+": "vp fmt . --write",
     "format:astro": "prettier --write \"src/**/*.astro\"",
 
@@ -52,7 +52,7 @@
   },
   "lint-staged": {
   "*.astro": ["bunx prettier --write"],
-  "*.{ts,tsx,js,jsx,json,css,scss,md,html,mjs}": ["bunx vp fmt"]
+  "*.{ts,tsx,js,jsx,css,scss,md,html,mjs}": ["bunx vp fmt"]
   },
   "dependencies": {
     "@astrojs/react": "7.1.0",
