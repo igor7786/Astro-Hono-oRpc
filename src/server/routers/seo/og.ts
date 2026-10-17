@@ -18,7 +18,7 @@ export const ogRoute = base.use(isUnKeysErrors).seo.og.handler(async ({ input, c
   let params: Record<string, string> | OgImage | null = null;
   try {
     [params] = (await neonDb.select().from(ogImages).where(eq(ogImages.id, input.id)).limit(1)) ?? null;
-  } catch (error) {
+  } catch {
     params = null;
     throw errors.INTERNAL_SERVER_ERROR({ message: 'Neon unavailable 📛' });
   }

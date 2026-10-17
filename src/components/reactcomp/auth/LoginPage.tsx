@@ -1,9 +1,9 @@
+import { useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import { useState } from 'react';
 
 import { Button } from '@/components/reactcomp/ui/button';
 import {
@@ -60,7 +60,7 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted/30 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-heading">Welcome Back</CardTitle>
+          <CardTitle className="font-heading text-2xl">Welcome Back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>
@@ -144,7 +144,7 @@ export function LoginPage() {
                     </div>
                     <a
                       href="/forgot-password"
-                      className="text-sm text-primary hover:underline underline-offset-4"
+                      className="text-sm text-primary underline-offset-4 hover:underline"
                     >
                       Forgot password?
                     </a>
@@ -162,12 +162,12 @@ export function LoginPage() {
         <CardFooter className="flex flex-col gap-4">
           <div className="relative w-full">
             <Separator />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-sm text-muted-foreground">
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-sm text-muted-foreground">
               or
             </span>
           </div>
 
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex w-full flex-col gap-2">
             <Button variant="outline" className="w-full" disabled={isSubmitting}>
               <svg className="size-4" viewBox="0 0 24 24">
                 <path
@@ -197,11 +197,11 @@ export function LoginPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
             <a
               href="/auth/register"
-              className="text-primary hover:underline underline-offset-4 font-medium"
+              className="font-medium text-primary underline-offset-4 hover:underline"
             >
               Sign up
             </a>

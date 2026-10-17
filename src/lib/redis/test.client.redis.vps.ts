@@ -17,7 +17,7 @@ try {
   console.error('❌ Redis error ❌:', err?.message);
 } finally {
   try {
-    redisVps.quit();
+    await redisVps.quit();
   } catch (quitErr: any) {
     console.error('❌ Redis quit error ❌:', quitErr?.message);
   } finally {

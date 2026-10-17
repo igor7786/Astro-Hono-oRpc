@@ -1,9 +1,9 @@
-import { MessageSquare } from 'lucide-react';
-import { toast } from 'sonner';
-
 import { useEffect, useState } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { MessageSquare } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback } from '@rcomp/ui/avatar';
 import { Button } from '@rcomp/ui/button';
@@ -63,7 +63,7 @@ export default function CommentSection({ postId }: Props) {
         return { id: Date.now().toString(), ...newComment, date: 'Just now' };
       },
       onSuccess: () => {
-        client.invalidateQueries({ queryKey: ['comments', postId] });
+        void client.invalidateQueries({ queryKey: ['comments', postId] });
         setComment('');
         setAuthor('');
         toast.success('Comment posted!');
@@ -91,7 +91,7 @@ export default function CommentSection({ postId }: Props) {
       </div>
 
       {/* comment list */}
-      {isLoading && <div className="text-muted-foreground text-sm">Loading comments...</div>}
+      {isLoading && <div className="text-sm text-muted-foreground">Loading comments...</div>}
 
       {comments?.map((c) => (
         <div key={c.id} className="flex flex-col gap-3">
@@ -101,7 +101,7 @@ export default function CommentSection({ postId }: Props) {
             </Avatar>
             <div className="flex flex-col">
               <span className="text-sm font-semibold">{c.author}</span>
-              <span className="text-muted-foreground text-xs">{c.date}</span>
+              <span className="text-xs text-muted-foreground">{c.date}</span>
             </div>
           </div>
           <p className="text-sm leading-relaxed">{c.content}</p>
@@ -110,14 +110,14 @@ export default function CommentSection({ postId }: Props) {
       ))}
 
       {/* comment form */}
-      <div className="border-border flex flex-col gap-4 rounded-lg border p-6">
+      <div className="flex flex-col gap-4 rounded-lg border border-border p-6">
         <h4 className="font-semibold">Leave a comment</h4>
         <input
           type="text"
           placeholder="Your name"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          className="bg-background border-border focus:ring-ring rounded-md border px-3 py-2 text-sm outline-none focus:ring-2"
+          className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
         />
         <Textarea
           placeholder="Write your comment..."

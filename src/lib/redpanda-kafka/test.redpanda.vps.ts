@@ -68,7 +68,7 @@ async function safeCreateTopics() {
  * =========================
  */
 
-async function bootstrapKafka() {
+async function _bootstrapKafka() {
   try {
     console.log('🚀 Bootstrapping Kafka...');
 
@@ -138,7 +138,7 @@ export async function shutdownKafkaClients() {
   console.log('🛑 Shutting down Kafka clients...');
 
   try {
-    producer?.close(true);
+    await producer?.close(true);
   } catch (err) {
     console.error('❌ Error closing producer:', err);
   } finally {

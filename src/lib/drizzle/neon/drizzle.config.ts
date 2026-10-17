@@ -1,7 +1,7 @@
+import { join } from 'node:path';
+
 // src/lib/drizzle/pg/drizzle.config.ts
 import { defineConfig } from 'drizzle-kit';
-
-import { join } from 'node:path';
 
 import { envServer } from '@/lib/env/server.env';
 

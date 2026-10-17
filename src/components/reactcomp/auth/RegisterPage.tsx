@@ -1,9 +1,9 @@
+import { useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import { useState } from 'react';
 
 import { Button } from '@/components/reactcomp/ui/button';
 import {
@@ -73,7 +73,7 @@ export function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted/30 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-heading">Create Account</CardTitle>
+          <CardTitle className="font-heading text-2xl">Create Account</CardTitle>
           <CardDescription>Join us today and get started</CardDescription>
         </CardHeader>
         <CardContent>
@@ -161,7 +161,7 @@ export function RegisterPage() {
                     </InputGroup>
                     {passwordValue && (
                       <div className="flex items-center gap-2">
-                        <div className="flex gap-1 flex-1">
+                        <div className="flex flex-1 gap-1">
                           {[1, 2, 3, 4, 5, 6].map((level) => (
                             <div
                               key={level}
@@ -239,13 +239,13 @@ export function RegisterPage() {
                         disabled={isSubmitting}
                       />
                       <div className="flex flex-col gap-1">
-                        <FieldLabel htmlFor="acceptTerms" className="text-sm font-normal leading-tight">
+                        <FieldLabel htmlFor="acceptTerms" className="text-sm leading-tight font-normal">
                           I agree to the{' '}
-                          <a href="/terms" className="text-primary hover:underline underline-offset-4">
+                          <a href="/terms" className="text-primary underline-offset-4 hover:underline">
                             Terms of Service
                           </a>{' '}
                           and{' '}
-                          <a href="/privacy" className="text-primary hover:underline underline-offset-4">
+                          <a href="/privacy" className="text-primary underline-offset-4 hover:underline">
                             Privacy Policy
                           </a>
                         </FieldLabel>
@@ -266,12 +266,12 @@ export function RegisterPage() {
         <CardFooter className="flex flex-col gap-4">
           <div className="relative w-full">
             <Separator />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-sm text-muted-foreground">
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-sm text-muted-foreground">
               or
             </span>
           </div>
 
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex w-full flex-col gap-2">
             <Button variant="outline" className="w-full" disabled={isSubmitting}>
               <svg className="size-4" viewBox="0 0 24 24">
                 <path
@@ -301,11 +301,11 @@ export function RegisterPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <a
               href="/auth/login"
-              className="text-primary hover:underline underline-offset-4 font-medium"
+              className="font-medium text-primary underline-offset-4 hover:underline"
             >
               Sign in
             </a>

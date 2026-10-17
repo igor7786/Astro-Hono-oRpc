@@ -1,17 +1,19 @@
+import http from 'node:http';
+import https from 'node:https';
+
 import { S3Client } from '@aws-sdk/client-s3';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-
-import http from 'http';
-import https from 'https';
 
 import { envServer } from '@/lib/env/server.env';
 
 async function getRustfsClient() {
   const isProd = envServer.PRODUCTION !== 'false';
 
-  isProd
-    ? console.log('✅ [RustFS] Running in production mode, connecting without TLS...')
-    : console.log('⚠️ [RustFS] Running in development mode, connecting to remote VPS with mTLS...');
+  const message = isProd
+    ? '✅ [RustFS] Running in production mode, connecting without TLS...'
+    : '⚠️ [RustFS] Running in development mode, connecting to remote VPS with mTLS...';
+
+  console.log(message);
   const endpoint = isProd ? envServer.PROD_RUSTFS_ENDPOINT : envServer.VPS_RUSTFS_ENDPOINT;
   const agent = isProd
     ? {

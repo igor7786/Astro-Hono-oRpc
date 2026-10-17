@@ -1,9 +1,10 @@
 import { createRouterClient, onError, ORPCError } from '@orpc/server';
-import type { RouterClient } from '@orpc/server';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
 import type { AppRouter } from '@/server/routers/all.routers';
 import { allRouters } from '@/server/routers/all.routers';
+
+import type { RouterClient } from '@orpc/server';
 
 export const serverClient: RouterClient<AppRouter> = createRouterClient(allRouters, {
   interceptors: [

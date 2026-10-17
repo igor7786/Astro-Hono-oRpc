@@ -12,9 +12,7 @@ const head = createMiddleware(async (c, next) => {
     signal: c.req.raw.signal, // ✅ pass signal for abort support
   });
   const getResponse = await app.fetch(getRequest, c.env);
-  return c.body(null, getResponse.status as any, {
-    ...Object.fromEntries(getResponse.headers),
-  });
+  return c.body(null, getResponse.status as any, Object.fromEntries(getResponse.headers));
 });
 
 export default head;

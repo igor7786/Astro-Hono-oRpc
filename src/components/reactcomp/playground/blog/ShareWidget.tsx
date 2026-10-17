@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react';
+
 import { Check, createLucideIcon, Link, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-
-import { useEffect, useState } from 'react';
 
 import {
   DropdownMenu,
@@ -50,7 +50,7 @@ export default function ShareWidget({ url, title = '' }: Props) {
   return (
     <DropdownMenu>
       {/* ✅ no Button wrapper — trigger renders its own button */}
-      <DropdownMenuTrigger className="group/button border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex shrink-0 items-center justify-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium shadow-xs transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
+      <DropdownMenuTrigger className="group/button inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
         <Share2 className="h-4 w-4" />
         <span>Share</span>
       </DropdownMenuTrigger>

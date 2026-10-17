@@ -31,20 +31,20 @@ export default function SlowRequest() {
   };
 
   // Start/restart the request when clicking Fetch.
-  const handleFetch = () => {
+  const handleFetch = async () => {
     setCancelled(false);
     setStarted(true);
 
     // If there is already a cached result, force a new request.
-    client.invalidateQueries({
+    await client.invalidateQueries({
       queryKey: ['slow-test'],
     });
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     setCancelled(true);
 
-    client.cancelQueries({
+    await client.cancelQueries({
       queryKey: ['slow-test'],
     });
   };

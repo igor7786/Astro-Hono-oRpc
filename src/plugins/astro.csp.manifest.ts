@@ -1,12 +1,13 @@
-// astro-csp-manifest.ts
-import type { AstroIntegration } from 'astro';
-import { inArray } from 'drizzle-orm';
-
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
+import { inArray } from 'drizzle-orm';
+
 import { hashes } from '@/lib/drizzle/neon/schemas';
+
+// astro-csp-manifest.ts
+import type { AstroIntegration } from 'astro';
 
 function getHtmlFiles(dir: string, fileList: string[] = []): string[] {
   const files = readdirSync(dir);

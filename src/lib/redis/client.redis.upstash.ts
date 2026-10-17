@@ -17,6 +17,7 @@ redisUpstash.on('connect', () => console.log('✅ Redis connected'));
 redisUpstash.on('error', (err) => console.error('❌ Redis error:', err.message));
 
 // ✅ explicit test — call this once at app startup, not on every import
+// oxlint-disable-next-line typescript/no-floating-promises
 (async () => {
   try {
     await redisUpstash.set('ping', 'pong');

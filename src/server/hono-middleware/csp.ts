@@ -1,7 +1,7 @@
+import { randomBytes } from 'node:crypto';
+
 // src/server/hono-middleware/csp.ts
 import { createMiddleware } from 'hono/factory';
-
-import { randomBytes } from 'node:crypto';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';

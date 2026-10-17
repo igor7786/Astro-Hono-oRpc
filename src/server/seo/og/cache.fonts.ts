@@ -1,6 +1,6 @@
-import type { SatoriOptions } from 'satori';
+import { join } from 'node:path';
 
-import { join } from 'path';
+import type { SatoriOptions } from 'satori';
 
 const FONTS_DIR = join(process.cwd(), 'public/fonts');
 

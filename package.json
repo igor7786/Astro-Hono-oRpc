@@ -14,8 +14,14 @@
     "bun:dev": "bun --env-file=.env --bun astro dev --host",
     "bun:build": "bun --env-file=.env --bun astro build && bun --env-file=.env --bun astro build",
     "bun:preview": "HOST=0.0.0.0 PORT=4321 bun --env-file=.env --bun run ./dist/server/entry.mjs",
-    "ts:check": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
-    "format": "bunx prettier --write \"./**/*.{ts,tsx,js,jsx,json,css,scss,md,astro,html,mjs}\"",
+    "check:astro": "prettier --check \"./**/*.astro\"",
+    "check:lint": "vp lint --fix",
+    "check:ts": "astro check && bunx tsc --noEmit --incremental --tsBuildInfoFile ./node_modules/.cache/tsbuildinfo",
+    "check": "bun run check:lint && bun run check:ts && bun run check:astro",
+    "format:vite+": "vp fmt . --write",
+    "format:astro": "prettier --write \"src/**/*.astro\"",
+
+    "format": "bun run format:vite+ && bun run format:astro",
     "redis:vps:test": "bun run --bun ./src/lib/redis/test.client.redis.vps.ts",
     "rustfs:vps:test": "bun run --bun ./src/lib/s3/test.client.rustfs.vps.ts",
     "neon:test": "bun run --bun ./src/lib/drizzle/neon/test.client.neon.db.ts",
@@ -45,9 +51,8 @@
     "tinybird:preview": "tinybird preview"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,astro,json,css,scss,md,html}": [
-      "bunx prettier --write"
-    ]
+  "*.astro": ["bunx prettier --write"],
+  "*.{ts,tsx,js,jsx,json,css,scss,md,html,mjs}": ["bunx vp fmt"]
   },
   "dependencies": {
     "@astrojs/react": "7.1.0",
@@ -133,11 +138,13 @@
     "husky": "^9.1.7",
     "knip": "^6.41.0",
     "lint-staged": "^17.6.0",
+    "oxlint-tailwindcss": "^1.16.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
     "prettier-plugin-classnames": "^0.10.1",
     "prettier-plugin-merge": "^0.10.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite-plus": "^1.3.0"
   }
 }

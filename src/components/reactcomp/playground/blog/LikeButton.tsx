@@ -1,8 +1,8 @@
-import { Heart } from 'lucide-react';
-
 import { useEffect, useState } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { Heart } from 'lucide-react';
 
 import { Button } from '@rcomp/ui/button';
 
@@ -40,7 +40,7 @@ export default function LikeButton({ postId }: Props) {
         setOptimisticLikes((data?.likes ?? 0) + 1);
       },
       onSuccess: () => {
-        client.invalidateQueries({ queryKey: ['likes', postId] });
+        void client.invalidateQueries({ queryKey: ['likes', postId] });
         setOptimisticLikes(null);
       },
       onError: () => {

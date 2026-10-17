@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react';
+
 import { useStore } from '@nanostores/react';
 import { toast } from 'sonner';
-
-import { useEffect, useState } from 'react';
 
 import { $isOnline } from '@/lib/stores/online';
 
@@ -49,8 +49,7 @@ export default function ChatIndicator() {
   }
 
   return (
-    <div
-      role="status"
+    <output
       aria-live="polite"
       aria-label={isOnline ? 'Online' : 'Disconnected'}
       className={`group inline-flex items-center gap-3 rounded-full border px-3 py-1.5 shadow-sm backdrop-blur-md transition-all duration-300 ease-out ${
@@ -89,6 +88,6 @@ export default function ChatIndicator() {
       <span className="text-xs text-gray-500 opacity-0 transition-all duration-200 group-hover:opacity-100">
         {isOnline ? '✓ Ready' : '✗ Reconnecting…'}
       </span>
-    </div>
+    </output>
   );
 }

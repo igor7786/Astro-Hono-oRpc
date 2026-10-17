@@ -6,6 +6,7 @@ import { allRouters } from '@/server/routers/all.routers';
 const rpcHandler = new RPCHandler(allRouters, {
   interceptors: [
     // ✅ HTTP level — first line of defense
+    // oxlint-disable-next-line typescript/unbound-method
     async ({ request, next }) => {
       const signal = request?.signal;
 

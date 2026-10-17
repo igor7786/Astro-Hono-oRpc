@@ -7,9 +7,11 @@ import { envServer } from '@/lib/env/server.env';
 const { Pool } = pg;
 
 async function createDb() {
-  envServer.PRODUCTION === 'false'
-    ? console.log('⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting via pgbouncer mTLS...')
-    : console.log('✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)... mTLS');
+  console.log(
+    envServer.PRODUCTION === 'false'
+      ? '⚠️ [POSTGRESQL -> DRIZZLE] Dev mode — connecting via pgbouncer mTLS...'
+      : '✅ [POSTGRESQL -> DRIZZLE] Prod mode — connecting via pgbouncer (internal)... mTLS'
+  );
 
   const pool = new Pool({
     host: envServer.PRODUCTION === 'false' ? envServer.VPS_PGB_HOST : envServer.PROD_PGB_HOST,

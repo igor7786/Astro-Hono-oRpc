@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
 // @ts-check
@@ -6,11 +10,6 @@ import tailwindcss from '@tailwindcss/vite';
 import bun from '@wyattjoh/astro-bun-adapter';
 import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
-
-import fs from 'fs';
-import path from 'path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 
 import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
 import serverStartup from './src/plugins/clients';

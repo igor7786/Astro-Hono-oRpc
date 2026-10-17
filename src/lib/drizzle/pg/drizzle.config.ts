@@ -1,8 +1,8 @@
-// src/lib/drizzle/pg/drizzle.config.ts
-import { defineConfig } from 'drizzle-kit';
-
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+// src/lib/drizzle/pg/drizzle.config.ts
+import { defineConfig } from 'drizzle-kit';
 
 const ca = readFileSync(process.env.VPS_CA_CERT!, 'utf-8');
 const cert = readFileSync(process.env.VPS_CLIENT_CERT!, 'utf-8');
