@@ -4,8 +4,8 @@ export default {
     'prettier-plugin-astro',
     'prettier-plugin-classnames',
     'prettier-plugin-merge',
-    'prettier-plugin-tailwindcss',
     '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss',
   ],
 
   printWidth: 105,

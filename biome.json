@@ -19,6 +19,15 @@
     "enabled": true,
     "rules": {
       "preset": "recommended",
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "attributes": ["class", "className"]
+          }
+        }
+      },
       "a11y": {
         "noSvgWithoutTitle": "off"
       },

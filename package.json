@@ -20,7 +20,6 @@
     "check": "bun run check:lint && bun run check:ts && bun run check:astro",
     "format:vite+": "vp fmt . --write",
     "format:astro": "prettier --write \"src/**/*.astro\"",
-
     "format": "bun run format:vite+ && bun run format:astro",
     "redis:vps:test": "bun run --bun ./src/lib/redis/test.client.redis.vps.ts",
     "rustfs:vps:test": "bun run --bun ./src/lib/s3/test.client.rustfs.vps.ts",
@@ -51,8 +50,8 @@
     "tinybird:preview": "tinybird preview"
   },
   "lint-staged": {
-  "*.astro": ["bunx prettier --write"],
-  "*.{ts,tsx,js,jsx,css,scss,md,html,mjs}": ["bunx vp fmt"]
+    "*.astro": ["bunx prettier --write"],
+    "*.{ts,tsx,js,jsx,css,scss,md,html,mjs}": ["bunx vp fmt"]
   },
   "dependencies": {
     "@astrojs/react": "7.1.0",
@@ -143,7 +142,7 @@
     "prettier-plugin-astro": "^1.1.1",
     "prettier-plugin-classnames": "^0.10.1",
     "prettier-plugin-merge": "^0.10.0",
-    "prettier-plugin-tailwindcss": "^0.8.0",
+    "prettier-plugin-tailwindcss": "0.0.0-insiders.5b27f94",
     "typescript": "^6.0.3",
     "vite-plus": "^1.3.0"
   }
