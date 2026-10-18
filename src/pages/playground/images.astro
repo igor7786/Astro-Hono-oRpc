@@ -1,13 +1,13 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import { Image, Picture, getImage } from 'astro:assets';
-import myImage from '@/assets/12.jpg';
+import { getImage, Image, Picture } from 'astro:assets';
 import { TestImage } from '@rcomp/playground/TestImage';
-import googleIcon from '@/assets/google-icon.webp';
-import twitterIcon from '@/assets/twitter-icon.webp';
+import ButtonSocialDemo from '@rcomp/shadcn-studio/ButtonSocial';
+import myImage from '@/assets/12.jpg';
 import facebookIcon from '@/assets/facebook-icon.webp';
 import githubIcon from '@/assets/github-icon.webp';
-import ButtonSocialDemo from '@rcomp/shadcn-studio/ButtonSocial';
+import googleIcon from '@/assets/google-icon.webp';
+import twitterIcon from '@/assets/twitter-icon.webp';
+import Layout from '@/layouts/Layout.astro';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 
 const google = await getImage({ src: googleIcon, width: 20, height: 20, format: 'webp' });

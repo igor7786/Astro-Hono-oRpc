@@ -1,13 +1,13 @@
 ---
 export const prerender = true;
 
-import Layout from '@/layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import CommentSection from '@rcomp/playground/blog/CommentSection';
 import LikeButton from '@rcomp/playground/blog/LikeButton';
 import ShareWidget from '@rcomp/playground/blog/ShareWidget';
-import CommentSection from '@rcomp/playground/blog/CommentSection';
-import { getCollection, render } from 'astro:content';
-import { formatDate, createSeo } from '@/lib/shared/schemas/seo/seo.schema';
+import Layout from '@/layouts/Layout.astro';
 import { getReadingTime } from '@/lib/helpers/reading-time';
+import { createSeo, formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);

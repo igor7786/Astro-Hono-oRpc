@@ -1,13 +1,16 @@
 ---
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
-import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import Layout from '@/layouts/Layout.astro';
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import { serverClient } from '@/server/clients/server.client';
+
 const inputData = {
   name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
 };
-import cardImage from '@/assets/card.webp';
+
 import { getImage } from 'astro:assets';
+import cardImage from '@/assets/card.webp';
+
 const optimizedImage = await getImage({ src: cardImage, format: 'avif' });
 let data: { name: string } | null = null;
 

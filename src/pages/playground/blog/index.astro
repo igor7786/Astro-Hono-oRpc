@@ -1,9 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
+import BlogCard from '@acomp/playground/blog/BlogCard.astro';
 import Layout from '@/layouts/Layout.astro';
 import { getReadingTime } from '@/lib/helpers/reading-time';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
-import BlogCard from '@acomp/playground/blog/BlogCard.astro';
-import { getCollection } from 'astro:content';
 
 export const prerender = true;
 export async function getStaticPaths() {
