@@ -15,7 +15,7 @@ const adminRoutes = [
   { icon: 'logos:nginx', route: 'https://npm.fast-web-tech.co.uk/', label: 'Npm Admin', size: 24 },
   {
     icon: 'selfhst:crowdsec',
-    route: 'https://www.crowdsec.net/',
+    route: 'https://crowdsec.fast-web-tech.co.uk/',
     label: 'Crowdsec-Admin',
     size: 24,
   },
