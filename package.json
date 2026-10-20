@@ -125,6 +125,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@biomejs/biome": "^2.5.15",
     "@libsql/client": "^0.18.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query-devtools": "^5.104.3",
