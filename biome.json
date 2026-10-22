@@ -1,36 +1,41 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": ["**/*.astro"],
+    "includes": ["src/**/*.astro"],
     "ignoreUnknown": true
   },
-  "formatter": {
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 100,
-    "formatWithErrors": true
-  },
+  "formatter": { "enabled": false },
   "assist": {
     "actions": {
-      "source": { "organizeImports": "on" }
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":NODE:",
+              "bun",
+              ":BLANK_LINE:",
+              ["astro:*", "astro:*/**"],
+              ["react", "react-dom"],
+              "@tanstack/**",
+              [":PACKAGE:", "!@acomp/**", "!@rcomp/**"],
+              ":BLANK_LINE:",
+              "@/layouts/**",
+              ["@acomp/**", "@rcomp/**"],
+              ["@/**", "@db/**"],
+              ":BLANK_LINE:",
+              ":PATH:"
+            ]
+          }
+        }
+      }
     }
   },
   "linter": {
     "enabled": true,
     "rules": {
       "preset": "recommended",
-      "nursery": {
-        "useSortedClasses": {
-          "level": "error",
-          "fix": "safe",
-          "options": {
-            "attributes": ["class", "className"]
-          }
-        }
-      },
-      "a11y": {
-        "noSvgWithoutTitle": "off"
-      },
+      "a11y": { "noSvgWithoutTitle": "off" },
       "style": {
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
@@ -50,24 +55,12 @@
       }
     }
   },
-  "javascript": {
+  "html": {
+    "experimentalFullSupportEnabled": true,
     "formatter": {
-      "trailingCommas": "all",
-      "quoteStyle": "single",
-      "semicolons": "always"
-    }
-  },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
+      "enabled": false
     },
-    "formatter": {
-      "quoteStyle": "single"
-    }
+    "linter": { "enabled": true }
   },
-  "vcs": {
-    "clientKind": "git",
-    "enabled": true,
-    "useIgnoreFile": true
-  }
+  "vcs": { "clientKind": "git", "enabled": true, "useIgnoreFile": true }
 }

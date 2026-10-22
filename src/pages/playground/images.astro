@@ -1,5 +1,7 @@
 ---
 import { getImage, Image, Picture } from 'astro:assets';
+
+import Layout from '@/layouts/Layout.astro';
 import { TestImage } from '@rcomp/playground/TestImage';
 import ButtonSocialDemo from '@rcomp/shadcn-studio/ButtonSocial';
 import myImage from '@/assets/12.jpg';
@@ -7,7 +9,6 @@ import facebookIcon from '@/assets/facebook-icon.webp';
 import githubIcon from '@/assets/github-icon.webp';
 import googleIcon from '@/assets/google-icon.webp';
 import twitterIcon from '@/assets/twitter-icon.webp';
-import Layout from '@/layouts/Layout.astro';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 
 const google = await getImage({ src: googleIcon, width: 20, height: 20, format: 'webp' });

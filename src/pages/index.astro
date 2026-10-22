@@ -1,10 +1,11 @@
 ---
 // Import your clean native Astro card component instead of the React one
+
+import Layout from '@/layouts/Layout.astro';
 import RouteListCard from '@acomp/playground/blog/RouteListCard.astro';
 import { GeoDebugCard } from '@rcomp/playground/GeoDebugCard';
 import Icons from '@/components/astrocomp/playground/blog/Icons.astro';
 import TestClients from '@/components/reactcomp/playground/TestClients';
-import Layout from '@/layouts/Layout.astro';
 import { adminRoutes } from '@/lib/helpers/icons';
 import { discoverRoutes } from '@/lib/helpers/paths';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';

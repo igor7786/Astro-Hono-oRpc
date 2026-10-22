@@ -2,10 +2,10 @@
 export default {
   plugins: [
     'prettier-plugin-astro',
-    'prettier-plugin-classnames',
-    'prettier-plugin-merge',
     '@trivago/prettier-plugin-sort-imports',
     'prettier-plugin-tailwindcss',
+    'prettier-plugin-classnames',
+    'prettier-plugin-merge',
   ],
 
   printWidth: 105,
@@ -31,12 +31,14 @@ export default {
   importOrder: [
     '<BUILTIN_MODULES>',
     '^bun$',
+    '^astro:(.*)$',
     '^react$',
     '^react-dom$',
     '^@tanstack/(.*)$',
+    '<THIRD_PARTY_MODULES>',
+    '^@/layouts/(.*)$',
     '^@acomp/(.*)$',
     '^@rcomp/(.*)$',
-    '^astro:(.*)$',
     '^@/(.*)$',
     '^@db/(.*)$',
     '^[./]',

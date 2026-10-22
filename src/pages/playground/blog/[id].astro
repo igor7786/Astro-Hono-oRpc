@@ -2,10 +2,11 @@
 export const prerender = true;
 
 import { getCollection, render } from 'astro:content';
+
+import Layout from '@/layouts/Layout.astro';
 import CommentSection from '@rcomp/playground/blog/CommentSection';
 import LikeButton from '@rcomp/playground/blog/LikeButton';
 import ShareWidget from '@rcomp/playground/blog/ShareWidget';
-import Layout from '@/layouts/Layout.astro';
 import { getReadingTime } from '@/lib/helpers/reading-time';
 import { createSeo, formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 
