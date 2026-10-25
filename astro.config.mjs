@@ -114,7 +114,7 @@ export default defineConfig({
     }),
   },
   integrations: [
-    react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
+    react({ compiler: true, include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
     serverStartup(),
     cspManifestPlugin(),
