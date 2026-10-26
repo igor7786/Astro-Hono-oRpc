@@ -1,6 +1,7 @@
 ---
-import { formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 import type { CollectionEntry } from 'astro:content';
+
+import { formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 
 type Props = {
   post: CollectionEntry<'blog'>;
@@ -14,20 +15,20 @@ const formattedDate = formatDate(date?.toISOString());
 ---
 
 <a href={`/playground/blog/${id}`} class="group">
-  <article class="border-border flex flex-col gap-3 border-b pb-10">
+  <article class="flex flex-col gap-3 border-b border-border pb-10">
     {tags && (
       <div class="flex gap-2">
         {tags.map((tag: string) => (
-          <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+          <span class="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">{tag}</span>
         ))}
       </div>
     )}
 
-    <h2 class="font-heading group-hover:text-primary text-3xl font-bold transition-colors">{title}</h2>
+    <h2 class="font-heading text-3xl font-bold transition-colors group-hover:text-primary">{title}</h2>
 
-    {description && <p class="text-muted-foreground text-lg">{description}</p>}
+    {description && <p class="text-lg text-muted-foreground">{description}</p>}
 
-    <div class="text-muted-foreground flex items-center gap-3 text-sm">
+    <div class="flex items-center gap-3 text-sm text-muted-foreground">
       {author && <span>👤 {author}</span>}
       {author && date && <span>• 📅</span>}
       {formattedDate && <span>{formattedDate}</span>}
@@ -35,6 +36,6 @@ const formattedDate = formatDate(date?.toISOString());
       {readingTime && <span>⚡ {readingTime}</span>}
     </div>
 
-    <span class="text-primary text-sm font-medium group-hover:underline">Read more →</span>
+    <span class="text-sm font-medium text-primary group-hover:underline">Read more →</span>
   </article>
 </a>

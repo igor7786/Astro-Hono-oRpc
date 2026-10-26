@@ -1,8 +1,8 @@
 // src/lib/drizzle/sqlite/client.ts
 import { Database } from 'bun:sqlite';
-import { drizzle } from 'drizzle-orm/bun-sqlite';
-
 import { resolve } from 'node:path';
+
+import { drizzle } from 'drizzle-orm/bun-sqlite';
 
 import { envServer } from '@/lib/env/server.env';
 

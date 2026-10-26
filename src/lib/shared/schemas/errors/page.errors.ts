@@ -77,6 +77,7 @@ export const errorContent: Record<ErrorCode, { title: string; message: string }>
 export type ErrorContent = typeof errorContent;
 
 export const errorCardSchema = z.object({
+  href: z.string(),
   code: z.string(),
   title: z.string(),
   message: z.string(),

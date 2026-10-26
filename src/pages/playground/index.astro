@@ -1,15 +1,16 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
-import { serverClient } from '@/server/clients/server.client';
+import SlowRequest from '@rcomp/playground/SlowRequest';
 import { TestClient } from '@rcomp/playground/TestClient';
 import UserProfile from '@rcomp/playground/TestTanstackQuery';
-import SlowRequest from '@rcomp/playground/SlowRequest';
+import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
+import { serverClient } from '@/server/clients/server.client';
+
 let data: { name: string } = { name: '' };
 try {
   data = await serverClient.tests.test({ name: 'test' });
-} catch (error: any) {
-  data = { name: error.message };
+} catch (error: unknown) {
+  data = { name: (error as Error).message };
 }
 const names = ['curt', 'bob', 'charlie'];
 const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];

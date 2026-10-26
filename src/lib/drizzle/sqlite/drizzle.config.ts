@@ -1,6 +1,6 @@
-import { defineConfig } from 'drizzle-kit';
-
 import { join } from 'node:path';
+
+import { defineConfig } from 'drizzle-kit';
 
 console.log('📁 Schema Path :', join(process.cwd(), '/src/lib/drizzle/sqlite/schemas/index.ts'));
 console.log('📁 Migrations Path:', join(process.cwd(), '/src/lib/drizzle/sqlite/db/migrations'));

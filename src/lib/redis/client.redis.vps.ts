@@ -4,9 +4,11 @@ import Redis from 'ioredis';
 import { envServer } from '@/lib/env/server.env';
 
 async function createRedisClient(): Promise<Redis> {
-  envServer.PRODUCTION === 'false'
-    ? console.log('⚠️ [Redis] Running in development mode, connecting to remote VPS with mTLS...')
-    : console.log('✅ [Redis] Running in production mode, connecting without TLS...');
+  console.log(
+    envServer.PRODUCTION === 'false'
+      ? '⚠️ [Redis] Running in development mode, connecting to remote VPS with mTLS...'
+      : '✅ [Redis] Running in production mode, connecting without TLS...'
+  );
   const ssl =
     envServer.PRODUCTION === 'false' ? await (await import('@/lib/tls/client.tls')).tls() : undefined;
   const url = envServer.PRODUCTION === 'false' ? envServer.VPS_REDIS_URL : envServer.PROD_REDIS_URL;

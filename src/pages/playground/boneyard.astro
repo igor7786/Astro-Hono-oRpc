@@ -1,13 +1,17 @@
 ---
+import Layout from '@/layouts/Layout.astro';
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
-import Layout from '@/layouts/Layout.astro';
 import { serverClient } from '@/server/clients/server.client';
+
 const inputData = {
   name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
 };
-import cardImage from '@/assets/card.webp';
+
 import { getImage } from 'astro:assets';
+
+import cardImage from '@/assets/card.webp';
+
 const optimizedImage = await getImage({ src: cardImage, format: 'avif' });
 let data: { name: string } | null = null;
 
@@ -37,21 +41,21 @@ const seo = createSeo({
     <CardTopImageDemo
       client:load
       initialData={name}
-      input={inputData.name + '(client:load)'}
+      input={`${inputData.name}(client:load)`}
       imageSrc={optimizedImage.src}
       slot="main"
     />
     <CardTopImageDemo
       client:only="react"
       initialData={name}
-      input={inputData.name + '(client:only="react")'}
+      input={`${inputData.name}(client:only="react")`}
       imageSrc={optimizedImage.src}
       slot="main"
     />
     <CardTopImageDemo
       client:idle={{ timeout: 2000 }}
       initialData={name}
-      input={inputData.name + '(client:idle:max-delay-2s)'}
+      input={`${inputData.name}(client:idle:max-delay-2s)`}
       imageSrc={optimizedImage.src}
       slot="main"
     />
@@ -62,7 +66,7 @@ const seo = createSeo({
     <CardTopImageDemo
       client:visible={{ rootMargin: '75px' }}
       initialData={name}
-      input={inputData.name + '(client:visible:offset-75px)'}
+      input={`${inputData.name}(client:visible:offset-75px)`}
       imageSrc={optimizedImage.src}
       slot="main"
     />

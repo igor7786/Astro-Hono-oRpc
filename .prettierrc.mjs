@@ -2,10 +2,10 @@
 export default {
   plugins: [
     'prettier-plugin-astro',
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss',
     'prettier-plugin-classnames',
     'prettier-plugin-merge',
-    'prettier-plugin-tailwindcss',
-    '@trivago/prettier-plugin-sort-imports',
   ],
 
   printWidth: 105,
@@ -19,6 +19,10 @@ export default {
   arrowParens: 'always',
   jsxSingleQuote: false,
 
+  // Tailwind (used by prettier-plugin-tailwindcss)
+  tailwindStylesheet: './src/styles/global.css',
+  tailwindFunctions: ['clsx', 'cn', 'cva'],
+
   // ✅ Astro-specific:
   astroAllowShorthand: true,
   htmlWhitespaceSensitivity: 'ignore',
@@ -26,26 +30,17 @@ export default {
   // 👇 better import structure
   importOrder: [
     '<BUILTIN_MODULES>',
-
-    // Bun
     '^bun$',
-    // React ecosystem (UI state + query libs)
+    '^astro:(.*)$',
     '^react$',
     '^react-dom$',
-    // Other UI state libs (TanStack, Jotai, Zustand, etc.)
     '^@tanstack/(.*)$',
-
-    // UI libraries (ALL component systems)
+    '<THIRD_PARTY_MODULES>',
+    '^@/layouts/(.*)$',
     '^@acomp/(.*)$',
     '^@rcomp/(.*)$',
-
-    // Astro
-    '^astro:(.*)$',
-
-    // App code (everything internal)
     '^@/(.*)$',
-
-    // Relative imports last
+    '^@db/(.*)$',
     '^[./]',
   ],
 

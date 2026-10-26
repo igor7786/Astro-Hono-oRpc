@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
 // @ts-check
@@ -6,11 +10,6 @@ import tailwindcss from '@tailwindcss/vite';
 import bun from '@wyattjoh/astro-bun-adapter';
 import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
-
-import fs from 'fs';
-import path from 'path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 
 import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
 import serverStartup from './src/plugins/clients';
@@ -23,6 +22,7 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   site: 'https://fast-web-tech.co.uk/',
   // 🛡️ Add this global security layer to allow your production proxies
+  base: '/',
   security: {
     checkOrigin: true, // Keep it active for great safety
     allowedDomains: [
@@ -32,7 +32,7 @@ export default defineConfig({
   },
   server: {
     host: 'localhost', // ← Bind the interfaces
-    port: 4322, // ← Explicit port
+    port: 4321, // ← Explicit port
     // allowedOrigins: ['https://fast-web-tech.co.uk', 'http://localhost:4321'],
     allowedHosts: [
       'fast-web-tech.co.uk',
@@ -86,7 +86,7 @@ export default defineConfig({
       name: 'Playfair Display',
       cssVariable: '--font-heading',
       fallbacks: ['Georgia', 'ui-serif', 'serif'],
-      weights: ['100 900'],
+      weights: ['400 900'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
     },
@@ -98,7 +98,7 @@ export default defineConfig({
       name: 'JetBrains Mono',
       cssVariable: '--font-mono',
       fallbacks: ['ui-monospace', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-      weights: ['100 900'],
+      weights: ['100 800'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
     },
@@ -114,7 +114,7 @@ export default defineConfig({
     }),
   },
   integrations: [
-    react({ include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
+    react({ compiler: true, include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
     serverStartup(),
     cspManifestPlugin(),

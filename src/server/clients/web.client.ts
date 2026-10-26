@@ -1,7 +1,5 @@
 import { createORPCClient, onError, ORPCError } from '@orpc/client';
-import type { ContractRouterClient } from '@orpc/contract';
 import { ResponseValidationPlugin } from '@orpc/contract/plugins';
-import type { JsonifiedClient } from '@orpc/openapi-client';
 import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
@@ -9,6 +7,9 @@ import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 // If AppRouter is just a type, you might need to import the actual router object
 // or the contract if you are using separate contracts.
 import { type AppContract, appContract } from '@/server/contracts/all.contracts';
+
+import type { ContractRouterClient } from '@orpc/contract';
+import type { JsonifiedClient } from '@orpc/openapi-client';
 
 const link = new OpenAPILink(appContract, {
   // <--- Added allRouters as 1st argument

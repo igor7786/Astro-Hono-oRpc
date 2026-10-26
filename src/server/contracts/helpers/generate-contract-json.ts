@@ -1,6 +1,6 @@
-import { minifyContractRouter } from '@orpc/contract';
-
 import fs from 'node:fs';
+
+import { minifyContractRouter } from '@orpc/contract';
 
 import { allRouters } from '@/server/routers/all.routers';
 

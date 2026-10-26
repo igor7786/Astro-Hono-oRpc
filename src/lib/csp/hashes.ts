@@ -1,8 +1,8 @@
-// src/lib/csp.ts
-import { eq } from 'drizzle-orm';
-
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
+
+// src/lib/csp.ts
+import { eq } from 'drizzle-orm';
 
 import { hashes } from '@/lib/drizzle/neon/schemas';
 import { themeScriptPath } from '@/lib/helpers/paths';

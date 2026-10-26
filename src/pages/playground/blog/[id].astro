@@ -1,13 +1,14 @@
 ---
 export const prerender = true;
 
+import { getCollection, render } from 'astro:content';
+
 import Layout from '@/layouts/Layout.astro';
+import CommentSection from '@rcomp/playground/blog/CommentSection';
 import LikeButton from '@rcomp/playground/blog/LikeButton';
 import ShareWidget from '@rcomp/playground/blog/ShareWidget';
-import CommentSection from '@rcomp/playground/blog/CommentSection';
-import { getCollection, render } from 'astro:content';
-import { formatDate, createSeo } from '@/lib/shared/schemas/seo/seo.schema';
 import { getReadingTime } from '@/lib/helpers/reading-time';
+import { createSeo, formatDate } from '@/lib/shared/schemas/seo/seo.schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -39,20 +40,20 @@ const seo = createSeo({
     {post.data.tags && (
       <div class="mb-6 flex gap-2">
         {post.data.tags.map((tag: string) => (
-          <span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">{tag}</span>
+          <span class="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">{tag}</span>
         ))}
       </div>
     )}
 
     {/* title */}
-    <h1 class="font-heading mb-4 text-5xl font-bold">{post.data.title}</h1>
+    <h1 class="mb-4 font-heading text-5xl font-bold">{post.data.title}</h1>
 
     {/* description */}
-    {post.data.description && <p class="text-muted-foreground mb-6 text-xl">{post.data.description}</p>}
+    {post.data.description && <p class="mb-6 text-xl text-muted-foreground">{post.data.description}</p>}
 
     {/* meta + actions */}
-    <div class="border-border mb-12 flex items-center justify-between border-b pb-8">
-      <div class="text-muted-foreground flex items-center gap-3 text-sm">
+    <div class="mb-12 flex items-center justify-between border-b border-border pb-8">
+      <div class="flex items-center gap-3 text-sm text-muted-foreground">
         {post.data.author && <span>{post.data.author}</span>}
         {ogDate && <span>•</span>}
         {ogDate && <span>{ogDate}</span>}
@@ -69,7 +70,7 @@ const seo = createSeo({
 
     {/* table of contents */}
     {headings.length > 0 && (
-      <nav class="bg-muted mb-12 rounded-lg p-6">
+      <nav class="mb-12 rounded-lg bg-muted p-6">
         <p class="mb-3 text-sm font-semibold">Table of Contents</p>
         <ul class="flex flex-col gap-2">
           {headings.map((h) => {
@@ -78,7 +79,7 @@ const seo = createSeo({
               <li style={`padding-left: ${indent}px`}>
                 <a
                   href={`#${h.slug}`}
-                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {h.text}
                 </a>
@@ -90,18 +91,18 @@ const seo = createSeo({
     )}
 
     {/* content */}
-    <article class="prose prose-invert max-w-none">
+    <article class="prose max-w-none prose-invert">
       <Content />
     </article>
 
     {/* comments — loads when scrolled into view */}
-    <div class="border-border mt-16 border-t pt-8">
+    <div class="mt-16 border-t border-border pt-8">
       <CommentSection postId={post.id} client:visible />
     </div>
 
     {/* back link */}
     <div class="mt-8">
-      <a href="/playground/blog" class="text-primary text-sm hover:underline">
+      <a href="/playground/blog" class="text-sm text-primary hover:underline">
         ← Back to Blog
       </a>
     </div>

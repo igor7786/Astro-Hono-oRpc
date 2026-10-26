@@ -19,13 +19,13 @@ async function loadClients() {
   try {
     const [pong] = (await sqliteDb.select().from(testSqlite).where(eq(testSqlite.key, 'ping'))) ?? null;
     console.log('[server] SQLITE DRIZZLE ->', pong ? '✅' : '❌');
-  } catch (e) {
+  } catch {
     console.error('[error] SQLITE DRIZZLE -> ❌');
   }
   try {
     await redisVps.ping();
     console.log('[server] REDIS -> ✅');
-  } catch (e) {
+  } catch {
     console.error('[error] REDIS -> ❌');
   }
 
@@ -56,13 +56,13 @@ async function loadClients() {
   try {
     const [pong] = (await neonDb.select().from(testNeon).where(eq(testNeon.key, 'Ping'))) ?? null;
     console.log('[server] NEON ->', pong?.value === 'Pong' ? '✅' : '❌');
-  } catch (err: any) {
+  } catch {
     console.error('[error] NEON DRIZZLE -> ❌');
   }
   try {
     const [pong] = (await pgDb.select().from(testPg).where(eq(testPg.key, 'Ping'))) ?? null;
     console.log('[server] POSTGRES ->', pong?.value === 'Pong' ? '✅' : '❌');
-  } catch (err: any) {
+  } catch {
     console.error('[error] POSTGRES DRIZZLE -> ❌');
   }
 
@@ -82,9 +82,11 @@ function registerShutdown(clients: Awaited<ReturnType<typeof loadClients>>) {
     console.log(`[server] ${signal} — shutting down...`);
 
     const results = await Promise.allSettled([
+      // oxlint-disable-next-line typescript/await-thenable
       redisVps.disconnect(),
       producer.close(),
       pgDb.$client.end(),
+      // oxlint-disable-next-line typescript/await-thenable
       rustfsClient.destroy(),
       closeSqlite(),
     ]);

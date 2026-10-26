@@ -1,6 +1,6 @@
-import type { Context } from 'hono';
-
 import { type Geo, geoSchema } from '@/server/schemas/geo';
+
+import type { Context } from 'hono';
 
 export type { Geo };
 export const GEO_HEADERS = {
@@ -24,7 +24,10 @@ function countryCodeToFlag(code?: string): string | undefined {
     return undefined;
   }
 
-  return String.fromCodePoint(...[...code].map((char) => 0x1f1e6 + char.charCodeAt(0) - 65));
+  const first = code.charCodeAt(0) + 0x1f1a5;
+  const second = code.charCodeAt(1) + 0x1f1a5;
+
+  return String.fromCodePoint(first, second);
 }
 
 export const npmplusGeoExtractor = (c: Context): Geo => {

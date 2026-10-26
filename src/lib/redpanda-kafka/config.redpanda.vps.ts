@@ -20,9 +20,11 @@ const brokers = isProd
  */
 
 async function getBaseConfig() {
-  isProd
-    ? console.log('✅ [Redpanda] Running in production mode, connecting without TLS...')
-    : console.log('⚠️ [Redpanda] Running in development mode, connecting to remote VPS with mTLS...');
+  console.log(
+    isProd
+      ? '✅ [Redpanda] Running in production mode, connecting without TLS...'
+      : '⚠️ [Redpanda] Running in development mode, connecting to remote VPS with mTLS...'
+  );
   const tls = isProd ? undefined : await (await import('@/lib/tls/client.tls')).tls();
   return {
     clientId: 'astro-hono-orpc',

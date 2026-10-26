@@ -7,7 +7,7 @@ export const cspRoute = base.csp.cspReport.handler(async ({ input, errors }) => 
   let json: unknown;
   try {
     json = JSON.parse(text);
-  } catch (err) {
+  } catch {
     throw errors.INPUT_VALIDATION_FAILED({
       message: 'JSON parse error ❌',
     });

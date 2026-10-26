@@ -1,8 +1,8 @@
-import { useStore } from '@nanostores/react';
-
 import { useEffect, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
+
+import { useStore } from '@nanostores/react';
 
 import { Button } from '@rcomp/ui/button';
 
@@ -86,9 +86,15 @@ export const Nano = ({ initialData, name = 'default' }: Props) => {
         </Button>
         <Button
           onClick={() => {
-            // ✅ manually invalidate — forces refetch even if cached
-            client.invalidateQueries({ queryKey: ['test', { name: queryName }] });
+            void client
+              .invalidateQueries({
+                queryKey: ['test', { name: queryName }],
+              })
+              .catch((error: unknown) => {
+                console.error('Failed to invalidate query:', error);
+              });
           }}
+          disabled={isFetching}
         >
           Force Refetch
         </Button>
