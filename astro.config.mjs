@@ -1,3 +1,5 @@
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+
 import { satteri } from '@astrojs/markdown-satteri';
 // @ts-check
 import react from '@astrojs/react';
@@ -9,6 +11,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 import cspManifestPlugin from '@/plugins/astro.csp.manifest.ts';
 import serverStartup from '@/plugins/clients';
+import { astroStartBuildPatch } from '@/plugins/tanstack.build.ts';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
@@ -52,6 +55,13 @@ export default defineConfig({
       tsconfigPaths: true,
     },
     plugins: [
+      astroStartBuildPatch(),
+      tanstackStart({
+        srcDirectory: './src/app',
+        router: {
+          basepath: 'app',
+        },
+      }),
       tailwindcss(),
       // bunx boneyard-js build http://localhost:4321/notifications
     ],
