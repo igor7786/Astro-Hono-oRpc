@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-
 import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
 // @ts-check
