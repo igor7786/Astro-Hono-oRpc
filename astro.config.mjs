@@ -9,8 +9,8 @@ import bun from '@wyattjoh/astro-bun-adapter';
 import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
 
-import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
-import serverStartup from './src/plugins/clients';
+import cspManifestPlugin from '@/plugins/astro.csp.manifest.ts';
+import serverStartup from '@/plugins/clients';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
 
