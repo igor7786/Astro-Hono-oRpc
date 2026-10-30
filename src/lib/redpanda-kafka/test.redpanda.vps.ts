@@ -67,7 +67,7 @@ async function safeCreateTopics() {
  * (run manually / once — not per-request)
  * =========================
  */
-
+// @ts-ignore
 async function _bootstrapKafka() {
   try {
     console.log('🚀 Bootstrapping Kafka...');

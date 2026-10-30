@@ -1,6 +1,6 @@
 import { satteri } from '@astrojs/markdown-satteri';
-import react from '@astrojs/react';
 // @ts-check
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import bun from '@wyattjoh/astro-bun-adapter';
