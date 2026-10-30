@@ -1,6 +1,4 @@
 import fs from 'node:fs';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
@@ -15,9 +13,6 @@ import cspManifestPlugin from './src/plugins/astro.csp.manifest.ts';
 import serverStartup from './src/plugins/clients';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export default defineConfig({
   site: 'https://fast-web-tech.co.uk/',
@@ -54,13 +49,9 @@ export default defineConfig({
     ssr: {
       resolve: { externalConditions: ['bun', 'node'] },
     },
+    tsconfig: './tsconfig.json',
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        '@db': path.resolve(__dirname, './db'),
-        '@rcomp': path.resolve(__dirname, './src/components/reactcomp'),
-        '@acomp': path.resolve(__dirname, './src/components/astrocomp'),
-      },
+      tsconfigPaths: true,
     },
     plugins: [
       tailwindcss(),
