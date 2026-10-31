@@ -15,7 +15,10 @@ export const prerender = true;
 const allFiles = import.meta.glob('../pages/**/*.{astro,ts,tsx,js,jsx}', {
   eager: true,
 });
-const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles);
+// Lazy on purpose: only the file paths are used, so no React route modules get imported here
+const tanstackFiles = import.meta.glob('/src/app/routes/**/*.{ts,tsx}');
+
+const { ssrRoutes, staticRoutes } = await discoverRoutes(allFiles, tanstackFiles);
 
 const seo = createSeo({
   title: 'Playground | Home',

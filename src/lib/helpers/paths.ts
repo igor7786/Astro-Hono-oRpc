@@ -11,6 +11,10 @@ export const IGNORED_EXACT = ['./index.astro', './404.astro', './500.astro'];
 // Pages that should always be treated as static (even if not dynamic)
 export const STATIC_FLAT = ['./index.astro'];
 
+// Must match tanstackStart({ router: { basepath } }) in astro.config.
+// Use '' when there is no basepath, or '/app' if you still have basepath: 'app'.
+export const TANSTACK_BASEPATH = '/app';
+
 /**
  * Determines whether a file path should be ignored.
  *
@@ -31,20 +35,27 @@ export function isIgnored(path: string) {
 }
 
 /**
- * Converts a file path into a URL route.
+ * Vite builds glob keys relative to the file that calls import.meta.glob, so the
+ * prefix varies: '../pages/x.astro', './x.astro' or '../x.astro' all become 'x.astro'.
+ */
+function stripAstroPrefix(filePath: string): string {
+  return filePath.replace(/^(?:\.{1,2}\/)+(?:pages\/)?/, '');
+}
+
+// Source path for display: src/pages/...
+function toSourceFile(filePath: string): string {
+  return `src/pages/${stripAstroPrefix(filePath)}`;
+}
+
+/**
+ * Converts an Astro file path into a URL route.
  *
- * Examples:
- * ../pages/blog/index.astro → /blog
- * ../pages/about.astro → /about
- *
- * Steps:
- * - Remove "../pages" prefix
- * - Remove file extension
- * - Remove trailing "/index"
- * - Ensure root becomes "/"
+ * ./error-page.astro          → /error-page
+ * ../pages/blog/index.astro   → /blog
+ * ./index.astro               → /
  */
 export function fileToRoute(filePath: string): string {
-  let route = filePath.replace('../pages', '').replace(/\.(astro|ts|tsx|js|jsx)$/, '');
+  let route = '/' + stripAstroPrefix(filePath).replace(/\.(astro|ts|tsx|js|jsx)$/, '');
 
   if (route.endsWith('/index')) {
     route = route.replace(/\/index$/, '');
@@ -54,17 +65,45 @@ export function fileToRoute(filePath: string): string {
 }
 
 /**
+ * Converts a TanStack Start file route into a URL. Returns null when the
+ * file isn't a listable page (root, layouts, generated files, dynamic params).
+ *
+ * /src/app/routes/index.tsx               → /
+ * /src/app/routes/auth/login.tsx          → /auth/login
+ * /src/app/routes/blog.index.tsx          → /blog          (dots act as "/")
+ * /src/app/routes/_layout/about.tsx       → /about         (_pathless layouts dropped)
+ * /src/app/routes/(marketing)/pricing.tsx → /pricing       (route groups dropped)
+ * /src/app/routes/blog.$slug.tsx          → null           (dynamic, can't be listed)
+ */
+export function tanstackFileToRoute(filePath: string): string | null {
+  if (filePath.includes('.gen.')) return null; // routeTree.gen.ts and friends
+
+  const base = filePath.replace(/^.*\/routes/, '').replace(/\.(tsx?|jsx?)$/, '');
+  const segments = base
+    .split('/')
+    .flatMap((s) => s.split('.'))
+    .filter(Boolean);
+
+  // Not listable: root, layout files, "-" prefixed (ignored) files, dynamic params
+  if (segments.some((s) => s === '__root' || s === 'route' || s.startsWith('-') || s.startsWith('$'))) {
+    return null;
+  }
+
+  const parts = segments
+    .filter((s) => s !== 'index')
+    .filter((s) => !s.startsWith('_')) // pathless layouts
+    .filter((s) => !/^\(.*\)$/.test(s)) // route groups
+    .map((s) => s.replace(/_$/, '')); // trailing "_" = non-nested escape
+
+  return `${TANSTACK_BASEPATH}/${parts.join('/')}`.replace(/\/+$/, '') || '/';
+}
+
+/**
  * Converts a route into a human-readable label.
  *
  * Examples:
  * /blog/post-one → "Blog › Post One"
  * /about → "About"
- *
- * Steps:
- * - Remove leading slash
- * - Replace "-" with spaces
- * - Replace "/" with breadcrumb separator
- * - Capitalize each word
  */
 export function toLabel(route: string): string {
   if (route === '/') return 'Home';
@@ -81,21 +120,20 @@ export type Route = {
   route: string; // URL path (e.g. /blog/post)
   file: string; // actual file path (for debugging/dev)
   label: string; // human-readable name
+  framework?: 'astro' | 'tanstack'; // which framework renders it
 };
 
 /**
- * Main function that scans all files and splits them into:
- * - SSR routes (regular pages)
+ * Scans all files and splits them into:
+ * - SSR routes (regular pages, plus all TanStack Start pages)
  * - Static routes (generated via getStaticPaths or forced static)
  *
- * Handles:
- * - Ignored files
- * - Static flat pages
- * - Dynamic routes ([slug])
- * - getStaticPaths resolution
+ * @param allFiles       import.meta.glob of the Astro pages
+ * @param tanstackFiles  import.meta.glob of the TanStack Start routes (lazy, paths only)
  */
 export async function discoverRoutes(
-  allFiles: Record<string, unknown>
+  allFiles: Record<string, unknown>,
+  tanstackFiles: Record<string, unknown> = {}
 ): Promise<{ ssrRoutes: Route[]; staticRoutes: Route[]; allRoutes: Route[] }> {
   const ssrRoutes: Route[] = [];
   const staticRoutes: Route[] = [];
@@ -103,24 +141,23 @@ export async function discoverRoutes(
 
   /**
    * STEP 1: Add manually defined static pages
-   *
-   * These are explicitly listed and bypass normal detection.
    */
   for (const filePath of STATIC_FLAT) {
     if (!(filePath in allFiles)) continue;
 
-    const file = filePath.replace('../pages/', 'src/pages/');
+    const file = toSourceFile(filePath);
     const route = fileToRoute(filePath);
 
     staticRoutes.push({
       route,
       file,
       label: toLabel(route),
+      framework: 'astro',
     });
   }
 
   /**
-   * STEP 2: Process all discovered files
+   * STEP 2: Process all discovered Astro files
    */
   for (const [filePath, mod] of Object.entries(allFiles)) {
     // Skip ignored files
@@ -129,7 +166,7 @@ export async function discoverRoutes(
     // Skip already handled static flat files
     if (STATIC_FLAT.includes(filePath)) continue;
 
-    const file = filePath.replace('../pages/', 'src/pages/');
+    const file = toSourceFile(filePath);
     const module = mod as any;
 
     const hasStaticPaths = typeof module.getStaticPaths === 'function';
@@ -158,6 +195,7 @@ export async function discoverRoutes(
             route,
             file,
             label: toLabel(route),
+            framework: 'astro',
           });
         }
       } catch (e) {
@@ -174,8 +212,32 @@ export async function discoverRoutes(
         route,
         file,
         label: toLabel(route),
+        framework: 'astro',
       });
     }
+  }
+
+  /**
+   * STEP 4b: TanStack Start routes (rendered on the server)
+   *
+   * Only the file paths are used, so the glob can stay lazy and the
+   * React route modules are never imported here.
+   */
+  for (const filePath of Object.keys(tanstackFiles)) {
+    if (isIgnored(filePath)) continue;
+
+    const route = tanstackFileToRoute(filePath);
+    if (!route) continue;
+
+    // Astro wins if both frameworks define the same URL
+    if ([...ssrRoutes, ...staticRoutes].some((r) => r.route === route)) continue;
+
+    ssrRoutes.push({
+      route,
+      file: filePath.replace(/^\//, ''),
+      label: toLabel(route.slice(TANSTACK_BASEPATH.length) || '/'),
+      framework: 'tanstack',
+    });
   }
 
   /**
