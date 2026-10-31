@@ -27,7 +27,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   /**
    * ============================================================
-   * SECURITY HEADERS — every response: HTML, API, static
+   * SECURITY HEADERS — every response: HTML, API, static, APP ,etc.
    * ============================================================
    */
 
@@ -36,8 +36,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
 
-  const isStaticOrApi =
-    context.isPrerendered || pathname.startsWith('/_astro/') || pathname.startsWith('/api/');
+  const isStaticOrApiOrApp =
+    context.isPrerendered ||
+    pathname.startsWith('/_astro/') ||
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/app/');
 
   const isHtml = response.headers.get('content-type')?.includes('text/html') ?? false;
 
@@ -47,7 +50,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * ============================================================
    */
 
-  if (!isStaticOrApi && isHtml) {
+  if (!isStaticOrApiOrApp && isHtml) {
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private, max-age=0');
 
     response.headers.set('Pragma', 'no-cache');
@@ -59,7 +62,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * ============================================================
    */
 
-  if (envServer.PRODUCTION === 'true' && csp && !pathname.startsWith('/api/') && isHtml) {
+  if (
+    envServer.PRODUCTION === 'true' &&
+    csp &&
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/app/') &&
+    isHtml
+  ) {
     response.headers.set('Content-Security-Policy', csp);
   }
 
