@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { Link } from '@tanstack/react-router';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -24,11 +26,13 @@ import {
 } from '@/components/reactcomp/ui/input-group';
 import { Separator } from '@/components/reactcomp/ui/separator';
 import { loginSchema } from '@/lib/shared/schemas/auth/auth.schema';
-
+interface LoginPageProps {
+  astro: boolean;
+}
 // Use z.input to match the schema's input type (rememberMe is optional with default)
 type FormValues = z.input<typeof loginSchema>;
 
-export function LoginPage() {
+export function LoginPage({ astro }: LoginPageProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormValues>({
@@ -199,12 +203,21 @@ export function LoginPage() {
 
           <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
-            <a
-              href="/auth/register"
-              className="font-medium text-primary underline-offset-4 hover:underline"
-            >
-              Sign up
-            </a>
+            {astro ? (
+              <a
+                href="/auth/register"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Sign up
+              </a>
+            ) : (
+              <Link
+                to="/register"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Sign up
+              </Link>
+            )}
           </p>
         </CardFooter>
       </Card>

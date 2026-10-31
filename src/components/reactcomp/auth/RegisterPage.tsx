@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { Link } from '@tanstack/react-router';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -30,11 +32,13 @@ import {
 } from '@/components/reactcomp/ui/input-group';
 import { Separator } from '@/components/reactcomp/ui/separator';
 import { getPasswordStrength, registerSchema } from '@/lib/shared/schemas/auth/auth.schema';
-
+interface RegisterPageProps {
+  astro: boolean;
+}
 // Use z.input to match the schema's input type (acceptTerms is optional with refinement)
 type FormValues = z.input<typeof registerSchema>;
 
-export function RegisterPage() {
+export function RegisterPage({ astro }: RegisterPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -303,12 +307,18 @@ export function RegisterPage() {
 
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <a
-              href="/auth/login"
-              className="font-medium text-primary underline-offset-4 hover:underline"
-            >
-              Sign in
-            </a>
+            {astro ? (
+              <a
+                href="/auth/login"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Sign in
+              </a>
+            ) : (
+              <Link to="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+                Sign in
+              </Link>
+            )}
           </p>
         </CardFooter>
       </Card>
