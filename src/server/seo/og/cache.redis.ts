@@ -71,6 +71,11 @@ export async function deleteCachedOgImage(key: string): Promise<void> {
 // Tier 2: RustFS (durable)
 // ---------------------------------------------------------------------------
 
+function isNotFound(err: unknown): boolean {
+  const e = err as { name?: string; $metadata?: { httpStatusCode?: number } };
+  return e?.name === 'NoSuchKey' || e?.$metadata?.httpStatusCode === 404;
+}
+
 async function getFromRustfs(key: string): Promise<Uint8Array | null> {
   try {
     const res = await rustfsClient.send(
@@ -79,7 +84,7 @@ async function getFromRustfs(key: string): Promise<Uint8Array | null> {
     if (!res.Body) return null;
     return await res.Body.transformToByteArray();
   } catch (err) {
-    if ((err as { name?: string }).name !== 'NoSuchKey') {
+    if (!isNotFound(err)) {
       console.error('[og-cache] RustFS read error:', err);
     }
     return null;

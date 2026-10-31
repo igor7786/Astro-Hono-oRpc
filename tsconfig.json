@@ -12,7 +12,8 @@
       "@/*": ["./src/*"],
       "@db/*": ["./db/*"],
       "@rcomp/*": ["./src/components/reactcomp/*"],
-      "@acomp/*": ["./src/components/astrocomp/*"]
+      "@acomp/*": ["./src/components/astrocomp/*"],
+      "@app/*": ["./src/app/*"]
     },
     /* Module Resolution */
     "moduleResolution": "bundler",

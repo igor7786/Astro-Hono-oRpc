@@ -5,7 +5,7 @@ import { envClient } from '@/lib/env/client.env';
 export const seoSchema = z.object({
   title: z.string().default('Fast Web Tech'),
   description: z.string().default('My awesome app'),
-  author: z.string().optional(),
+  author: z.string().optional().default('Igor Grimuta'),
   date: z.string().optional(),
   dateModified: z.string().optional(),
   type: z.enum(['website', 'article']).default('website'),

@@ -29,13 +29,13 @@ const id = generateOgParamsId({ title, description, author, date });
 const token = generateOgToken(id);
 
 try {
-  // SQLite caching for OG image generation
-  // Check if the OG params already exist in SQLite
+  // NeonDB caching for OG image generation
+  // Check if the OG params already exist in NeonDB
   const rows = await neonDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
   const existing = rows[0] ?? null;
   const isNew = !existing;
   if (isNew) {
-    // Save the OG params to SQLite
+    // Save the OG params to NeonDB
     await neonDb
       .insert(ogImages)
       .values({
