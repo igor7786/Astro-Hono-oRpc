@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { LoginPage } from '@rcomp/auth/LoginPage';
 
-import { buildSeoHead } from '@/lib/seo/build-seo-head';
-import { getSeo } from '@/lib/seo/get-seo.fn';
+import { buildSeoHead } from '@/lib/seo/build.seo.head';
+import { getSeo } from '@/lib/seo/get.seo.fn';
 
 export const Route = createFileRoute('/_auth/login')({
   loader: ({ location }) =>

@@ -1,126 +1,27 @@
 ---
-import { eq } from 'drizzle-orm';
-import z from 'zod';
+// src/components/SEO.astro
+import { buildSeoHead } from '@/lib/seo/build.seo.head';
+import { resolveSeo } from '@/lib/seo/seo.core';
+import { siteLinks, siteMeta } from '@/lib/seo/site.head';
 
-import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.url';
-import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
-import { ogImages } from '@/lib/drizzle/neon/schemas';
-import { envServer } from '@/lib/env/server.env';
-import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
-import { baseSeo, seoSchema } from '@/lib/shared/schemas/seo/seo.schema';
-
-// ✅ Safe parse (no crash in production)
-const result = seoSchema.safeParse({
-  ...baseSeo,
-  ...Astro.props,
-  siteUrl: new URL(Astro.url.href, envServer.PUBLIC_URL).toString(),
-});
-if (!result.success) {
-  console.error('[SEO] Invalid props:', z.treeifyError(result.error));
-}
-
-// ✅ fallback to safe defaults
-const seo = result.success ? result.data : seoSchema.parse(baseSeo);
-
-const { title, description, author, date, type, siteName, siteUrl = Astro.url.href } = seo;
-
-// hex id, token, and other params for OG image generation
-const id = generateOgParamsId({ title, description, author, date });
-const token = generateOgToken(id);
-
-try {
-  // NeonDB caching for OG image generation
-  // Check if the OG params already exist in NeonDB
-  const rows = await neonDb.select().from(ogImages).where(eq(ogImages.id, id)).limit(1);
-  const existing = rows[0] ?? null;
-  const isNew = !existing;
-  if (isNew) {
-    // Save the OG params to NeonDB
-    await neonDb
-      .insert(ogImages)
-      .values({
-        id,
-        token,
-        title,
-        description,
-        author,
-        date,
-      })
-      .onConflictDoUpdate({
-        target: ogImages.id,
-        set: {
-          token,
-          title,
-          description,
-          author,
-          date,
-        },
-      });
-  }
-} catch (error) {
-  console.error(error);
-  console.error('[error] NeonDB unavailable 📛');
-}
-// 🚀 SAFE Page URL BUILDER
-
-// 🚀 SAFE OG IMAGE URL BUILDER (FIXED)
-const fullPath = openApiBasePath + ogPath;
-const ogUrl = new URL(fullPath, envServer.PUBLIC_URL);
-
-ogUrl.searchParams.set('id', id);
-ogUrl.searchParams.set('format', 'png');
-const ogImageUrl = ogUrl.toString();
-
-// JSON-LD STRUCTURED DATA
-const data = {
-  '@context': 'https://schema.org',
-  '@type': type === 'article' ? 'Article' : 'WebSite',
-  '@id': siteUrl,
-  name: title,
-  url: siteUrl,
-  description,
-  ...(author && { author: { '@type': 'Person', name: author } }),
-  ...(date && { datePublished: date }),
-};
-
-// The only place this escaping logic needs to exist — every page
-// that renders JSON-LD goes through here, so nobody can forget it.
-const safeJson = JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+const seo = await resolveSeo(Astro.props, Astro.url.pathname);
+const { meta, links, scripts } = buildSeoHead(seo);
 ---
 
-<!-- BASIC SEO -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
-<title>{title}</title>
-<meta name="description" content={description} />
-<meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#0f172a" />
-<link rel="canonical" href={siteUrl} />
+{siteMeta.map((m) => (
+  <meta {...m} />
+))}
+{siteLinks.map((l) => (
+  <link {...l} />
+))}
 
-<!-- OPEN GRAPH -->
-<meta property="og:type" content={type} />
-<meta property="og:site_name" content={siteName} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={siteUrl} />
-<meta property="og:image" content={ogImageUrl} />
-<meta property="og:image:type" content="image/png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-{type === 'article' && <meta property="article:published_time" content={date} />}
-{type === 'article' && <meta property="article:author" content={author} />}
-
-<!-- TWITTER -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@IGrimuta" />
-<meta name="twitter:creator" content="@IGrimuta" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImageUrl} />
-<!-- SITEMAP -->
-<link rel="sitemap" href="/sitemap-index.xml" />
-
-<!-- JSON-LD STRUCTURED DATA -->
-<script is:inline type="application/ld+json" set:html={safeJson}></script>
+{meta.map((m) => ('title' in m ? <title>{m.title}</title> : <meta {...m} />))}
+{links.map((l) => (
+  <link {...l} />
+))}
+{scripts.map((s) => (
+  <script is:inline type={s.type} set:html={s.children} />
+))}

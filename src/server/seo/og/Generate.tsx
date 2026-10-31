@@ -1,4 +1,4 @@
-import { ImageResponse } from '@takumi-rs/image-response';
+import { ImageResponse } from 'takumi-js/response';
 
 import { getSatoriOptions } from '@/server/seo/og/cache.fonts';
 import { SocialCard, type SocialCardProps } from '@/server/seo/og/SocialCard';
@@ -11,7 +11,7 @@ export async function generateOgImage(
 ): Promise<Uint8Array> {
   const satoriOptions = await getSatoriOptions().catch((err) => {
     throw new Error(`Failed to load fonts for OG image generation: ${err.message}`);
-  }); // ✅ CALL IT
+  });
 
   const response =
     format === 'webp'

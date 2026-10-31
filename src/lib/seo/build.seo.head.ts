@@ -1,13 +1,25 @@
 // src/lib/seo/build-seo-head.ts
-import type { SeoData } from '@/lib/seo/get-seo.fn';
+import type { SeoData } from '@/lib/seo/seo.core';
 
-export function buildSeoHead(seo?: SeoData) {
-  if (!seo) return {};
+type MetaTag =
+  | { title: string }
+  | { name: string; content: string }
+  | { property: string; content: string };
+
+type LinkTag = { rel: string; href: string };
+type ScriptTag = { type: string; children: string };
+
+export type SeoHead = {
+  meta: MetaTag[];
+  links: LinkTag[];
+  scripts: ScriptTag[];
+};
+
+function buildJsonLd(seo: SeoData): string {
   const { title, description, author, date, type, siteName, siteUrl, ogImageUrl } = seo;
-
   const origin = new URL(siteUrl).origin;
 
-  const jsonLdObject =
+  const data =
     type === 'article'
       ? {
           '@context': 'https://schema.org',
@@ -30,7 +42,14 @@ export function buildSeoHead(seo?: SeoData) {
           description,
         };
 
-  const jsonLd = JSON.stringify(jsonLdObject).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+  // Escape < and > so the JSON can never close the <script> tag
+  return JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+}
+
+export function buildSeoHead(seo?: SeoData): SeoHead {
+  if (!seo) return { meta: [], links: [], scripts: [] };
+
+  const { title, description, author, date, type, siteName, siteUrl, ogImageUrl } = seo;
 
   return {
     meta: [
@@ -55,6 +74,6 @@ export function buildSeoHead(seo?: SeoData) {
       { name: 'twitter:image', content: ogImageUrl },
     ],
     links: [{ rel: 'canonical', href: siteUrl }],
-    scripts: [{ type: 'application/ld+json', children: jsonLd }],
+    scripts: [{ type: 'application/ld+json', children: buildJsonLd(seo) }],
   };
 }
