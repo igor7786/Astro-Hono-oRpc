@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 
-import { buildSeoHead } from '@app/lib/seo/build-seo-head';
-import { getSeo } from '@app/lib/seo/get-seo.fn';
+import { buildSeoHead } from '@/lib/seo/build-seo-head';
+import { getSeo } from '@/lib/seo/get-seo.fn';
 
 export const Route = createFileRoute('/')({
   loader: ({ location }) =>
