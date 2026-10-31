@@ -5,18 +5,32 @@ export function buildSeoHead(seo?: SeoData) {
   if (!seo) return {};
   const { title, description, author, date, type, siteName, siteUrl, ogImageUrl } = seo;
 
-  const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': type === 'article' ? 'Article' : 'WebSite',
-    '@id': siteUrl,
-    name: title,
-    url: siteUrl,
-    description,
-    ...(author && { author: { '@type': 'Person', name: author } }),
-    ...(date && { datePublished: date }),
-  })
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e');
+  const origin = new URL(siteUrl).origin;
+
+  const jsonLdObject =
+    type === 'article'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          '@id': `${siteUrl}#article`,
+          headline: title,
+          description,
+          url: siteUrl,
+          mainEntityOfPage: siteUrl,
+          image: ogImageUrl,
+          ...(author && { author: { '@type': 'Person', name: author } }),
+          ...(date && { datePublished: date }),
+        }
+      : {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          '@id': `${origin}/#website`,
+          name: siteName,
+          url: `${origin}/`,
+          description,
+        };
+
+  const jsonLd = JSON.stringify(jsonLdObject).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
   return {
     meta: [
