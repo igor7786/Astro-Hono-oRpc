@@ -2,14 +2,14 @@ import { useQueryClient } from '@tanstack/react-query';
 // src/app/routes/playground.tsx
 import { ClientOnly, createFileRoute } from '@tanstack/react-router';
 
+import { RouteListCard } from '@app/components/RouteListCard';
+import TestClients from '@app/components/TestClients';
+import { getPlaygroundRoutes } from '@app/lib/playground-routes.fn';
+
 import { GeoDebugCard } from '@rcomp/playground/GeoDebugCard';
 
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
-
-import { RouteListCard } from '../components/RouteListCard';
-import TestClients from '../components/TestClients';
-import { getPlaygroundRoutes } from '../lib/playground-routes.fn';
 
 function TestClientsCard() {
   const queryClient = useQueryClient();
