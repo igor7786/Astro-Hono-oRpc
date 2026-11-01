@@ -8,6 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 // Import Shadcn Card Components
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
+import { useHttpProtocol } from '@/app/lib/hooks/use-http-protocol';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc } from '@/server/clients/client';
 
@@ -60,6 +61,8 @@ function GeoDebugError({ resetErrorBoundary }: { resetErrorBoundary: () => void 
 }
 
 export function GeoDebugCard() {
+  const protocol = useHttpProtocol();
+
   return (
     <Card className="flex flex-col overflow-hidden rounded-xl border border-border bg-panel/90 py-0 shadow-2xl backdrop-blur-xl hover:border-white">
       {/* Header section matching your project's dashboard style */}
@@ -74,7 +77,7 @@ export function GeoDebugCard() {
           </h2>
 
           {/* Right Corner tracking code element */}
-          <span className="font-mono text-xs text-neutral-500">HTTP/3</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
         </div>
       </CardHeader>
 

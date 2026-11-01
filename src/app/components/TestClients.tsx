@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 import { clientOrpc } from '@/server/clients/client';
 
+import { useHttpProtocol } from '../lib/hooks/use-http-protocol';
+
 const clientLabels = {
   pg: 'PostgreSQL',
   neon: 'Neon',
@@ -17,6 +19,8 @@ const clientLabels = {
 } as const;
 
 export default function TestClients() {
+  const protocol = useHttpProtocol();
+
   const { data, error, isLoading } = useQuery(
     clientOrpc.tests.testClients.experimental_liveOptions({
       retry: true,
@@ -54,7 +58,7 @@ export default function TestClients() {
           </h2>
 
           {/* Right Corner tracking code element */}
-          <span className="font-mono text-xs text-neutral-500">HTTP/3</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
         </div>
       </CardHeader>
 

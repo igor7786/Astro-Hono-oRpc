@@ -4,6 +4,8 @@ import { Icon } from '@iconify/react';
 import { cn } from '@rcomp/lib/utils';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
+import { useHttpProtocol } from '../lib/hooks/use-http-protocol';
+
 type RouteAccent = 'ssr' | 'static' | 'admin';
 
 export interface RouteItem {
@@ -47,6 +49,7 @@ const accentStyles: Record<
 
 export function RouteListCard({ accent, badgeLabel, title, items, masked }: Props) {
   const styles = accentStyles[accent];
+  const protocol = useHttpProtocol();
 
   return (
     <Card className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-panel/90 py-0 shadow-2xl backdrop-blur-xl hover:border-white">
@@ -59,7 +62,7 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
             {title}
             <span className="text-sm font-normal text-neutral-100">({items.length})</span>
           </h2>
-          <span className="font-mono text-xs text-neutral-500">HTTP/3</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
         </div>
       </CardHeader>
 
