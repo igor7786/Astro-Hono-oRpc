@@ -9,13 +9,13 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 
 function GeoDebugContent() {
   const client = getQueryClient();
   const { data: geo } = useQuery(
-    orpc.geo.geoContract.queryOptions({
-      queryKey: orpc.geo.geoContract.key(),
+    clientOrpc.geo.geoContract.queryOptions({
+      queryKey: clientOrpc.geo.geoContract.key(),
       input: {},
       retry: false,
       suspense: true,

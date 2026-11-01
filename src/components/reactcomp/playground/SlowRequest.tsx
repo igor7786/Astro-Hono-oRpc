@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@rcomp/ui/button';
 
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 
 export default function SlowRequest() {
   const client = getQueryClient();
@@ -13,7 +13,7 @@ export default function SlowRequest() {
   const [started, setStarted] = useState(false);
   const [cancelled, setCancelled] = useState(false);
 
-  const queryOptions = orpc.tests.slowTest.queryOptions({
+  const queryOptions = clientOrpc.tests.slowTest.queryOptions({
     input: {
       name: 'slow operation',
     },

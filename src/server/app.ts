@@ -44,7 +44,7 @@ app.use('*', prettyLogger);
 app.use('*', etagMiddleware);
 
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
-app.use('/*', orpcMiddleware);
+app.use('/rpc/*', orpcMiddleware);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', async (c) => c.json({ status: 'ok' }));

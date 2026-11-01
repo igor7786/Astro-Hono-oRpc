@@ -1,33 +1,34 @@
 ---
+import { getImage } from 'astro:assets';
+import { call } from '@orpc/server';
+
 import Layout from '@/layouts/Layout.astro';
 import CardTopImageDemo from '@rcomp/shadcn-studio/CardStudio';
+import cardImage from '@/assets/card.webp';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
-import { serverClient } from '@/server/clients/server.client';
+import { allRouters } from '@/server/routers/all.routers';
 
 const inputData = {
   name: 'Smooth, flowing gradients blending rich reds and blues in an abstract swirl.',
 };
 
-import { getImage } from 'astro:assets';
-
-import cardImage from '@/assets/card.webp';
-
 const optimizedImage = await getImage({ src: cardImage, format: 'avif' });
+
 let data: { name: string } | null = null;
 
 try {
   data = await Promise.race([
-    serverClient.tests.slowTest(inputData),
+    // No `await` in here: the race only works if the promise is passed in unresolved
+    call(allRouters.tests.slowTest, inputData, {
+      context: { request: Astro.request }, // placeholder: match your base procedure's context
+    }),
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 300)),
   ]);
 } catch (e) {
   // server fetch failed → fall back to client-side fetch
-  if (e instanceof Error) {
-    console.error('prefetch failed:', e.message);
-  } else {
-    console.error('prefetch failed:', e);
-  }
+  console.error('prefetch failed:', e instanceof Error ? e.message : e);
 }
+
 const name = data?.name ?? null;
 const seo = createSeo({
   title: 'Skeleton Test',

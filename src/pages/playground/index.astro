@@ -1,35 +1,34 @@
 ---
+import { call } from '@orpc/server';
+
 import Layout from '@/layouts/Layout.astro';
 import SlowRequest from '@rcomp/playground/SlowRequest';
 import { TestClient } from '@rcomp/playground/TestClient';
 import UserProfile from '@rcomp/playground/TestTanstackQuery';
 import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
-import { serverClient } from '@/server/clients/server.client';
+import { allRouters } from '@/server/routers/all.routers';
+
+// Placeholder context: match what your Hono handler passes into oRPC
+const context = { request: Astro.request };
 
 let data: { name: string } = { name: '' };
 try {
-  data = await serverClient.tests.test({ name: 'test' });
+  data = await call(allRouters.tests.test, { name: 'test' }, { context });
 } catch (error: unknown) {
   data = { name: (error as Error).message };
 }
+
 const names = ['curt', 'bob', 'charlie'];
 const colors = ['text-green-700', 'text-blue-700', 'text-purple-700'];
 
 const profiles = await Promise.all(
   names.map(async (name, index) => {
+    const className = `text-3xl font-bold underline ${colors[index]}`;
     try {
-      const initialData = await serverClient.tests.test({ name });
-      return {
-        name,
-        initialData,
-        className: `text-3xl font-bold underline ${colors[index]}`,
-      };
+      const initialData = await call(allRouters.tests.test, { name }, { context });
+      return { name, initialData, className };
     } catch {
-      return {
-        name,
-        initialData: undefined,
-        className: `text-3xl font-bold underline ${colors[index]}`,
-      };
+      return { name, initialData: undefined, className };
     }
   })
 );

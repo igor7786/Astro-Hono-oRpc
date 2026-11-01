@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 
 export default function TestRedirect() {
   const client = getQueryClient();
   const { data, isLoading, error } = useQuery(
-    orpc.tests.redirectTest.queryOptions({
+    clientOrpc.tests.redirectTest.queryOptions({
       queryKey: ['test', { name: 'admin' }],
       input: { name: 'admin' },
       retry: false,

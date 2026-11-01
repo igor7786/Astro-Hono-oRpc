@@ -5,7 +5,7 @@ import { cn } from '@rcomp/lib/utils';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 
 const clientLabels = {
   pg: 'PostgreSQL',
@@ -19,7 +19,7 @@ const clientLabels = {
 export default function TestClients() {
   const client = getQueryClient();
   const { data, error, isLoading } = useQuery(
-    orpc.tests.testClients.experimental_liveOptions({
+    clientOrpc.tests.testClients.experimental_liveOptions({
       retry: true,
     }),
     client

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 // ← use the mainQuery client, not the old query
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 import { type TestInput } from '@/server/schemas/tests-schema/test.schema';
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 export default function UserProfile({ className, initialData, name }: Props) {
   const client = getQueryClient();
   const { data, isLoading, error } = useQuery(
-    orpc.tests.test.queryOptions({
+    clientOrpc.tests.test.queryOptions({
       input: { name }, // ← use the prop, not hardcoded
       queryKey: ['test', { name }],
       initialData: initialData ?? undefined,

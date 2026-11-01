@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 import { Button } from '@/components/reactcomp/ui/button';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 import { type TestInput } from '@/server/schemas/tests-schema/test.schema';
 
 type CardInnerProps = {
@@ -26,7 +26,7 @@ const CardTopImageDemo = ({ initialData, input, imageSrc }: CardInnerProps) => {
     setMounted(true);
   }, []);
   const { data, isLoading, isFetching, error } = useQuery(
-    orpc.tests.slowTest.queryOptions({
+    clientOrpc.tests.slowTest.queryOptions({
       input: { name: input },
       queryKey: ['test', { name: input }],
       initialData: initialData ? { name: initialData } : undefined,

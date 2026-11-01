@@ -8,16 +8,16 @@ import { Button } from '@rcomp/ui/button';
 
 import { $testData } from '@/lib/stores/ssr';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
-import { clientOrpc as orpc } from '@/server/clients/web.client';
+import { clientOrpc } from '@/server/clients/client';
 
 export const useTest = (name: string, initialData?: { name: string }) => {
   const client = getQueryClient();
 
-  const queryKey = orpc.tests.test.queryKey({ input: { name } });
+  const queryKey = clientOrpc.tests.test.queryKey({ input: { name } });
   const cachedData = client.getQueryData<{ name: string }>(queryKey);
 
   return useQuery(
-    orpc.tests.test.queryOptions({
+    clientOrpc.tests.test.queryOptions({
       input: { name },
       initialData: cachedData ?? initialData,
       initialDataUpdatedAt: 0,
