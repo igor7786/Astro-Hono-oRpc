@@ -1,24 +1,21 @@
-import { useQueryClient } from '@tanstack/react-query';
 // src/app/routes/playground.tsx
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { ClientOnly, createFileRoute } from '@tanstack/react-router';
 
 import { RouteListCard } from '@app/components/RouteListCard';
 import TestClients from '@app/components/TestClients';
-import { getPlaygroundRoutes } from '@app/lib/playground-routes.fn';
+import { playgroundRoutesQuery } from '@app/lib/playground-routes.query';
 
 import { GeoDebugCard } from '@rcomp/playground/GeoDebugCard';
 
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
 
-function TestClientsCard() {
-  const queryClient = useQueryClient();
-  return <TestClients client={queryClient} />;
-}
-
 export const Route = createFileRoute('/playground')({
-  loader: async ({ location }) => {
-    const [seo, routes] = await Promise.all([
+  loader: async ({ context, location }) => {
+    // Starts the query on the server (and on client navigation) and fills the cache.
+    // ensureQueryData waits for it, so the page renders with data already in place.
+    const [seo] = await Promise.all([
       getSeo({
         data: {
           title: 'Playground | Home',
@@ -27,16 +24,17 @@ export const Route = createFileRoute('/playground')({
           pathname: location.pathname,
         },
       }),
-      getPlaygroundRoutes(),
+      context.queryClient.query(playgroundRoutesQuery),
     ]);
-    return { seo, routes };
+    return { seo }; // the routes live in the query cache, not in loaderData
   },
   head: ({ loaderData }) => buildSeoHead(loaderData?.seo),
   component: Playground,
 });
 
 function Playground() {
-  const { routes } = Route.useLoaderData();
+  // Data is already in the cache from the loader, so this doesn't suspend or flash
+  const { data: routes } = useSuspenseQuery(playgroundRoutesQuery);
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-6 text-center">
@@ -56,9 +54,8 @@ function Playground() {
           masked
         />
 
-        {/* Same as client:only="react" in Astro */}
         <ClientOnly fallback={<div className="h-76 rounded-xl border border-white/10 bg-panel/50" />}>
-          <TestClientsCard />
+          <TestClients />
         </ClientOnly>
         <ClientOnly fallback={null}>
           <GeoDebugCard />

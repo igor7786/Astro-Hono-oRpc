@@ -1,5 +1,4 @@
 // src/components/reactcomp/playground/TestClients.tsx
-import type { QueryClient } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
 import { cn } from '@rcomp/lib/utils';
@@ -17,17 +16,11 @@ const clientLabels = {
   kafka: 'Kafka',
 } as const;
 
-type Props = {
-  // Optional: TanStack Start passes the router's client; Astro islands use the singleton
-  client?: QueryClient;
-};
-
-export default function TestClients({ client }: Props) {
+export default function TestClients() {
   const { data, error, isLoading } = useQuery(
     clientOrpc.tests.testClients.experimental_liveOptions({
       retry: true,
-    }),
-    client
+    })
   );
 
   if (isLoading) return <div className="font-mono text-xs text-neutral-500">Loading...</div>;

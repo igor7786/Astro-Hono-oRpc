@@ -3,12 +3,11 @@ import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
+import { ThemeProvider } from '@app/components/theme-provider';
 import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
 
 import { envClient } from '@/lib/env/client.env';
 import appCss from '@/styles/global.css?url';
-
-import { ThemeProvider } from '../components/theme-provider';
 
 interface MyRouterContext {
   queryClient: QueryClient;
