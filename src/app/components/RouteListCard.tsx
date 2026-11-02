@@ -1,10 +1,10 @@
+import { useHttpProtocol } from '@app/lib/hooks/use-http-protocol';
+import '@app/lib/icons/register-ui-icons';
 // src/components/reactcomp/playground/RouteListCard.tsx
 import { Icon } from '@iconify/react';
 
 import { cn } from '@rcomp/lib/utils';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
-
-import { useHttpProtocol } from '../lib/hooks/use-http-protocol';
 
 type RouteAccent = 'ssr' | 'static' | 'admin';
 
@@ -62,7 +62,7 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
             {title}
             <span className="text-sm font-normal text-neutral-100">({items.length})</span>
           </h2>
-          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol ?? '...'}</span>
         </div>
       </CardHeader>
 

@@ -77,7 +77,7 @@ export function GeoDebugCard() {
           </h2>
 
           {/* Right Corner tracking code element */}
-          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol ?? '...'}</span>
         </div>
       </CardHeader>
 

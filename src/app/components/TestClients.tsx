@@ -1,13 +1,13 @@
 // src/components/reactcomp/playground/TestClients.tsx
 import { useQuery } from '@tanstack/react-query';
 
+import { useHttpProtocol } from '@app/lib/hooks/use-http-protocol';
+
 import { cn } from '@rcomp/lib/utils';
 // Import Shadcn Card Components
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 import { clientOrpc } from '@/server/clients/client';
-
-import { useHttpProtocol } from '../lib/hooks/use-http-protocol';
 
 const clientLabels = {
   pg: 'PostgreSQL',
@@ -58,7 +58,7 @@ export default function TestClients() {
           </h2>
 
           {/* Right Corner tracking code element */}
-          <span className="font-mono text-xs text-neutral-500">{protocol}</span>
+          <span className="font-mono text-xs text-neutral-500">{protocol ?? '...'}</span>
         </div>
       </CardHeader>
 
