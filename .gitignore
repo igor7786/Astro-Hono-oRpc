@@ -739,5 +739,6 @@ GIT.txt
 !**/src/scripts
 !src/lib/env
 !.example.env
+!src/app/lib
 
 
