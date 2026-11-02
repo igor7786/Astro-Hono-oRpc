@@ -3,6 +3,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
+import { RedirectToErrorPage } from '@app/components/RedirectToErrorPage';
 import { ThemeProvider } from '@app/components/theme-provider';
 import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
 
@@ -13,6 +14,7 @@ interface MyRouterContext {
   queryClient: QueryClient;
 }
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  notFoundComponent: () => <RedirectToErrorPage code={404} />,
   head: () => ({
     meta: [
       // Seo

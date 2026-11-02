@@ -11,7 +11,7 @@ import { GeoDebugCard } from '@rcomp/playground/GeoDebugCard';
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
 
-export const Route = createFileRoute('/playground')({
+export const Route = createFileRoute('/admin')({
   loader: async ({ context, location }) => {
     // Starts the query on the server (and on client navigation) and fills the cache.
     // ensureQueryData waits for it, so the page renders with data already in place.
