@@ -8,6 +8,8 @@ import tailwindcss from '@tailwindcss/vite';
 import bun from '@wyattjoh/astro-bun-adapter';
 import iconset from 'astro-iconset';
 import { defineConfig, fontProviders } from 'astro/config';
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
+import Icons from 'unplugin-icons/vite';
 
 import cspManifestPlugin from '@/plugins/astro.csp.manifest.ts';
 import serverStartup from '@/plugins/clients';
@@ -68,6 +70,14 @@ export default defineConfig({
         srcDirectory: './src/app',
         router: {
           basepath: 'app',
+        },
+      }),
+      Icons({
+        compiler: 'jsx',
+        jsx: 'react',
+        customCollections: {
+          // every .svg in this folder becomes ~icons/ui/<filename>
+          ui: FileSystemIconLoader('./src/assets/icons'),
         },
       }),
       tailwindcss(),

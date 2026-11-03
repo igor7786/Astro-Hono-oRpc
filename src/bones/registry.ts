@@ -4,6 +4,7 @@ import { registerBones } from 'boneyard-js';
 import { configureBoneyard } from 'boneyard-js/react';
 
 import _Card from './Card.bones.json';
+import _tech_icons_grid from './tech-icons-grid.bones.json';
 
 configureBoneyard({
   darkColor: '#1a1a2e',
@@ -16,5 +17,6 @@ configureBoneyard({
 });
 
 registerBones({
+  'tech-icons-grid': _tech_icons_grid,
   Card: _Card,
 });

@@ -1,7 +1,6 @@
 // src/components/reactcomp/playground/RouteListCard.tsx
 import { useHttpProtocol } from '@app/lib/hooks/use-http-protocol';
-import '@app/lib/icons/register-ui-icons';
-import { Icon } from '@iconify/react';
+import { STATIC_ICON_MAP } from '@app/lib/icons/static-icons-map';
 
 import { cn } from '@rcomp/lib/utils';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
@@ -68,36 +67,42 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
 
       <CardContent className="p-4">
         <ul className="space-y-1.5">
-          {items.map(({ route, label, icon, size }) => (
-            <li key={route}>
-              {/* Plain <a>: many of these URLs are Astro pages outside TanStack's router,
-                  and the TanStack ones already include the /app basepath */}
-              <a
-                href={route}
-                className={cn(
-                  'grid grid-cols-12 items-center rounded-lg border border-white/5 bg-white/1 px-4 py-2 text-sm transition-all duration-200',
-                  styles.hoverBorder,
-                  styles.hoverText,
-                  'hover:bg-white/10'
-                )}
-              >
-                <div className="col-span-7 flex min-w-0 items-center gap-3">
-                  {icon && (
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center">
-                      <Icon icon={icon} width={size || 16} height={size || 16} className={styles.text} />
-                    </div>
-                  )}
-                  <span className={cn('truncate font-mono text-xs', styles.text)}>
-                    {masked ? '----------' : route}
-                  </span>
-                </div>
+          {items.map(({ route, label, icon: iconKey, size }) => {
+            const LocalIconComponent = iconKey ? STATIC_ICON_MAP[iconKey] : null;
 
-                <span className="col-span-5 truncate pl-4 text-right font-mono text-[11px] tracking-tight text-neutral-500">
-                  {label}
-                </span>
-              </a>
-            </li>
-          ))}
+            return (
+              <li key={route}>
+                <a
+                  href={route}
+                  className={cn(
+                    'grid grid-cols-12 items-center rounded-lg border border-white/5 bg-white/1 px-4 py-2 text-sm transition-all duration-200',
+                    styles.hoverBorder,
+                    styles.hoverText,
+                    'hover:bg-white/10'
+                  )}
+                >
+                  <div className="col-span-7 flex min-w-0 items-center gap-3">
+                    {LocalIconComponent && (
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center">
+                        <LocalIconComponent
+                          width={size || 16}
+                          height={size || 16}
+                          className={styles.text}
+                        />
+                      </div>
+                    )}
+                    <span className={cn('truncate font-mono text-xs', styles.text)}>
+                      {masked ? '----------' : route}
+                    </span>
+                  </div>
+
+                  <span className="col-span-5 truncate pl-4 text-right font-mono text-[11px] tracking-tight text-neutral-500">
+                    {label}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </CardContent>
     </Card>
