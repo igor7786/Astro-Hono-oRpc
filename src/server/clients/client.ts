@@ -8,9 +8,14 @@ import { appContract } from '@/server/contracts/all.contracts';
 import type { ContractRouterClient } from '@orpc/contract';
 import type { JsonifiedClient } from '@orpc/openapi-client';
 
+// Browser: the page's own origin. Server (SSR): this same process.
+const baseUrl = () =>
+  typeof window !== 'undefined'
+    ? window.location.origin
+    : `http://127.0.0.1:${process.env.PORT ?? '4321'}`;
+
 const link = new OpenAPILink(appContract, {
-  // <--- Added allRouters as 1st argument
-  url: () => `${window.location.origin}/api/rpc/openapi/v1`,
+  url: () => `${baseUrl()}/api/rpc/openapi/v1`,
   eventIteratorKeepAliveEnabled: true,
   eventIteratorKeepAliveInterval: 5000,
   eventIteratorKeepAliveComment: '',

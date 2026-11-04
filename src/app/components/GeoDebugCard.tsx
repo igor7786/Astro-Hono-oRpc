@@ -1,27 +1,24 @@
+// src/components/reactcomp/playground/GeoDebugCard.tsx
 import { Suspense } from 'react';
 
 import { QueryErrorResetBoundary, useQuery } from '@tanstack/react-query';
 
-// src/components/reactcomp/playground/GeoDebugCard.tsx
 import { ErrorBoundary } from 'react-error-boundary';
 
 // Import Shadcn Card Components
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
 
 import { useHttpProtocol } from '@/app/lib/hooks/use-http-protocol';
-import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc } from '@/server/clients/client';
 
 function GeoDebugContent() {
-  const client = getQueryClient();
   const { data: geo } = useQuery(
     clientOrpc.geo.geoContract.queryOptions({
       queryKey: clientOrpc.geo.geoContract.key(),
       input: {},
       retry: false,
       suspense: true,
-    }),
-    client
+    })
   );
 
   return (

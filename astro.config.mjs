@@ -69,7 +69,7 @@ export default defineConfig({
         // },
         srcDirectory: './src/app',
         router: {
-          basepath: 'app',
+          basepath: '',
         },
       }),
       Icons({

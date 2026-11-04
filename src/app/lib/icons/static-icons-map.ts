@@ -38,52 +38,125 @@ export type IconComponentType = React.ComponentType<{
 
 // 🗺️ Exported map table
 export const STATIC_ICON_MAP: Record<string, IconComponentType> = {
+  'ui:3xui': ThreeXuiIcon,
   'logos:nginx': NginxIcon,
-  'simple-icons:scalar': ScalarIcon,
   'selfhst:crowdsec': CrowdsecIcon,
-  'logos:bun': BunIcon,
-  'skill-icons:astro': AstroIcon,
+  'selfhst:arcane': ArcaneIcon,
   'ui:redpanda': RedpandaIcon,
+  'selfhst:rustfs': RustfsIcon,
+  'lucide:logs': LogsIcon,
+  'ui:dragonfly': DragonflyIcon,
+  'logos:neon-icon': NeonIcon,
+  'logos:postgresql': PostgresqlIcon,
+  'logos:sqlite': SqliteIcon,
+  'logos:bun': BunIcon,
+  'skill-icons:vite-light': ViteIcon,
+  'skill-icons:astro': AstroIcon,
   'logos:hono': HonoIcon,
   'ui:orpc': OrpcIcon,
   'logos:zod': ZodIcon,
-  'selfhst:rustfs': RustfsIcon,
-  'logos:postgresql': PostgresqlIcon,
-  'logos:neon-icon': NeonIcon,
-  'logos:sqlite': SqliteIcon,
-  'ui:dragonfly': DragonflyIcon,
-  'skill-icons:vite-light': ViteIcon,
   'logos:react-query-icon': ReactQueryIcon,
   'ui:drizzle': DrizzleIcon,
   'logos:tailwindcss-icon': TailwindIcon,
   'logos:react': ReactIcon,
   'ui:nanostores': NanostoresIcon,
-  'ui:3xui': ThreeXuiIcon,
   'simple-icons:ionos': IonosIcon,
-  'selfhst:arcane': ArcaneIcon,
   'selfhst:authentik': AuthentikIcon,
-  'lucide:logs': LogsIcon,
+  'simple-icons:scalar': ScalarIcon,
 };
 
-export const technologies = [
-  { name: 'Nginx', Icon: NginxIcon },
-  { name: 'CrowdSec', Icon: CrowdsecIcon },
-  { name: 'Bun', Icon: BunIcon },
-  { name: 'Astro', Icon: AstroIcon },
-  { name: 'Redpanda', Icon: RedpandaIcon },
-  { name: 'Hono', Icon: HonoIcon },
-  { name: 'oRPC', Icon: OrpcIcon },
-  { name: 'Zod', Icon: ZodIcon },
-  { name: 'RustFS', Icon: RustfsIcon },
-  { name: 'PostgreSQL', Icon: PostgresqlIcon },
-  { name: 'Neon', Icon: NeonIcon },
-  { name: 'SQLite', Icon: SqliteIcon },
-  { name: 'Dragonfly', Icon: DragonflyIcon },
-  { name: 'Vite', Icon: ViteIcon },
-  { name: 'TanStack Query', Icon: ReactQueryIcon },
-  { name: 'Drizzle', Icon: DrizzleIcon },
-  { name: 'Tailwind CSS', Icon: TailwindIcon },
-  { name: 'React', Icon: ReactIcon },
-  { name: 'Nano Stores', Icon: NanostoresIcon },
-  { name: '3X-UI', Icon: ThreeXuiIcon },
+// Unified single source of truth configuration type
+export interface Technology {
+  name: string;
+  icon: IconComponentType; // 💡 Component variable reference
+  route: string;
+  label: string;
+  size: number;
+}
+
+export const technologies: Technology[] = [
+  {
+    name: 'IONOS',
+    icon: IonosIcon,
+    route: 'https://www.ionos.co.uk/',
+    label: 'Ionos-Admin',
+    size: 28,
+  },
+  {
+    name: '3X-UI',
+    icon: ThreeXuiIcon,
+    route: 'https://3xui.fast-web-tech.co.uk/',
+    label: '3xui-Admin',
+    size: 32,
+  },
+  {
+    name: 'Arcane',
+    icon: ArcaneIcon,
+    route: 'https://arcane.fast-web-tech.co.uk/',
+    label: 'Arcane',
+    size: 24,
+  },
+  {
+    name: 'Nginx',
+    icon: NginxIcon,
+    route: 'https://npm.fast-web-tech.co.uk/',
+    label: 'Npm Admin',
+    size: 24,
+  },
+  {
+    name: 'CrowdSec',
+    icon: CrowdsecIcon,
+    route: 'https://crowdsec.fast-web-tech.co.uk/',
+    label: 'Crowdsec-Admin',
+    size: 24,
+  },
+  {
+    name: 'Redpanda',
+    icon: RedpandaIcon,
+    route: 'https://redpanda-console.fast-web-tech.co.uk/',
+    label: 'Redpanda-Console',
+    size: 24,
+  },
+  {
+    name: 'Neon',
+    icon: NeonIcon,
+    route: 'https://neon.com/',
+    label: 'Neon-Admin',
+    size: 24,
+  },
+  {
+    name: 'Dragonfly',
+    icon: DragonflyIcon,
+    route: 'https://redis-insight.fast-web-tech.co.uk/',
+    label: 'Dragonfly-Console',
+    size: 28,
+  },
+  {
+    name: 'RustFS',
+    icon: RustfsIcon,
+    route: 'https://rustfs.fast-web-tech.co.uk/',
+    label: 'Rustfs-Admin',
+    size: 24,
+  },
+  {
+    name: 'Authentik',
+    icon: AuthentikIcon,
+    route: 'https://auth.fast-web-tech.co.uk/',
+    label: 'Authentik-Admin',
+    size: 24,
+  },
+  {
+    name: 'Logs',
+    icon: LogsIcon, // 💡 Assigned static component directly
+    route: 'https://logs.fast-web-tech.co.uk/',
+    label: 'Logs-Admin',
+    size: 24,
+  },
+  {
+    name: 'Scalar',
+    icon: ScalarIcon, // 💡 Assigned static component directly
+    route: '/api/docs',
+    label: 'OpenAPI Docs',
+    size: 24,
+  },
 ];

@@ -13,7 +13,7 @@ export function Header() {
         </div>
         <nav className="flex items-center gap-4 text-sm font-medium text-muted-foreground">
           <Link
-            to="/admin"
+            to="/register"
             className="transition-colors hover:text-foreground [&.active]:text-foreground"
           >
             Dashboard

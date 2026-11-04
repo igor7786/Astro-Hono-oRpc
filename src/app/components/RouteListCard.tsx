@@ -1,6 +1,5 @@
-// src/components/reactcomp/playground/RouteListCard.tsx
 import { useHttpProtocol } from '@app/lib/hooks/use-http-protocol';
-import { STATIC_ICON_MAP } from '@app/lib/icons/static-icons-map';
+import { technologies } from '@app/lib/icons/static-icons-map';
 
 import { cn } from '@rcomp/lib/utils';
 import { Card, CardContent, CardHeader } from '@rcomp/ui/card';
@@ -10,7 +9,6 @@ type RouteAccent = 'ssr' | 'static' | 'admin';
 export interface RouteItem {
   route: string;
   label: string;
-  icon?: string;
   size?: number;
 }
 
@@ -58,17 +56,23 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
             <span className={cn('rounded border px-2 py-0.5 text-xs font-medium', styles.badge)}>
               {badgeLabel}
             </span>
+
             {title}
+
             <span className="text-sm font-normal text-neutral-100">({items.length})</span>
           </h2>
+
           <span className="font-mono text-xs text-neutral-500">{protocol ?? '...'}</span>
         </div>
       </CardHeader>
 
       <CardContent className="p-4">
         <ul className="space-y-1.5">
-          {items.map(({ route, label, icon: iconKey, size }) => {
-            const LocalIconComponent = iconKey ? STATIC_ICON_MAP[iconKey] : null;
+          {items.map(({ route, label, size }) => {
+            const technology = technologies.find((item) => item.route === route);
+
+            const Icon = technology?.icon;
+            const iconSize = size ?? technology?.size ?? 16;
 
             return (
               <li key={route}>
@@ -82,15 +86,12 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
                   )}
                 >
                   <div className="col-span-7 flex min-w-0 items-center gap-3">
-                    {LocalIconComponent && (
+                    {Icon && (
                       <div className="flex h-5 w-5 shrink-0 items-center justify-center">
-                        <LocalIconComponent
-                          width={size || 16}
-                          height={size || 16}
-                          className={styles.text}
-                        />
+                        <Icon width={iconSize} height={iconSize} className={styles.text} />
                       </div>
                     )}
+
                     <span className={cn('truncate font-mono text-xs', styles.text)}>
                       {masked ? '----------' : route}
                     </span>

@@ -13,7 +13,7 @@ export const STATIC_FLAT = ['./index.astro'];
 
 // Must match tanstackStart({ router: { basepath } }) in astro.config.
 // Use '' when there is no basepath, or '/app' if you still have basepath: 'app'.
-export const TANSTACK_BASEPATH = '/app';
+export const TANSTACK_BASEPATH = '';
 
 /**
  * Determines whether a file path should be ignored.

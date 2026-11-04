@@ -4,9 +4,11 @@ import { Button } from '@rcomp/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@rcomp/ui/card';
 import { Separator } from '@rcomp/ui/separator';
 
+import { useHttpProtocol } from '@/app/lib/hooks/use-http-protocol';
 import type { ErrorCardProps } from '@/lib/shared/schemas/errors/page.errors';
 
 export function ErrorCard({ href, code, title, message, requestId, isServerError }: ErrorCardProps) {
+  const protocol = useHttpProtocol();
   const accentText = isServerError ? 'text-error-server' : 'text-error-client';
   const accentBg = isServerError ? 'bg-error-server' : 'bg-error-client';
   const accentBorder = isServerError ? 'border-error-server-dim' : 'border-error-client-dim';
@@ -39,7 +41,7 @@ export function ErrorCard({ href, code, title, message, requestId, isServerError
               </div>
 
               {/* Right Corner */}
-              <span className="font-mono text-xs text-green-600">HTTP/3</span>
+              <span className="font-mono text-xs text-green-600">{protocol ?? '....'}</span>
             </div>
           </CardHeader>
 
