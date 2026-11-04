@@ -19,7 +19,7 @@ root.route('/', apiApp);
 // root.all('*', (c) => startHandler.fetch(c.req.raw));
 
 // Astro owns these prefixes; TanStack Start owns everything else
-const astroPrefixes = ['/playground', '/_astro', '/_image', '/_server-islands', '/error-page'];
+const astroPrefixes = ['/playground', '/_astro', '/_image', '/_server-islands'];
 
 root.all('/*', (c, next) => {
   const { pathname } = new URL(c.req.url);
