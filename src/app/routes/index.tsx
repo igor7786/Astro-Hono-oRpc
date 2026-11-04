@@ -63,7 +63,12 @@ function Playground() {
 
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-center px-6 py-6 text-center">
           <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
-            <RouteListCard accent="ssr" badgeLabel="SSR" title="Server Pages" items={routes.ssrRoutes} />
+            <RouteListCard
+              accent="ssr"
+              badgeLabel="SSR + CSR"
+              title="Server and Client pages"
+              items={routes.ssrRoutes}
+            />
 
             <RouteListCard
               accent="static"
