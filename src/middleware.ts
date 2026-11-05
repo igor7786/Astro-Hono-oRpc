@@ -1,3 +1,4 @@
+// src/middleware.ts
 import { defineMiddleware } from 'astro:middleware';
 
 import { csp, permissionsPolicy } from '@/lib/csp/headers';
@@ -14,7 +15,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * REDIRECT TO ERROR PAGE
    * ============================================================
    */
-
   const status = String(response.status);
   const parsed = ErrorCodeSchema.safeParse(status);
 
@@ -30,11 +30,21 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * SECURITY HEADERS — every response: HTML, API, static, APP ,etc.
    * ============================================================
    */
-
   response.headers.set('Permissions-Policy', permissionsPolicy);
-  response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
+
+  // Detect Vite development assets or internal source file requests
+  const isDevAsset =
+    pathname.startsWith('/_astro/') ||
+    pathname.startsWith('/src/') ||
+    pathname.endsWith('.css') ||
+    pathname.endsWith('.js');
+
+  // 🛡️ Only enforce strict MIME sniffing if it is NOT a Vite dev module
+  if (!isDevAsset) {
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+  }
 
   const isStaticOrApiOrApp =
     context.isPrerendered ||
@@ -49,10 +59,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * CACHE CONTROL — only dynamically-rendered HTML
    * ============================================================
    */
-
-  if (!isStaticOrApiOrApp && isHtml) {
+  if (!isStaticOrApiOrApp && isHtml && pathname.startsWith('/blog/')) {
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private, max-age=0');
-
     response.headers.set('Pragma', 'no-cache');
   }
 
@@ -61,7 +69,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * CSP — Astro-rendered HTML only, never /api/*
    * ============================================================
    */
-
   if (
     envServer.PRODUCTION === 'true' &&
     csp &&

@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+
 import { cn } from '@rcomp/lib/utils';
 import { Badge } from '@rcomp/ui/badge';
 import { Button } from '@rcomp/ui/button';
@@ -7,7 +9,7 @@ import { Separator } from '@rcomp/ui/separator';
 import { useHttpProtocol } from '@/app/lib/hooks/use-http-protocol';
 import type { ErrorCardProps } from '@/lib/shared/schemas/errors/page.errors';
 
-export function ErrorCard({ href, code, title, message, requestId, isServerError }: ErrorCardProps) {
+export function ErrorCard({ code, title, message, requestId, isServerError }: ErrorCardProps) {
   const protocol = useHttpProtocol();
   const accentText = isServerError ? 'text-error-server' : 'text-error-client';
   const accentBg = isServerError ? 'bg-error-server' : 'bg-error-client';
@@ -98,9 +100,9 @@ export function ErrorCard({ href, code, title, message, requestId, isServerError
             <Button
               nativeButton={false}
               render={
-                <a
-                  href={href}
-                  aria-label="Back to fast-web-tech.co.uk"
+                <Link
+                  to="/"
+                  aria-label="Back to home"
                   className="inline-flex items-center justify-center gap-2"
                 />
               }
@@ -112,7 +114,7 @@ export function ErrorCard({ href, code, title, message, requestId, isServerError
               >
                 ←
               </span>
-              Back to fast-web-tech.co.uk
+              Back to home
             </Button>
           </CardFooter>
         </Card>

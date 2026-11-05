@@ -2,7 +2,7 @@ import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 // Start in report-only mode and watch your report endpoint, then set this to false.
-export const CSP_REPORT_ONLY = true;
+export const CSP_REPORT_ONLY = false;
 
 export const cspEnabled = () => envServer.PRODUCTION === 'true';
 
