@@ -8,9 +8,8 @@ const redirectPath = openApiBasePath + llmsTxtPath;
 
 // convince TS it's used
 void redirectPath;
-console.log('Redirecting to:', redirectPath);
 
-return Astro.redirect(redirectPath, 301);
+return Astro.redirect(redirectPath, 302);
 ---
 
 
