@@ -1,3 +1,4 @@
+// @app/middleware/security.server
 import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
@@ -11,6 +12,11 @@ export const createNonce = () => {
   return btoa(String.fromCharCode(...bytes));
 };
 
+/**
+ * Returns the reporting destination URL path string.
+ */
+export const getReportEndpoint = () => openApiBasePath + cspPath;
+
 export const buildCsp = (nonce: string) =>
   [
     "default-src 'self'",
@@ -21,9 +27,10 @@ export const buildCsp = (nonce: string) =>
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    // 1. Appended 'report-sha256' keyword and pointed it to the 'default' reporting group layout
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'; report-to default`,
     "style-src 'self' 'unsafe-inline'",
-    `report-uri ${openApiBasePath + cspPath}`,
+    `report-uri ${getReportEndpoint()}`, // Legacy fallback directive matching your route path
   ].join('; ');
 
 // Same values as your Astro `permissionsPolicy`. It is repeated here on purpose:
