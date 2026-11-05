@@ -1,12 +1,13 @@
-// import { TanStackDevtools } from '@tanstack/react-devtools';
+import { TanStackDevtools } from '@tanstack/react-devtools';
+
 import '@app/lib/zod-config';
 import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
-// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { RedirectToErrorPage } from '@app/components/RedirectToErrorPage';
 import { ThemeProvider } from '@app/components/theme-provider';
-// import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
+import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
 
 // import { envClient } from '@/lib/env/client.env';
 import appCss from '@/styles/global.css?url';
@@ -46,7 +47,7 @@ function RootDocument() {
           <Outlet />
         </ThemeProvider>
 
-        {/* {!envClient.PRODUCTION && (
+        {import.meta.env.DEV && (
           <TanStackDevtools
             config={{
               position: 'bottom-right',
@@ -58,8 +59,8 @@ function RootDocument() {
               },
               TanStackQueryDevtools,
             ]}
-          /> */}
-        {/* )} */}
+          />
+        )}
         <Scripts />
       </body>
     </html>
