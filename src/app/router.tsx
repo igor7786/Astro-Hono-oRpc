@@ -1,4 +1,6 @@
 // src/app/router.tsx
+import { z } from 'zod';
+z.config({ jitless: true });
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 

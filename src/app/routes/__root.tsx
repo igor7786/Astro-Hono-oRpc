@@ -1,4 +1,5 @@
 // import { TanStackDevtools } from '@tanstack/react-devtools';
+import '@app/lib/zod-config';
 import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
@@ -44,6 +45,7 @@ function RootDocument() {
         <ThemeProvider defaultTheme="system" storageKey="theme">
           <Outlet />
         </ThemeProvider>
+
         {/* {!envClient.PRODUCTION && (
           <TanStackDevtools
             config={{
