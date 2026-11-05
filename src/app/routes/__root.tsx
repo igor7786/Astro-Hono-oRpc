@@ -1,13 +1,13 @@
-import { TanStackDevtools } from '@tanstack/react-devtools';
+// import { TanStackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { RedirectToErrorPage } from '@app/components/RedirectToErrorPage';
 import { ThemeProvider } from '@app/components/theme-provider';
-import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
+// import TanStackQueryDevtools from '@app/integrations/tanstack-query/devtools';
 
-import { envClient } from '@/lib/env/client.env';
+// import { envClient } from '@/lib/env/client.env';
 import appCss from '@/styles/global.css?url';
 
 interface MyRouterContext {
@@ -44,7 +44,7 @@ function RootDocument() {
         <ThemeProvider defaultTheme="system" storageKey="theme">
           <Outlet />
         </ThemeProvider>
-        {!envClient.PRODUCTION && (
+        {/* {!envClient.PRODUCTION && (
           <TanStackDevtools
             config={{
               position: 'bottom-right',
@@ -56,8 +56,8 @@ function RootDocument() {
               },
               TanStackQueryDevtools,
             ]}
-          />
-        )}
+          /> */}
+        {/* )} */}
         <Scripts />
       </body>
     </html>

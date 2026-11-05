@@ -1,6 +1,4 @@
 import { ClientOnly, createFileRoute } from '@tanstack/react-router';
-import { Hydrate } from '@tanstack/react-start';
-import { idle } from '@tanstack/react-start/hydration';
 
 import { Header } from '@app/components/Header';
 import { RouteListCard } from '@app/components/RouteListCard';
@@ -89,9 +87,9 @@ function Playground() {
               <TestClients />
             </ClientOnly>
 
-            <Hydrate when={idle()} split={false}>
+            <ClientOnly>
               <GeoDebugCard />
-            </Hydrate>
+            </ClientOnly>
           </div>
         </div>
       </main>
