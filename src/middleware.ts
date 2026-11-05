@@ -67,7 +67,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     csp &&
     !pathname.startsWith('/api/') &&
     !pathname.startsWith('/app/') &&
-    isHtml
+    isHtml &&
+    pathname.startsWith('/blog')
   ) {
     response.headers.set('Content-Security-Policy', csp);
   }
