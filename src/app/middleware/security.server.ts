@@ -3,9 +3,7 @@ import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 // Start in report-only mode and watch your report endpoint, then set this to false.
-export const CSP_REPORT_ONLY = false;
-
-export const cspEnabled = () => envServer.PRODUCTION === 'true';
+export const cspEnabled = envServer.PRODUCTION === 'true';
 
 export const createNonce = () => {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
@@ -17,6 +15,8 @@ export const createNonce = () => {
  */
 export const getReportEndpoint = () => openApiBasePath + cspPath;
 
+// @app/middleware/security.server
+
 export const buildCsp = (nonce: string) =>
   [
     "default-src 'self'",
@@ -27,10 +27,10 @@ export const buildCsp = (nonce: string) =>
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    // 1. Appended 'report-sha256' keyword and pointed it to the 'default' reporting group layout
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'; report-to default`,
-    "style-src 'self' 'unsafe-inline'",
-    `report-uri ${getReportEndpoint()}`, // Legacy fallback directive matching your route path
+    // 👇 REMOVE 'unsafe-inline' AND ADD THE STYLE NONCE HERE
+    `style-src 'self' 'nonce-${nonce}'`,
+    `report-uri ${getReportEndpoint()}`,
   ].join('; ');
 
 // Same values as your Astro `permissionsPolicy`. It is repeated here on purpose:

@@ -3,7 +3,6 @@ import { setResponseHeader } from '@tanstack/react-start/server';
 
 import {
   buildCsp,
-  CSP_REPORT_ONLY,
   createNonce,
   cspEnabled,
   getReportEndpoint,
@@ -44,11 +43,8 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
     setResponseHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private, max-age=0');
     setResponseHeader('Pragma', 'no-cache');
 
-    if (cspEnabled()) {
-      setResponseHeader(
-        CSP_REPORT_ONLY ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy',
-        buildCsp(nonce)
-      );
+    if (cspEnabled) {
+      setResponseHeader('Content-Security-Policy', buildCsp(nonce));
     }
   }
 
