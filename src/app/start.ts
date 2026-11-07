@@ -1,14 +1,9 @@
 import { createCsrfMiddleware, createMiddleware, createStart } from '@tanstack/react-start';
 import { setResponseHeader } from '@tanstack/react-start/server';
 
-import {
-  buildCsp,
-  createNonce,
-  cspEnabled,
-  getReportEndpoint,
-  permissionsPolicy,
-} from '@app/middleware/security.server';
+import { buildCsp, createNonce, cspEnabled, getReportEndpoint } from '@app/middleware/security.server';
 
+import { permissionsPolicy } from '@/lib/csp/headers'; // Import permissionsPolicy for security headers
 /**
  * Security headers, cache control, Reporting-Endpoints, and a per-request CSP nonce.
  * The nonce is passed on through the request context to the router (see router.tsx).

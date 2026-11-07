@@ -32,16 +32,3 @@ export const buildCsp = (nonce: string) =>
     `style-src 'self' 'nonce-${nonce}'`,
     `report-uri ${getReportEndpoint()}`,
   ].join('; ');
-
-// Same values as your Astro `permissionsPolicy`. It is repeated here on purpose:
-// importing `@/lib/csp/headers` would also run the hashes database query in `hashes.ts`.
-export const permissionsPolicy = [
-  'camera=()',
-  'microphone=()',
-  'geolocation=()',
-  'payment=()',
-  'usb=()',
-  'hid=()',
-  'serial=()',
-  'midi=()',
-].join(', ');
