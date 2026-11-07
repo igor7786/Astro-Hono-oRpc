@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { createMiddleware } from 'hono/factory';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
+import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
 type CspVariables = {
@@ -42,14 +43,16 @@ function buildScalarCsp(nonce: string) {
 
 function buildStaticCsp(nonce: string) {
   return [
-    "default-src 'none'",
-    `script-src 'self' 'nonce-${nonce}'`,
-    `style-src 'self' 'nonce-${nonce}'`,
-    "font-src 'self'",
+    "default-src 'self'",
     "connect-src 'self'",
+    "font-src 'self' data:",
     "img-src 'self' data:",
     "frame-ancestors 'none'",
-    "base-uri 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'; report-to default`,
+    `style-src 'self' 'nonce-${nonce}'`,
     `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 }
@@ -59,10 +62,11 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
   c.set('cspNonce', nonce); // available even if this path doesn't end up using it
 
   await next();
-
-  // Every response gets this — MIME-sniffing protection isn't HTML-specific.
-  c.res.headers.set('X-Content-Type-Options', 'nosniff');
-
+  if (envServer.PRODUCTION === 'true') {
+    // no CSP in dev mode
+    // Every response gets this — MIME-sniffing protection isn't HTML-specific.
+    c.res.headers.set('X-Content-Type-Options', 'nosniff');
+  }
   const contentType = c.res.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) return; // JSON, images, etc. — no CSP needed
 
