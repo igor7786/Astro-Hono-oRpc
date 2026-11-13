@@ -1,3 +1,4 @@
+// src/lib/csp/headers.ts
 import { scriptHashes, styleHashes } from '@/lib/csp/hashes';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
@@ -22,23 +23,19 @@ const buildBaseDirectives = (scriptSrc: string, styleDirectives: string[]) =>
  */
 export const cspStatic = buildBaseDirectives(`script-src 'self' ${scriptHashes} 'report-sample'`, [
   `style-src 'self' ${styleHashes} 'report-sample'`,
-  "style-src-attr 'unsafe-inline'", // style="..." attributes; <style> tags stay hashed
+  "style-src-attr 'unsafe-inline'",
 ]);
 
 /**
- * Dynamic SSR routes (/playground/* excluding /playground/blog/*) — uses per-request nonces
+ * Dynamic SSR routes (/playground/* excluding /playground/blog/*)
+ * Combines crawled hashes (for Astro's built-in head tags) + per-request nonce (for dynamic SSR tags)
  */
 export const buildDynamicCsp = (nonce: string) =>
-  buildBaseDirectives(`script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sample'`, [
-    `style-src 'self' 'nonce-${nonce}' 'report-sample'`,
+  buildBaseDirectives(`script-src 'self' 'nonce-${nonce}' ${scriptHashes} 'report-sample'`, [
+    `style-src 'self' 'nonce-${nonce}' ${styleHashes} 'report-sample'`,
     "style-src-attr 'unsafe-inline'",
   ]);
 
-/**
- * ============================================================
- * PERMISSIONS-POLICY — static, no request-time dependency
- * ============================================================
- */
 export const permissionsPolicy = [
   'camera=()',
   'microphone=()',
