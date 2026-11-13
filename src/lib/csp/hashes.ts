@@ -15,15 +15,11 @@ import { themeScriptPath } from '@/lib/helpers/paths';
  * ============================================================
  */
 
-// Inline <style> tags the crawler doesn't see. Copy the hash from the browser console:
-//   "Consider using a hash ('sha256-...')"
+// Inline <style> tags on static routes that the crawler doesn't see.
 // Astro-owned tags keep their hash until Astro is upgraded; re-check after upgrades.
-const EXTRA_STYLE_HASHES = [
-  'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=',
-  'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', // Empty <style> tag injected dynamically at runtime
-];
+const EXTRA_STYLE_HASHES = ['sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='];
 
-// Inline scripts the crawler doesn't see, same idea.
+// Inline scripts on static routes that the crawler doesn't see.
 const EXTRA_SCRIPT_HASHES: string[] = [];
 
 const quote = (hash: string) => `'${hash}'`;

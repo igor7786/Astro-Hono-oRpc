@@ -1,11 +1,7 @@
 import { scriptHashes, styleHashes } from '@/lib/csp/hashes';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
-// false: enforce the legacy policy and only REPORT the strict one.
-// true:  enforce the strict policy (no 'unsafe-inline'). Flip it once the console is clean.
-// export const STRICT_STYLES = true;
-
-const buildCsp = (styleDirectives: string[]) =>
+const buildBaseDirectives = (scriptSrc: string, styleDirectives: string[]) =>
   [
     "default-src 'self'",
     "connect-src 'self'",
@@ -15,18 +11,28 @@ const buildCsp = (styleDirectives: string[]) =>
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    `script-src 'self' ${scriptHashes} 'report-sample'`,
+    scriptSrc,
     ...styleDirectives,
     `report-uri ${openApiBasePath + cspPath}`,
     'report-to default',
   ].join('; ');
 
-export const cspStrict = buildCsp([
+/**
+ * Static / prerendered routes (/playground/blog/*) — uses build-time SHA-256 hashes
+ */
+export const cspStatic = buildBaseDirectives(`script-src 'self' ${scriptHashes} 'report-sample'`, [
   `style-src 'self' ${styleHashes} 'report-sample'`,
-  "style-src-attr 'unsafe-inline'", // style="..." attributes (bones); <style> tags stay hashed
+  "style-src-attr 'unsafe-inline'", // style="..." attributes; <style> tags stay hashed
 ]);
 
-// export const cspReportOnly = STRICT_STYLES ? null : cspStrict;
+/**
+ * Dynamic SSR routes (/playground/* excluding /playground/blog/*) — uses per-request nonces
+ */
+export const buildDynamicCsp = (nonce: string) =>
+  buildBaseDirectives(`script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sample'`, [
+    `style-src 'self' 'nonce-${nonce}' 'report-sample'`,
+    "style-src-attr 'unsafe-inline'",
+  ]);
 
 /**
  * ============================================================
