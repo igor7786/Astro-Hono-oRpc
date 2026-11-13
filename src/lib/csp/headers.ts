@@ -34,6 +34,9 @@ export const buildCspWithNonce = (nonce: string) =>
   buildCsp(
     [`'nonce-${nonce}'`, scriptHashes],
     [
+      // Fallback for legacy browsers/scanners
+      joinTokens("style-src 'self'", `'nonce-${nonce}'`, styleHashes),
+      // Modern browsers use these two specific directives instead of style-src:
       joinTokens("style-src-elem 'self'", `'nonce-${nonce}'`, styleHashes),
       "style-src-attr 'unsafe-inline'",
     ]
