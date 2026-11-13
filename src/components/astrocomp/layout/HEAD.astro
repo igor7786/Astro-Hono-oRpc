@@ -6,6 +6,7 @@ import type { SEO as SEOType } from '@/lib/shared/schemas/seo/seo.schema';
 import '@/styles/global.css';
 
 const props = Astro.props as Partial<SEOType>;
+const nonce = Astro.locals.cspNonce ?? '';
 ---
 
 <head>
@@ -15,6 +16,21 @@ const props = Astro.props as Partial<SEOType>;
   <!-- ✅ font preloads -->
   <FONTS />
 
+  <!-- MUST be the first script in <head> so it runs before React, Base UI, or boneyard-js -->
+  <script is:inline {nonce}>
+    (() => {
+      const nonce = document.currentScript?.nonce || document.currentScript?.getAttribute('nonce');
+      if (!nonce) return;
+      const origCreate = document.createElement.bind(document);
+      document.createElement = (tag, opts) => {
+        const el = origCreate(tag, opts);
+        if (typeof tag === 'string' && tag.toLowerCase() === 'style') {
+          el.setAttribute('nonce', nonce);
+        }
+        return el;
+      };
+    })();
+  </script>
   <!-- ✅ theme -->
   <script is:inline set:html={themeScript}></script>
   <!-- ✅ bones registry, auto-generated -->

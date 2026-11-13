@@ -1,8 +1,6 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
-import { eq } from 'drizzle-orm';
-
 import { hashes } from '@/lib/drizzle/neon/schemas';
 import { themeScriptPath } from '@/lib/helpers/paths';
 
@@ -15,9 +13,13 @@ import { themeScriptPath } from '@/lib/helpers/paths';
  * ============================================================
  */
 
-// Inline scripts the crawler doesn't see. Copy the hash from the browser console:
+// Inline scripts/styles the crawler doesn't see. Copy the hash from the browser console:
 //   "Consider using a hash ('sha256-...')"
 const EXTRA_SCRIPT_HASHES: string[] = [];
+const EXTRA_STYLE_HASHES: string[] = [
+  'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
+  'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=',
+];
 
 const quote = (hash: string) => `'${hash}'`;
 
@@ -33,22 +35,25 @@ const themeScriptHash = (() => {
   return null;
 })();
 
-// Initialize first, so the array is iterable regardless of DB state
 let crawledScripts: string[] = [];
+let crawledStyles: string[] = [];
 
 try {
   const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
 
-  const scriptRows = await neonDb
-    .select({ hash: hashes.hash })
-    .from(hashes)
-    .where(eq(hashes.format, 'script'));
-  crawledScripts = scriptRows.map((row) => quote(row.hash));
+  const rows = await neonDb.select({ format: hashes.format, hash: hashes.hash }).from(hashes);
+
+  for (const row of rows) {
+    if (row.format === 'script') {
+      crawledScripts.push(quote(row.hash));
+    } else if (row.format === 'style') {
+      crawledStyles.push(quote(row.hash));
+    }
+  }
 } catch (e) {
   console.warn('[CSP] Could not read hashes from DB yet (this is normal during early build steps).', e);
 }
 
-// Set removes duplicates. The theme script is also in the DB, which caused a repeated entry.
 const toDirective = (list: (string | null)[]) => [...new Set(list.filter(Boolean))].join(' ');
 
 export const scriptHashes = toDirective([
@@ -56,3 +61,5 @@ export const scriptHashes = toDirective([
   ...crawledScripts,
   ...EXTRA_SCRIPT_HASHES.map(quote),
 ]);
+
+export const styleHashes = toDirective([...crawledStyles, ...EXTRA_STYLE_HASHES.map(quote)]);

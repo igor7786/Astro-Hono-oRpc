@@ -1,12 +1,18 @@
+import { randomBytes } from 'node:crypto';
+
 import { defineMiddleware } from 'astro:middleware';
 
-import { cspStrict, permissionsPolicy } from '@/lib/csp/headers';
+import { buildCspWithNonce, cspStrict, permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
+
+  // Generate per-request nonce BEFORE rendering so Astro.locals.cspNonce is available in layouts
+  const nonce = randomBytes(16).toString('base64');
+  context.locals.cspNonce = nonce;
 
   const response = await next();
 
@@ -65,7 +71,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * CACHE CONTROL — only dynamically-rendered HTML
    * ============================================================
    */
-  if (!isStaticOrApiOrApp && isHtml && pathname.startsWith('/playground/blog')) {
+  if (!isStaticOrApiOrApp && isHtml && playgroundPath) {
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private, max-age=0');
     response.headers.set('Pragma', 'no-cache');
   }
@@ -82,7 +88,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     isHtml &&
     playgroundPath
   ) {
-    response.headers.set('Content-Security-Policy', cspStrict);
+    // Prerendered static pages don't have a runtime nonce in their HTML, so use hash-only cspStrict
+    const cspHeader = context.isPrerendered ? cspStrict : buildCspWithNonce(nonce);
+    response.headers.set('Content-Security-Policy', cspHeader);
   }
 
   return response;

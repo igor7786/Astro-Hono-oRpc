@@ -15,7 +15,7 @@ import trailingSlash from '@/server/hono-middleware/trailing.slash';
 import varyHardening from '@/server/hono-middleware/vary.hardening';
 
 // GLOBAL PATHS
-export const app = new Hono<Env>({ strict: false }).basePath('/api');
+export const app = new Hono<Env>({ strict: false });
 
 // CSP Headers (must come first, so every route below gets them)
 app.use('*', csp);

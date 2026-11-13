@@ -6,3 +6,8 @@ declare module '*.bones.json' {
   const value: any;
   export default value;
 }
+declare namespace App {
+  interface Locals {
+    cspNonce?: string;
+  }
+}

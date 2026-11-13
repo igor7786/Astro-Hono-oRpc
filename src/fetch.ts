@@ -12,14 +12,14 @@ root.use(sessions());
 root.use(actions());
 root.use(middleware());
 
-root.route('/', apiApp);
+root.route('/api', apiApp);
 
 // TanStack Start owns everything under its router basepath ('app' in astro.config)
 // root.all('/', (c) => startHandler.fetch(c.req.raw));
 // root.all('*', (c) => startHandler.fetch(c.req.raw));
 
 // Astro owns these prefixes; TanStack Start owns everything else
-const astroPrefixes = ['/playground', '/_astro', '/_image', '/_server-islands'];
+const astroPrefixes = ['/playground', '/_astro', '/_image', '/_server-islands', '/api'];
 
 root.all('/*', (c, next) => {
   const { pathname } = new URL(c.req.url);
