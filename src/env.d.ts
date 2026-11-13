@@ -6,11 +6,3 @@ declare module '*.bones.json' {
   const value: any;
   export default value;
 }
-
-/// <reference types="astro/client" />
-
-declare namespace App {
-  interface Locals {
-    cspNonce?: string;
-  }
-}

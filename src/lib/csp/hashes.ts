@@ -15,11 +15,8 @@ import { themeScriptPath } from '@/lib/helpers/paths';
  * ============================================================
  */
 
-// Inline <style> tags on static routes that the crawler doesn't see.
-// Astro-owned tags keep their hash until Astro is upgraded; re-check after upgrades.
-const EXTRA_STYLE_HASHES = ['sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='];
-
-// Inline scripts on static routes that the crawler doesn't see.
+// Inline scripts the crawler doesn't see. Copy the hash from the browser console:
+//   "Consider using a hash ('sha256-...')"
 const EXTRA_SCRIPT_HASHES: string[] = [];
 
 const quote = (hash: string) => `'${hash}'`;
@@ -36,9 +33,8 @@ const themeScriptHash = (() => {
   return null;
 })();
 
-// Initialize first, so both arrays are iterable regardless of DB state
+// Initialize first, so the array is iterable regardless of DB state
 let crawledScripts: string[] = [];
-let crawledStyles: string[] = [];
 
 try {
   const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
@@ -48,13 +44,6 @@ try {
     .from(hashes)
     .where(eq(hashes.format, 'script'));
   crawledScripts = scriptRows.map((row) => quote(row.hash));
-
-  // Inline <style> tags. Needs the crawler to store them with format 'style'.
-  const styleRows = await neonDb
-    .select({ hash: hashes.hash })
-    .from(hashes)
-    .where(eq(hashes.format, 'style'));
-  crawledStyles = styleRows.map((row) => quote(row.hash));
 } catch (e) {
   console.warn('[CSP] Could not read hashes from DB yet (this is normal during early build steps).', e);
 }
@@ -67,6 +56,3 @@ export const scriptHashes = toDirective([
   ...crawledScripts,
   ...EXTRA_SCRIPT_HASHES.map(quote),
 ]);
-
-// Hashes only. The policy adds 'self' itself, and there is no 'unsafe-inline' anywhere.
-export const styleHashes = toDirective([...crawledStyles, ...EXTRA_STYLE_HASHES.map(quote)]);
