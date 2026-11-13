@@ -18,6 +18,7 @@ const buildCsp = (styleDirectives: string[]) =>
     `script-src 'self' ${scriptHashes} 'report-sample'`,
     ...styleDirectives,
     `report-uri ${openApiBasePath + cspPath}`,
+    'report-to default',
   ].join('; ');
 
 export const cspStrict = buildCsp([

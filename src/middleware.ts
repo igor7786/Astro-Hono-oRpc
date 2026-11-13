@@ -1,8 +1,8 @@
-// src/middleware.ts
 import { defineMiddleware } from 'astro:middleware';
 
 import { cspStrict, permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
+import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -33,6 +33,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   response.headers.set('Permissions-Policy', permissionsPolicy);
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
+
+  if (envServer.PRODUCTION === 'true') {
+    const endpointUrl = `${new URL(envServer.PUBLIC_URL).origin}${openApiBasePath + cspPath}`;
+    response.headers.set('Reporting-Endpoints', `default="${endpointUrl}"`);
+  }
 
   // Detect Vite development assets or internal source file requests
   const isDevAsset =
@@ -75,7 +80,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     !pathname.startsWith('/app/') &&
     isHtml &&
     pathname.startsWith('/playground') &&
-    pathname.startsWith('/playground')
+    pathname.startsWith('/playground/')
   ) {
     response.headers.set('Content-Security-Policy', cspStrict);
   }

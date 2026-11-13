@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
-// src/lib/csp/hashes.ts
 import { eq } from 'drizzle-orm';
 
 import { hashes } from '@/lib/drizzle/neon/schemas';
@@ -19,7 +18,10 @@ import { themeScriptPath } from '@/lib/helpers/paths';
 // Inline <style> tags the crawler doesn't see. Copy the hash from the browser console:
 //   "Consider using a hash ('sha256-...')"
 // Astro-owned tags keep their hash until Astro is upgraded; re-check after upgrades.
-const EXTRA_STYLE_HASHES = ['sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='];
+const EXTRA_STYLE_HASHES = [
+  'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=',
+  'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', // Empty <style> tag injected dynamically at runtime
+];
 
 // Inline scripts the crawler doesn't see, same idea.
 const EXTRA_SCRIPT_HASHES: string[] = [];
