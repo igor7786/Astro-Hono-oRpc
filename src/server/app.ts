@@ -16,8 +16,8 @@ import varyHardening from '@/server/hono-middleware/vary.hardening';
 
 // GLOBAL PATHS
 export const app = new Hono<Env>({ strict: false }).basePath('/api');
-app.get('/', (c) => c.json({ status: 'ok' }));
-// CSP Headers
+
+// CSP Headers (must come first, so every route below gets them)
 app.use('*', csp);
 // Scalar docs
 app.get('/docs', scalar);
@@ -46,7 +46,8 @@ app.use('*', etagMiddleware);
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/rpc/*', orpcMiddleware);
 
-// ─── Health check ─────────────────────────────────────────────────────────────
+// ─── Root and health check (after the middleware, so they get its headers) ───
+app.get('/', (c) => c.json({ status: 'ok' }));
 app.get('/health', async (c) => c.json({ status: 'ok' }));
 
 // ─── Allow all methods ───────────────────────────────────────────────────────

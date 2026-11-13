@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
-// src/lib/csp.ts
+// src/lib/csp/hashes.ts
 import { eq } from 'drizzle-orm';
 
 import { hashes } from '@/lib/drizzle/neon/schemas';
@@ -9,7 +9,7 @@ import { themeScriptPath } from '@/lib/helpers/paths';
 
 /**
  * ============================================================
- * CSP — computed once at module load (server startup for SSR,
+ * CSP hashes — computed once at module load (server startup for SSR,
  * or at each `astro build` pass for prerendered routes — see
  * Dockerfile's two-pass build for why prerendered pages need
  * the hashes table already populated before this runs)
@@ -29,29 +29,30 @@ const themeScriptHash = (() => {
 
 // Safely initialize arrays to guarantee they are iterable regardless of DB state
 let crawledScripts: string[] = [];
+let crawledStyles: string[] = [];
 
 try {
   const { neonDb } = await import('@/lib/drizzle/neon/client.neon.db');
-  const rows = await neonDb
+
+  const scriptRows = await neonDb
     .select({ hash: hashes.hash })
     .from(hashes)
     .where(eq(hashes.format, 'script'));
+  crawledScripts = scriptRows.map((row) => `'${row.hash}'`);
 
-  crawledScripts = rows.map((row) => `'${row.hash}'`);
+  // Inline <style> tags. Needs your crawler to store them with format 'style'.
+  const styleRows = await neonDb
+    .select({ hash: hashes.hash })
+    .from(hashes)
+    .where(eq(hashes.format, 'style'));
+  crawledStyles = styleRows.map((row) => `'${row.hash}'`);
 } catch (e) {
-  console.warn(
-    '[CSP] Could not read script hashes from DB yet (this is normal during early build steps).',
-    e
-  );
+  console.warn('[CSP] Could not read hashes from DB yet (this is normal during early build steps).', e);
 }
 
-// Merge the static theme script hash along with extracted build arrays
-export const scriptHashes = [
-  themeScriptHash ? `'${themeScriptHash}'` : '',
-  ...crawledScripts, // Guaranteed to be an array now
-]
+export const scriptHashes = [themeScriptHash ? `'${themeScriptHash}'` : '', ...crawledScripts]
   .filter(Boolean)
   .join(' ');
 
-// Merge inline production layout style hashes
-export const styleHashes = "'self' 'unsafe-inline'";
+// Hashes only. The policy adds 'self' itself, and there is no 'unsafe-inline' anywhere.
+export const styleHashes = crawledStyles.join(' ');

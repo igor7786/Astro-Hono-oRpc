@@ -1,7 +1,7 @@
 // src/middleware.ts
 import { defineMiddleware } from 'astro:middleware';
 
-import { csp, permissionsPolicy } from '@/lib/csp/headers';
+import { cspStrict, permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
 import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
@@ -27,7 +27,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   /**
    * ============================================================
-   * SECURITY HEADERS — every response: HTML, API, static, APP ,etc.
+   * SECURITY HEADERS — every response: HTML, API, static, APP, etc.
    * ============================================================
    */
   response.headers.set('Permissions-Policy', permissionsPolicy);
@@ -41,7 +41,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     pathname.endsWith('.css') ||
     pathname.endsWith('.js');
 
-  // 🛡️ Only enforce strict MIME sniffing if it is NOT a Vite dev module
+  // Only enforce strict MIME sniffing if it is NOT a Vite dev module
   if (!isDevAsset) {
     response.headers.set('X-Content-Type-Options', 'nosniff');
   }
@@ -66,18 +66,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   /**
    * ============================================================
-   * CSP — Astro-rendered HTML only, never /api/*
+   * CSP — Astro-rendered HTML only, never /api/* or /app/*
    * ============================================================
    */
   if (
     envServer.PRODUCTION === 'true' &&
-    csp &&
     !pathname.startsWith('/api/') &&
     !pathname.startsWith('/app/') &&
     isHtml &&
-    pathname.startsWith('/blog/')
+    pathname.startsWith('/playground') &&
+    pathname.startsWith('playground/')
   ) {
-    response.headers.set('Content-Security-Policy', csp);
+    response.headers.set('Content-Security-Policy', cspStrict);
   }
 
   return response;
