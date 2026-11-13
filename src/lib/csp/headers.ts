@@ -20,7 +20,10 @@ const buildCsp = (styleDirectives: string[]) =>
     `report-uri ${openApiBasePath + cspPath}`,
   ].join('; ');
 
-export const cspStrict = buildCsp([`style-src 'self' ${styleHashes} 'report-sample'`]);
+export const cspStrict = buildCsp([
+  `style-src 'self' ${styleHashes} 'report-sample'`,
+  "style-src-attr 'unsafe-inline'", // style="..." attributes (bones); <style> tags stay hashed
+]);
 
 // export const cspReportOnly = STRICT_STYLES ? null : cspStrict;
 

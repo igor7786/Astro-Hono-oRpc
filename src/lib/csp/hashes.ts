@@ -15,6 +15,17 @@ import { themeScriptPath } from '@/lib/helpers/paths';
  * the hashes table already populated before this runs)
  * ============================================================
  */
+
+// Inline <style> tags the crawler doesn't see. Copy the hash from the browser console:
+//   "Consider using a hash ('sha256-...')"
+// Astro-owned tags keep their hash until Astro is upgraded; re-check after upgrades.
+const EXTRA_STYLE_HASHES = ['sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='];
+
+// Inline scripts the crawler doesn't see, same idea.
+const EXTRA_SCRIPT_HASHES: string[] = [];
+
+const quote = (hash: string) => `'${hash}'`;
+
 const themeScriptHash = (() => {
   try {
     if (existsSync(themeScriptPath)) {
@@ -27,7 +38,7 @@ const themeScriptHash = (() => {
   return null;
 })();
 
-// Safely initialize arrays to guarantee they are iterable regardless of DB state
+// Initialize first, so both arrays are iterable regardless of DB state
 let crawledScripts: string[] = [];
 let crawledStyles: string[] = [];
 
@@ -38,21 +49,26 @@ try {
     .select({ hash: hashes.hash })
     .from(hashes)
     .where(eq(hashes.format, 'script'));
-  crawledScripts = scriptRows.map((row) => `'${row.hash}'`);
+  crawledScripts = scriptRows.map((row) => quote(row.hash));
 
-  // Inline <style> tags. Needs your crawler to store them with format 'style'.
+  // Inline <style> tags. Needs the crawler to store them with format 'style'.
   const styleRows = await neonDb
     .select({ hash: hashes.hash })
     .from(hashes)
     .where(eq(hashes.format, 'style'));
-  crawledStyles = styleRows.map((row) => `'${row.hash}'`);
+  crawledStyles = styleRows.map((row) => quote(row.hash));
 } catch (e) {
   console.warn('[CSP] Could not read hashes from DB yet (this is normal during early build steps).', e);
 }
 
-export const scriptHashes = [themeScriptHash ? `'${themeScriptHash}'` : '', ...crawledScripts]
-  .filter(Boolean)
-  .join(' ');
+// Set removes duplicates. The theme script is also in the DB, which caused a repeated entry.
+const toDirective = (list: (string | null)[]) => [...new Set(list.filter(Boolean))].join(' ');
+
+export const scriptHashes = toDirective([
+  themeScriptHash ? quote(themeScriptHash) : null,
+  ...crawledScripts,
+  ...EXTRA_SCRIPT_HASHES.map(quote),
+]);
 
 // Hashes only. The policy adds 'self' itself, and there is no 'unsafe-inline' anywhere.
-export const styleHashes = crawledStyles.join(' ');
+export const styleHashes = toDirective([...crawledStyles, ...EXTRA_STYLE_HASHES.map(quote)]);
