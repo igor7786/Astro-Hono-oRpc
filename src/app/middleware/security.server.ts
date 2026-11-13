@@ -2,7 +2,6 @@
 import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
-// Start in report-only mode and watch your report endpoint, then set this to false.
 export const cspEnabled = envServer.PRODUCTION === 'true';
 
 export const createNonce = () => {
@@ -15,8 +14,6 @@ export const createNonce = () => {
  */
 export const getReportEndpoint = () => openApiBasePath + cspPath;
 
-// @app/middleware/security.server
-
 export const buildCsp = (nonce: string) =>
   [
     "default-src 'self'",
@@ -27,8 +24,11 @@ export const buildCsp = (nonce: string) =>
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'; report-to default`,
-    // 👇 REMOVE 'unsafe-inline' AND ADD THE STYLE NONCE HERE
-    `style-src 'self' 'nonce-${nonce}'`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'`,
+    // Locks <style> elements to 'self' + per-request nonce
+    `style-src-elem 'self' 'nonce-${nonce}'`,
+    // Allows Base UI inline style="..." attributes
+    "style-src-attr 'unsafe-inline'",
     `report-uri ${getReportEndpoint()}`,
+    'report-to default',
   ].join('; ');
