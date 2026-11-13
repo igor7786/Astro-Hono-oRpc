@@ -33,7 +33,10 @@ function buildScalarCsp(nonce: string) {
     // Scalar ships a fix — check https://github.com/scalar/scalar/issues for "unsafe-eval".
     // 'report-sha256' (Chromium only) sends the hash of each script to `csp-endpoint`.
     `script-src 'self' 'nonce-${nonce}' 'report-sample' 'report-sha256'`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    // Locks <style> elements to 'self' + per-request nonce
+    `style-src-elem 'self' 'nonce-${nonce}'`,
+    // Allows Scalar UI inline style="..." attributes
+    "style-src-attr 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "connect-src 'self'",
     "font-src 'self' https:",
@@ -58,7 +61,8 @@ function buildStaticCsp(nonce: string) {
     "base-uri 'none'",
     "form-action 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sample'`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src-elem 'self' 'nonce-${nonce}'`,
+    "style-src-attr 'unsafe-inline'",
     `report-uri ${openApiBasePath + cspPath}`,
     'report-to csp-endpoint',
   ].join('; ');
@@ -81,9 +85,6 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
 
   const contentType = c.res.headers.get('content-type') ?? '';
 
-  if (!contentType.startsWith('image/')) {
-    c.res.headers.set('Content-Security-Policy', API_CSP);
-  }
   if (!contentType.includes('text/html')) {
     // JSON, images, text: nothing may load, run or embed from them
     c.res.headers.set('Content-Security-Policy', API_CSP);
