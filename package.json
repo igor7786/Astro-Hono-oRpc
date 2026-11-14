@@ -83,6 +83,7 @@
     "@orpc/tanstack-query": "^1.16.2",
     "@orpc/zod": "^1.16.2",
     "@platformatic/kafka": "^2.15.0",
+    "@scalar/api-reference-react": "^0.9.90",
     "@scalar/hono-api-reference": "^0.12.20",
     "@scalar/openapi-to-markdown": "^1.7.6",
     "@smithy/node-http-handler": "^4.11.3",

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as ErrorPageIndexRouteImport } from './routes/error-page/index'
+import { Route as ScalaIndexRouteImport } from './routes/scala/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const ErrorPageIndexRoute = ErrorPageIndexRouteImport.update({
   path: '/error-page/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScalaIndexRoute = ScalaIndexRouteImport.update({
+  id: '/scala/',
+  path: '/scala/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/error-page/': typeof ErrorPageIndexRoute
+  '/scala/': typeof ScalaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/error-page': typeof ErrorPageIndexRoute
+  '/scala': typeof ScalaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/error-page/': typeof ErrorPageIndexRoute
+  '/scala/': typeof ScalaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/error-page/'
+  fullPaths: '/' | '/login' | '/register' | '/error-page/' | '/scala/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/error-page'
-  id: '__root__' | '/' | '/_auth/login' | '/_auth/register' | '/error-page/'
+  to: '/' | '/login' | '/register' | '/error-page' | '/scala'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth/login'
+    | '/_auth/register'
+    | '/error-page/'
+    | '/scala/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   ErrorPageIndexRoute: typeof ErrorPageIndexRoute
+  ScalaIndexRoute: typeof ScalaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorPageIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scala/': {
+      id: '/scala/'
+      path: '/scala'
+      fullPath: '/scala/'
+      preLoaderRoute: typeof ScalaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   ErrorPageIndexRoute: ErrorPageIndexRoute,
+  ScalaIndexRoute: ScalaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

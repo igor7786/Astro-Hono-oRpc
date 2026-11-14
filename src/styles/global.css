@@ -1,5 +1,8 @@
 /* src/styles/global.css */
 
+/* 1. Declare layer order first so Tailwind and shadcn win over Scalar */
+@layer scalar-base, scalar-theme, scalar-config, theme, base, components, utilities;
+
 /* Fonts */
 @import '@fontsource-variable/inter';
 
