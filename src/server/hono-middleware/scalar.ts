@@ -10,8 +10,9 @@ const scalarHandler = Scalar<{ Variables: { cspNonce: string } }>((c) => {
   return {
     sources: [{ url: `${openApiBasePath}/generate-schema`, title: 'App API' }],
     nonce,
-    cdn: '/vendor/scalar-api-reference.js',
+    cdn: `${openApiBasePath}/vendor/scalar-api-reference.js`,
     theme: 'fastify',
+    withDefaultFonts: false,
   };
 });
 
@@ -20,7 +21,7 @@ const scalar: typeof scalarHandler = async (c, next) => {
   if (!res) return res;
 
   const nonce = c.get('cspNonce');
-  const nonceShim = `<script nonce="${nonce}">(()=>{const n=document.currentScript?.nonce||document.currentScript?.getAttribute('nonce');if(!n)return;const o=document.createElement.bind(document);document.createElement=(t,p)=>{const e=o(t,p);if(typeof t==='string'&&t.toLowerCase()==='style')e.setAttribute('nonce',n);return e;};})();</script>`;
+  const nonceShim = `<script nonce="${nonce}">(()=>{const n=document.currentScript?.nonce||document.currentScript?.getAttribute('nonce');if(!n)return;const o=document.createElement.bind(document);Object.defineProperty(document,'createElement',{value:(t,p)=>{const e=o(t,p);if(typeof t==='string'&&t.toLowerCase()==='style')e.setAttribute('nonce',n);return e;}});})();</script>`;
 
   const html = await res.text();
   const headers = new Headers(res.headers);

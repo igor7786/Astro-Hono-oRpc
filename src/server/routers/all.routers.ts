@@ -7,6 +7,8 @@ import { ClientsRoute } from '@/server/routers/tests-routers/clients';
 import { testRedirect } from '@/server/routers/tests-routers/redirect';
 import { slowTestRoute, testRoute } from '@/server/routers/tests-routers/test';
 
+import { scalarBundleRoute } from './vendor/vendor';
+
 export const allRouters = {
   tests: {
     test: testRoute,
@@ -24,6 +26,9 @@ export const allRouters = {
   },
   geo: {
     geoContract: geoRoute,
+  },
+  vendor: {
+    scalarBundle: scalarBundleRoute,
   },
 };
 export type AppRouter = typeof allRouters;

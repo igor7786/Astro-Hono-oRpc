@@ -4,6 +4,7 @@ import { llmsHtml, llmsTxt, og } from '@/server/contracts/seo/seo';
 import { testClients } from '@/server/contracts/tests-contracts/clients';
 import { redirectTest } from '@/server/contracts/tests-contracts/redirect';
 import { slowTest, test } from '@/server/contracts/tests-contracts/test';
+import { scalarBundle } from '@/server/contracts/vendor/vendor';
 
 export const appContract = {
   tests: {
@@ -23,6 +24,7 @@ export const appContract = {
   geo: {
     geoContract,
   },
+  vendor: { scalarBundle },
 };
 
 export type AppContract = typeof appContract;
