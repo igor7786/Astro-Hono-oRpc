@@ -24,10 +24,8 @@ export const buildCsp = (nonce: string) =>
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'report-sha256'`,
-    // Locks <style> elements to 'self' + per-request nonce
-    `style-src-elem 'self' 'nonce-${nonce}'`,
-    // Allows Base UI inline style="..." attributes
+    `script-src 'nonce-${nonce}' 'strict-dynamic' 'report-sample' 'report-sha256'`,
+    `style-src-elem 'self' 'nonce-${nonce}' 'report-sample'`,
     "style-src-attr 'unsafe-inline'",
     `report-uri ${getReportEndpoint()}`,
     'report-to default',
