@@ -10,7 +10,7 @@ const scalarHandler = Scalar<{ Variables: { cspNonce: string } }>((c) => {
   return {
     sources: [{ url: `${openApiBasePath}/generate-schema`, title: 'App API' }],
     nonce,
-    cdn: 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest',
+    cdn: '/vendor/scalar-api-reference.js',
     theme: 'fastify',
   };
 });

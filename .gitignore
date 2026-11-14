@@ -713,6 +713,7 @@ pip-selfcheck.json
 **/data_redis
 ### csp-manifest ###
 **/csp-manifest.json
+**/public/vendor/
 ### react ###
 
 
