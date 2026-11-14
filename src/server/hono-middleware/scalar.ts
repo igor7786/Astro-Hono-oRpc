@@ -10,7 +10,7 @@ const scalarHandler = Scalar<{ Variables: { cspNonce: string } }>((c) => {
   return {
     sources: [{ url: `${openApiBasePath}/generate-schema`, title: 'App API' }],
     nonce,
-    cdn: 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest', // pin an exact version when you can
+    cdn: 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest',
     theme: 'fastify',
   };
 });
@@ -19,11 +19,18 @@ const scalar: typeof scalarHandler = async (c, next) => {
   const res = await scalarHandler(c, next);
   if (!res) return res;
 
+  const nonce = c.get('cspNonce');
+  const nonceShim = `<script nonce="${nonce}">(()=>{const n=document.currentScript?.nonce||document.currentScript?.getAttribute('nonce');if(!n)return;const o=document.createElement.bind(document);document.createElement=(t,p)=>{const e=o(t,p);if(typeof t==='string'&&t.toLowerCase()==='style')e.setAttribute('nonce',n);return e;};})();</script>`;
+
   const html = await res.text();
   const headers = new Headers(res.headers);
   headers.delete('content-length');
 
-  return new Response(html.replace('</body>', `${HOME_BUTTON}</body>`), {
+  const updatedHtml = html
+    .replace(/<head>/i, `<head>${nonceShim}`)
+    .replace(/<\/body>/i, `${HOME_BUTTON}</body>`);
+
+  return new Response(updatedHtml, {
     status: res.status,
     headers,
   });
