@@ -29,10 +29,11 @@ export const reportingEndpointsHeader = (): string | null => {
 const SCALAR_STYLE_HASHES = [
   "'sha256-l/2OpPg0d+2VLTLgwjf5mQo2CYwHDEqdj5TjbfEyVJI='",
   "'sha256-jhbr7vpdj7m5aUVk1M7gLF5cS0emmbwQS2neQtOW+L8='",
+  "'sha256-gmXByKZQ55+6LD1IX9vtDPBwThIQbraY9EGJSFapMGc='",
 ];
 
 // The Scalar reference page, served under the /app base path
-export const isScalarRoute = (pathname: string) => pathname.replace(/\/+$/, '') === '/app/scala';
+export const isScalarRoute = (pathname: string) => pathname.replace(/\/+$/, '') === '/scalar';
 
 export const buildCsp = (nonce: string, { scalar = false }: { scalar?: boolean } = {}) =>
   [
