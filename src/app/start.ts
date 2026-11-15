@@ -28,7 +28,6 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
     setResponseHeader('Pragma', 'no-cache');
 
     if (cspEnabled) {
-      // Defines the group that the policy's `report-to` points at
       const reporting = reportingEndpointsHeader();
       if (reporting) setResponseHeader('Reporting-Endpoints', reporting);
 

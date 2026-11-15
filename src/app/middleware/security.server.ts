@@ -1,4 +1,3 @@
-// @app/middleware/security.server
 import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
@@ -9,13 +8,10 @@ export const createNonce = () => {
   return btoa(String.fromCharCode(...bytes));
 };
 
-/** Returns the reporting destination URL path string. */
 export const getReportEndpoint = () => openApiBasePath + cspPath;
 
-// One group name: used in the Reporting-Endpoints header AND in the policy's report-to
 const REPORT_GROUP = 'default';
 
-/** Value for the Reporting-Endpoints header, or null if PUBLIC_URL is missing or invalid. */
 export const reportingEndpointsHeader = (): string | null => {
   try {
     return `${REPORT_GROUP}="${new URL(envServer.PUBLIC_URL).origin}${getReportEndpoint()}"`;
@@ -24,15 +20,6 @@ export const reportingEndpointsHeader = (): string | null => {
   }
 };
 
-// Inline <style> tags that Scalar's React build creates without a nonce.
-// After a Scalar upgrade, copy any new hashes from the browser console.
-const SCALAR_STYLE_HASHES = [
-  "'sha256-l/2OpPg0d+2VLTLgwjf5mQo2CYwHDEqdj5TjbfEyVJI='",
-  "'sha256-jhbr7vpdj7m5aUVk1M7gLF5cS0emmbwQS2neQtOW+L8='",
-  "'sha256-gmXByKZQ55+6LD1IX9vtDPBwThIQbraY9EGJSFapMGc='",
-];
-
-// The Scalar reference page
 export const isScalarRoute = (pathname: string) => pathname.replace(/\/+$/, '') === '/scalar';
 
 export const buildCsp = (nonce: string, { scalar = false }: { scalar?: boolean } = {}) =>
@@ -40,19 +27,16 @@ export const buildCsp = (nonce: string, { scalar = false }: { scalar?: boolean }
     "default-src 'self'",
     "connect-src 'self'",
     scalar ? "img-src 'self' data: blob:" : "img-src 'self' data:",
-    scalar ? "font-src 'self' data: https://fonts.scalar.com" : "font-src 'self' data:",
+    scalar ? "font-src 'self' data: https://scalar.com" : "font-src 'self' data:",
     scalar && 'frame-src blob:',
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    `script-src 'nonce-${nonce}' 'strict-dynamic' 'report-sample' 'report-sha256'`,
-    `style-src-elem ${[
-      "'self'",
-      `'nonce-${nonce}'`,
-      ...(scalar ? SCALAR_STYLE_HASHES : []),
-      "'report-sample'",
-    ].join(' ')}`,
+    scalar
+      ? `script-src 'self' 'nonce-${nonce}' 'report-sample' 'report-sha256'`
+      : `script-src 'nonce-${nonce}' 'strict-dynamic' 'report-sample' 'report-sha256'`,
+    `style-src-elem 'self' 'nonce-${nonce}' 'report-sample'`,
     "style-src-attr 'unsafe-inline'",
     `report-uri ${getReportEndpoint()}`,
     `report-to ${REPORT_GROUP}`,
