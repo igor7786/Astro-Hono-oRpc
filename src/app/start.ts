@@ -2,6 +2,7 @@ import { createCsrfMiddleware, createMiddleware, createStart } from '@tanstack/r
 import { setResponseHeader } from '@tanstack/react-start/server';
 
 import {
+  buildApiCsp,
   buildCsp,
   createNonce,
   cspEnabled,
@@ -26,13 +27,17 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
   if (wantsHtml) {
     setResponseHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private, max-age=0');
     setResponseHeader('Pragma', 'no-cache');
+  }
 
-    if (cspEnabled) {
-      const reporting = reportingEndpointsHeader();
-      if (reporting) setResponseHeader('Reporting-Endpoints', reporting);
+  if (cspEnabled) {
+    const reporting = reportingEndpointsHeader();
+    if (reporting) setResponseHeader('Reporting-Endpoints', reporting);
 
+    if (wantsHtml) {
       const { pathname } = new URL(request.url);
       setResponseHeader('Content-Security-Policy', buildCsp(nonce, { scalar: isScalarRoute(pathname) }));
+    } else {
+      setResponseHeader('Content-Security-Policy', buildApiCsp());
     }
   }
 

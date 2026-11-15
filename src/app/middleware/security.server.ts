@@ -1,3 +1,4 @@
+// @app/middleware/security.server.ts
 import { envServer } from '@/lib/env/server.env';
 import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
 
@@ -22,6 +23,9 @@ export const reportingEndpointsHeader = (): string | null => {
 
 export const isScalarRoute = (pathname: string) => pathname.replace(/\/+$/, '') === '/scalar';
 
+export const buildApiCsp = () =>
+  `default-src 'none'; frame-ancestors 'none'; sandbox; report-uri ${getReportEndpoint()}; report-to ${REPORT_GROUP}`;
+
 export const buildCsp = (nonce: string, { scalar = false }: { scalar?: boolean } = {}) =>
   [
     "default-src 'self'",
@@ -31,11 +35,9 @@ export const buildCsp = (nonce: string, { scalar = false }: { scalar?: boolean }
     scalar && 'frame-src blob:',
     "frame-ancestors 'none'",
     "object-src 'none'",
-    "base-uri 'self'",
+    scalar ? "base-uri 'self'" : "base-uri 'none'",
     "form-action 'self'",
-    scalar
-      ? `script-src 'self' 'nonce-${nonce}' 'report-sample' 'report-sha256'`
-      : `script-src 'nonce-${nonce}' 'strict-dynamic' 'report-sample' 'report-sha256'`,
+    `script-src 'nonce-${nonce}' 'strict-dynamic' 'report-sample' 'report-sha256'`,
     `style-src-elem 'self' 'nonce-${nonce}' 'report-sample'`,
     "style-src-attr 'unsafe-inline'",
     `report-uri ${getReportEndpoint()}`,
