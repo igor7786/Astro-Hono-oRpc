@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ApiReferenceReact } from '@scalar/api-reference-react';
 import '@scalar/api-reference-react/style.css';
 
-export const Route = createFileRoute('/scala/')({
+export const Route = createFileRoute('/scalar/')({
   component: ReferencePage,
 });
 
