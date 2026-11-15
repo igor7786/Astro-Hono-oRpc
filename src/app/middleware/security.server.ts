@@ -13,7 +13,7 @@ export const createNonce = () => {
 export const getReportEndpoint = () => openApiBasePath + cspPath;
 
 // One group name: used in the Reporting-Endpoints header AND in the policy's report-to
-const REPORT_GROUP = 'csp-endpoint';
+const REPORT_GROUP = 'default';
 
 /** Value for the Reporting-Endpoints header, or null if PUBLIC_URL is missing or invalid. */
 export const reportingEndpointsHeader = (): string | null => {
