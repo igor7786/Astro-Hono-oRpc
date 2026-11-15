@@ -10,7 +10,6 @@ import head from '@/server/hono-middleware/head';
 import injectClients from '@/server/hono-middleware/inject.clients';
 import allowedMethods from '@/server/hono-middleware/methods';
 import orpcMiddleware from '@/server/hono-middleware/orpc';
-import scalar from '@/server/hono-middleware/scalar';
 import trailingSlash from '@/server/hono-middleware/trailing.slash';
 import varyHardening from '@/server/hono-middleware/vary.hardening';
 
@@ -20,7 +19,6 @@ export const app = new Hono<Env>({ strict: false });
 // CSP Headers (must come first, so every route below gets them)
 app.use('*', csp);
 // Scalar docs
-app.get('/docs', scalar);
 // Trailing slash
 app.use('*', trailingSlash);
 // Inject clients as Sqlite, Redis, PG and so on ...
