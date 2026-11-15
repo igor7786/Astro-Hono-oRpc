@@ -14,6 +14,7 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as ErrorPageIndexRouteImport } from './routes/error-page/index'
 import { Route as ScalarIndexRouteImport } from './routes/scalar/index'
+import { Route as Scalar2IndexRouteImport } from './routes/scalar2/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ScalarIndexRoute = ScalarIndexRouteImport.update({
   path: '/scalar/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Scalar2IndexRoute = Scalar2IndexRouteImport.update({
+  id: '/scalar2/',
+  path: '/scalar2/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof AuthRegisterRoute
   '/error-page/': typeof ErrorPageIndexRoute
   '/scalar/': typeof ScalarIndexRoute
+  '/scalar2/': typeof Scalar2IndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/register': typeof AuthRegisterRoute
   '/error-page': typeof ErrorPageIndexRoute
   '/scalar': typeof ScalarIndexRoute
+  '/scalar2': typeof Scalar2IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +70,14 @@ export interface FileRoutesById {
   '/_auth/register': typeof AuthRegisterRoute
   '/error-page/': typeof ErrorPageIndexRoute
   '/scalar/': typeof ScalarIndexRoute
+  '/scalar2/': typeof Scalar2IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/error-page/' | '/scalar/'
+  fullPaths:
+    '/' | '/login' | '/register' | '/error-page/' | '/scalar/' | '/scalar2/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/error-page' | '/scalar'
+  to: '/' | '/login' | '/register' | '/error-page' | '/scalar' | '/scalar2'
   id:
     | '__root__'
     | '/'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
     | '/_auth/register'
     | '/error-page/'
     | '/scalar/'
+    | '/scalar2/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +94,7 @@ export interface RootRouteChildren {
   AuthRegisterRoute: typeof AuthRegisterRoute
   ErrorPageIndexRoute: typeof ErrorPageIndexRoute
   ScalarIndexRoute: typeof ScalarIndexRoute
+  Scalar2IndexRoute: typeof Scalar2IndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScalarIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scalar2/': {
+      id: '/scalar2/'
+      path: '/scalar2'
+      fullPath: '/scalar2/'
+      preLoaderRoute: typeof Scalar2IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -131,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRegisterRoute: AuthRegisterRoute,
   ErrorPageIndexRoute: ErrorPageIndexRoute,
   ScalarIndexRoute: ScalarIndexRoute,
+  Scalar2IndexRoute: Scalar2IndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

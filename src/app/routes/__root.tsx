@@ -8,7 +8,6 @@ import {
   Scripts,
   createRootRouteWithContext,
   useRouter,
-  useRouterState,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
@@ -49,13 +48,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootDocument() {
   const router = useRouter();
   const nonce = router.options.ssr?.nonce;
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isScalar = pathname.replace(/\/+$/, '') === '/scalar';
 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {isScalar && nonce && <script nonce={nonce} dangerouslySetInnerHTML={{ __html: NONCE_SHIM }} />}
+        {nonce && <script nonce={nonce} dangerouslySetInnerHTML={{ __html: NONCE_SHIM }} />}
         <HeadContent />
       </head>
       <body>
