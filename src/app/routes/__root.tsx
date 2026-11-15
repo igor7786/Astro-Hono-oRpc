@@ -2,7 +2,14 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 
 import '@app/lib/zod-config';
 import type { QueryClient } from '@tanstack/react-query';
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRouteWithContext,
+  useRouter,
+  useRouterState,
+} from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { RedirectToErrorPage } from '@app/components/RedirectToErrorPage';
@@ -15,6 +22,9 @@ import appCss from '@/styles/global.css?url';
 interface MyRouterContext {
   queryClient: QueryClient;
 }
+
+const NONCE_SHIM = `(()=>{const n=document.currentScript?.nonce||document.currentScript?.getAttribute('nonce');if(!n)return;const o=document.createElement.bind(document);Object.defineProperty(document,'createElement',{value:(t,p)=>{const e=o(t,p);if(typeof t==='string'&&t.toLowerCase()==='style')e.setAttribute('nonce',n);return e;}});})();`;
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   notFoundComponent: () => <RedirectToErrorPage code={404} />,
   head: () => ({
@@ -37,9 +47,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument() {
+  const router = useRouter();
+  const nonce = router.options.ssr?.nonce;
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isScalar = pathname.replace(/\/+$/, '') === '/scalar';
+
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        {isScalar && nonce && <script nonce={nonce} dangerouslySetInnerHTML={{ __html: NONCE_SHIM }} />}
         <HeadContent />
       </head>
       <body>
