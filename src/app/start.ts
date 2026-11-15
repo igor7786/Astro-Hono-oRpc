@@ -1,9 +1,16 @@
 import { createCsrfMiddleware, createMiddleware, createStart } from '@tanstack/react-start';
 import { setResponseHeader } from '@tanstack/react-start/server';
 
-import { buildCsp, createNonce, cspEnabled, getReportEndpoint } from '@app/middleware/security.server';
+import {
+  buildCsp,
+  createNonce,
+  cspEnabled,
+  isScalarRoute,
+  reportingEndpointsHeader,
+} from '@app/middleware/security.server';
 
-import { permissionsPolicy } from '@/lib/csp/headers'; // Import permissionsPolicy for security headers
+import { permissionsPolicy } from '@/lib/csp/headers';
+
 /**
  * Security headers, cache control, Reporting-Endpoints, and a per-request CSP nonce.
  * The nonce is passed on through the request context to the router (see router.tsx).
@@ -11,25 +18,11 @@ import { permissionsPolicy } from '@/lib/csp/headers'; // Import permissionsPoli
 const securityMiddleware = createMiddleware().server(async ({ next, request }) => {
   const nonce = createNonce();
 
-  // Dynamically extract the incoming request origin for the modern reporting endpoint
-  // / Update this line inside your securityMiddleware block:
-  const requestUrl = new URL(request.url);
-
-  // Force https on production domains, otherwise fallback to the current request schema
-  const protocol = requestUrl.hostname.includes('localhost') ? requestUrl.protocol : 'https:';
-  const reportUriFullUrl = `${protocol}//${requestUrl.host}${getReportEndpoint()}`;
-
-  // This guarantees output: default="https://fast-web-tech.co.uk..."
-  setResponseHeader('Reporting-Endpoints', `default="${reportUriFullUrl}"`);
-
   // Every response: HTML, server functions, assets
   setResponseHeader('Permissions-Policy', permissionsPolicy);
   setResponseHeader('X-Content-Type-Options', 'nosniff');
   setResponseHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   setResponseHeader('X-Frame-Options', 'DENY');
-
-  // Clean up reporting warnings by supplying the modern reporting group mapping
-  setResponseHeader('Reporting-Endpoints', `default="${reportUriFullUrl}"`);
 
   // HTML documents only
   const wantsHtml = request.headers.get('accept')?.includes('text/html') ?? false;
@@ -39,7 +32,11 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
     setResponseHeader('Pragma', 'no-cache');
 
     if (cspEnabled) {
-      setResponseHeader('Content-Security-Policy', buildCsp(nonce));
+      const reporting = reportingEndpointsHeader();
+      if (reporting) setResponseHeader('Reporting-Endpoints', reporting);
+
+      const { pathname } = new URL(request.url);
+      setResponseHeader('Content-Security-Policy', buildCsp(nonce, { scalar: isScalarRoute(pathname) }));
     }
   }
 
