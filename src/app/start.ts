@@ -11,10 +11,6 @@ import {
 
 import { permissionsPolicy } from '@/lib/csp/headers';
 
-/**
- * Security headers, cache control, Reporting-Endpoints, and a per-request CSP nonce.
- * The nonce is passed on through the request context to the router (see router.tsx).
- */
 const securityMiddleware = createMiddleware().server(async ({ next, request }) => {
   const nonce = createNonce();
 
@@ -32,6 +28,7 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
     setResponseHeader('Pragma', 'no-cache');
 
     if (cspEnabled) {
+      // Defines the group that the policy's `report-to` points at
       const reporting = reportingEndpointsHeader();
       if (reporting) setResponseHeader('Reporting-Endpoints', reporting);
 
@@ -43,10 +40,6 @@ const securityMiddleware = createMiddleware().server(async ({ next, request }) =
   return next({ context: { nonce } });
 });
 
-/**
- * CSRF protection for server functions only. Hono's /api routes keep their own CSRF middleware.
- * `origin` is used only when a request has an Origin header but no Sec-Fetch-Site header.
- */
 const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === 'serverFn',
   origin: async (value) => {
