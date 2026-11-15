@@ -1,7 +1,15 @@
-// src/server/contracts/vendor.ts
 import z from 'zod';
 
 import { baseOc } from '@/server/contracts/oc.base';
+
+const jsBundleOutput = z.object({
+  headers: z.object({
+    'content-type': z.literal('application/javascript; charset=utf-8'),
+    'cache-control': z.literal('public, max-age=31536000, immutable'),
+    'x-content-type-options': z.literal('nosniff'),
+  }),
+  body: z.instanceof(Blob),
+});
 
 export const scalarBundle = baseOc
   .route({
@@ -12,13 +20,4 @@ export const scalarBundle = baseOc
     tags: ['Vendor'],
     outputStructure: 'detailed',
   })
-  .output(
-    z.object({
-      headers: z.object({
-        'content-type': z.literal('application/javascript; charset=utf-8'),
-        'cache-control': z.literal('public, max-age=31536000, immutable'),
-        'x-content-type-options': z.literal('nosniff'),
-      }),
-      body: z.instanceof(Blob),
-    })
-  );
+  .output(jsBundleOutput);

@@ -13,7 +13,6 @@ import Icons from 'unplugin-icons/vite';
 
 import cspManifestPlugin from '@/plugins/astro.csp.manifest.ts';
 import serverStartup from '@/plugins/clients';
-import copyScalarPlugin from '@/plugins/scalar.api.csp.ts';
 import { astroStartBuildPatch } from '@/plugins/tanstack.build.ts';
 
 // import { boneyardPlugin } from 'boneyard-js/vite';
@@ -132,7 +131,6 @@ export default defineConfig({
     }),
   },
   integrations: [
-    copyScalarPlugin(),
     react({ compiler: true, include: ['**/reactcomp/**/*.tsx', '**/reactcomp/**/*.jsx'] }),
     // Client startup integration [✅ Redis, Env, etc.]
     serverStartup(),

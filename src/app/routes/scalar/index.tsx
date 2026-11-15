@@ -4,21 +4,25 @@ import { ApiReferenceReact } from '@scalar/api-reference-react';
 import { Home } from 'lucide-react';
 import '@scalar/api-reference-react/style.css';
 
+import { Button } from '@rcomp/ui/button';
+
 export const Route = createFileRoute('/scalar/')({
   component: ReferencePage,
 });
 
-function ReferencePage() {
+export function ReferencePage() {
+  const url = '/api/rpc/openapi/v1/generate-schema';
   return (
     <>
       <ApiReferenceReact
         configuration={{
           theme: 'fastify',
+          withDefaultFonts: false,
           sources: [
             {
               title: 'App API',
               slug: 'v1',
-              url: '/api/rpc/openapi/v1/generate-schema',
+              url,
               default: true,
             },
             // {
@@ -30,13 +34,15 @@ function ReferencePage() {
         }}
       />
 
-      <Link
-        to="/"
-        className="fixed bottom-16 left-4 z-50 inline-flex items-center gap-2 rounded-full border-2 border-transparent bg-neutral-900 py-2.5 pr-4 pl-3.5 text-[13px] font-semibold text-white no-underline shadow-md transition-colors hover:border-neutral-600 hover:bg-neutral-800"
+      <Button
+        variant="secondary"
+        nativeButton={false}
+        render={<Link to="/" />}
+        className="fixed bottom-16 left-4 z-50 rounded-full border-2 border-transparent shadow-md hover:border-neutral-600"
       >
         <Home className="size-4.5" aria-hidden="true" />
         Home
-      </Link>
+      </Button>
     </>
   );
 }
