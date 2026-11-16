@@ -155,7 +155,7 @@ export const technologies: Technology[] = [
   {
     name: 'Scalar',
     icon: ScalarIcon, // 💡 Assigned static component directly
-    route: '/api/docs',
+    route: '/scalar',
     label: 'OpenAPI Docs',
     size: 24,
   },
