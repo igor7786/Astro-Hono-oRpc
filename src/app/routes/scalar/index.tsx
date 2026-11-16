@@ -23,7 +23,7 @@ export const Route = createFileRoute('/scalar/')({
   component: ReferencePage,
 });
 
-export function ReferencePage() {
+function ReferencePage() {
   const url = '/api/rpc/openapi/v1/generate-schema';
   return (
     <>
