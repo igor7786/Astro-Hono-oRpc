@@ -1,3 +1,4 @@
+import '@app/lib/zod-config';
 import { createCsrfMiddleware, createMiddleware, createStart } from '@tanstack/react-start';
 import { setResponseHeader } from '@tanstack/react-start/server';
 
