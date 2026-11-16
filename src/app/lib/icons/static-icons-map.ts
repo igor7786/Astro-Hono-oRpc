@@ -38,21 +38,23 @@ export type IconComponentType = React.ComponentType<{
 
 // 🗺️ Exported map table
 export const STATIC_ICON_MAP: Record<string, IconComponentType> = {
+  'simple-icons:ionos': IonosIcon,
   'ui:3xui': ThreeXuiIcon,
   'logos:nginx': NginxIcon,
   'selfhst:crowdsec': CrowdsecIcon,
   'selfhst:arcane': ArcaneIcon,
   'ui:redpanda': RedpandaIcon,
   'selfhst:rustfs': RustfsIcon,
+  'selfhst:authentik': AuthentikIcon,
   'lucide:logs': LogsIcon,
   'ui:dragonfly': DragonflyIcon,
+  'logos:bun': BunIcon,
+  'skill-icons:astro': AstroIcon,
+  'skill-icons:vite-light': ViteIcon,
+  'logos:hono': HonoIcon,
   'logos:neon-icon': NeonIcon,
   'logos:postgresql': PostgresqlIcon,
   'logos:sqlite': SqliteIcon,
-  'logos:bun': BunIcon,
-  'skill-icons:vite-light': ViteIcon,
-  'skill-icons:astro': AstroIcon,
-  'logos:hono': HonoIcon,
   'ui:orpc': OrpcIcon,
   'logos:zod': ZodIcon,
   'logos:react-query-icon': ReactQueryIcon,
@@ -60,8 +62,6 @@ export const STATIC_ICON_MAP: Record<string, IconComponentType> = {
   'logos:tailwindcss-icon': TailwindIcon,
   'logos:react': ReactIcon,
   'ui:nanostores': NanostoresIcon,
-  'simple-icons:ionos': IonosIcon,
-  'selfhst:authentik': AuthentikIcon,
   'simple-icons:scalar': ScalarIcon,
 };
 
