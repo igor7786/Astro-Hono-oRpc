@@ -6,7 +6,20 @@ import '@scalar/api-reference-react/style.css';
 
 import { Button } from '@rcomp/ui/button';
 
+import { buildSeoHead } from '@/lib/seo/build.seo.head';
+import { getSeo } from '@/lib/seo/get.seo.fn';
+
 export const Route = createFileRoute('/scalar/')({
+  loader: ({ location }) =>
+    getSeo({
+      data: {
+        title: 'Scalar',
+        description: 'API Documentation',
+        type: 'website',
+        pathname: location.pathname,
+      },
+    }),
+  head: ({ loaderData }) => buildSeoHead(loaderData),
   component: ReferencePage,
 });
 
@@ -20,16 +33,16 @@ export function ReferencePage() {
           withDefaultFonts: false,
           sources: [
             {
-              title: 'App API',
+              title: 'App API V1',
               slug: 'v1',
               url,
-              default: true,
+              // default: true,
             },
-            // {
-            //   title: 'API v2',
-            //   slug: 'v2',
-            //   url: '/api/rpc/openapi/v2/generate-schema',
-            // },
+            {
+              title: 'API v2',
+              slug: 'v2',
+              url: '/api/rpc/openapi/v2/generate-schema',
+            },
           ],
         }}
       />

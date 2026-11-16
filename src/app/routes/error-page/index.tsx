@@ -10,7 +10,7 @@ import { getSeo } from '@/lib/seo/get.seo.fn';
 import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
 export const Route = createFileRoute('/error-page/')({
-  // Non-numeric input becomes 0, which is never a valid code, so it is redirected too
+  // Non-numeric input becomes 0, which is never a valid code, so it is redirected too 404
   validateSearch: z.object({
     code: z.coerce.number().int().catch(0),
   }),

@@ -12,7 +12,7 @@ root.use(sessions());
 root.use(actions());
 root.use(middleware());
 
-root.route('/api', apiApp);
+root.route('/', apiApp);
 
 // TanStack Start owns everything under its router basepath ('app' in astro.config)
 // root.all('/', (c) => startHandler.fetch(c.req.raw));
