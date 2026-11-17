@@ -9,6 +9,16 @@ import { Button } from '@rcomp/ui/button';
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
 
+const scalarConfig = {
+  theme: 'fastify' as const,
+  withDefaultFonts: false,
+  urlRouting: false, // Scalar no longer reads or writes the URL hash
+  sources: [
+    { title: 'App API V1', slug: 'v1', url: '/api/rpc/openapi/v1/generate-schema' },
+    { title: 'API v2', slug: 'v2', url: '/api/rpc/openapi/v2/generate-schema' },
+  ],
+};
+
 export const Route = createFileRoute('/scalar/')({
   loader: ({ location }) =>
     getSeo({
@@ -24,28 +34,9 @@ export const Route = createFileRoute('/scalar/')({
 });
 
 function ReferencePage() {
-  const url = '/api/rpc/openapi/v1/generate-schema';
   return (
     <>
-      <ApiReferenceReact
-        configuration={{
-          theme: 'fastify',
-          withDefaultFonts: false,
-          sources: [
-            {
-              title: 'App API V1',
-              slug: 'v1',
-              url,
-              // default: true,
-            },
-            {
-              title: 'API v2',
-              slug: 'v2',
-              url: '/api/rpc/openapi/v2/generate-schema',
-            },
-          ],
-        }}
-      />
+      <ApiReferenceReact configuration={scalarConfig} />
 
       <Button
         variant="secondary"

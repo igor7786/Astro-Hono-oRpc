@@ -18,6 +18,7 @@ interface Props {
   title: string;
   items: RouteItem[];
   masked?: boolean;
+  showIcon?: boolean;
 }
 
 const accentStyles: Record<
@@ -44,7 +45,7 @@ const accentStyles: Record<
   },
 };
 
-export function RouteListCard({ accent, badgeLabel, title, items, masked }: Props) {
+export function RouteListCard({ accent, badgeLabel, title, items, masked, showIcon = false }: Props) {
   const styles = accentStyles[accent];
   const protocol = useHttpProtocol();
 
@@ -69,7 +70,7 @@ export function RouteListCard({ accent, badgeLabel, title, items, masked }: Prop
       <CardContent className="p-4">
         <ul className="space-y-1.5">
           {items.map(({ route, label, size }) => {
-            const technology = technologies.find((item) => item.route === route);
+            const technology = showIcon ? technologies.find((item) => item.route === route) : undefined;
 
             const Icon = technology?.icon;
             const iconSize = size ?? technology?.size ?? 16;

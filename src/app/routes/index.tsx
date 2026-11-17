@@ -64,7 +64,7 @@ function Playground() {
             <RouteListCard
               accent="ssr"
               badgeLabel="SSR + CSR"
-              title="Server and Client pages"
+              title="Server and Client Pages"
               items={routes.ssrRoutes}
             />
 
@@ -81,6 +81,7 @@ function Playground() {
               title="Admin Pages"
               items={adminRoutes}
               masked
+              showIcon
             />
 
             <ClientOnly>
