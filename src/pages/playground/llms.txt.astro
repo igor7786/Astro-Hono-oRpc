@@ -1,10 +1,10 @@
 ---
-import { openApiBasePath } from '@/lib/helpers/paths';
+import { envServer } from '@/lib/env/server.env';
 import { allRouters } from '@/server/routers/all.routers';
 
 const llmsTxtPath = allRouters.seo.llmsTxt['~orpc'].route.path as string;
 
-const redirectPath = openApiBasePath + llmsTxtPath;
+const redirectPath = envServer.PUBLIC_OPEN_API_BASE_PATH + llmsTxtPath;
 
 // convince TS it's used
 void redirectPath;

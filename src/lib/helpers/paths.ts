@@ -254,7 +254,6 @@ export async function discoverRoutes(
   return { ssrRoutes, staticRoutes, allRoutes };
 }
 
-export const openApiBasePath = '/api/rpc/openapi/v1';
 export const ogPath = appContract.seo.og['~orpc'].route.path; // derived from router definition
 export const cspPath = appContract.csp.cspReport['~orpc'].route.path; // derived from router definition
 export const scalarDocsPath = appContract.vendor.scalarBundle['~orpc'].route.path; // derived from router definition

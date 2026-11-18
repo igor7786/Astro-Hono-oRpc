@@ -1,9 +1,11 @@
 import { createMiddleware } from 'hono/factory';
 
 import { envServer } from '@/lib/env/server.env';
-import { openApiBasePath } from '@/lib/helpers/paths';
 import openApiHandler from '@/server/handlers/openapi.handler';
-// import rpcHandler from '@/server/handlers/rpc.handler';
+
+const rawPrefix = envServer.PUBLIC_OPEN_API_BASE_PATH;
+const prefix: `/${string}` = rawPrefix.startsWith('/') ? (rawPrefix as `/${string}`) : `/${rawPrefix}`;
+console.log(prefix);
 
 // ─── RPC + OpenAPI + HEAD handler
 const orpcMiddleware = createMiddleware(async (c, next) => {
@@ -23,7 +25,7 @@ const orpcMiddleware = createMiddleware(async (c, next) => {
   };
   // ─── OpenAPI handler ───────────────────────────────────────────────────────
   const apiRes = await openApiHandler.handle(c.req.raw, {
-    prefix: openApiBasePath,
+    prefix,
     context,
   });
   if (apiRes.matched) {

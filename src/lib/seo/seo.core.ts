@@ -5,7 +5,7 @@ import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.ur
 import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import { ogImages } from '@/lib/drizzle/neon/schemas';
 import { envServer } from '@/lib/env/server.env';
-import { ogPath, openApiBasePath } from '@/lib/helpers/paths';
+import { ogPath } from '@/lib/helpers/paths';
 import { baseSeo, seoSchema } from '@/lib/shared/schemas/seo/seo.schema';
 
 export async function resolveSeo(props: Record<string, unknown>, pathname: string) {
@@ -32,7 +32,7 @@ export async function resolveSeo(props: Record<string, unknown>, pathname: strin
     console.error('[error] NeonDB unavailable 📛', error);
   }
 
-  const ogUrl = new URL(openApiBasePath + ogPath, envServer.PUBLIC_URL);
+  const ogUrl = new URL(envServer.PUBLIC_OPEN_API_BASE_PATH + ogPath, envServer.PUBLIC_URL);
   ogUrl.searchParams.set('id', id);
   ogUrl.searchParams.set('format', 'png');
 

@@ -4,7 +4,7 @@ import { defineMiddleware } from 'astro:middleware';
 
 import { buildCspWithNonce, cspStrict, permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
-import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
+import { cspPath } from '@/lib/helpers/paths';
 import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -42,7 +42,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   response.headers.set('X-Frame-Options', 'DENY');
 
   if (envServer.PRODUCTION === 'true') {
-    const endpointUrl = `${new URL(envServer.PUBLIC_URL).origin}${openApiBasePath + cspPath}`;
+    const endpointUrl = `${new URL(envServer.PUBLIC_URL).origin}${envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath}`;
     response.headers.set('Reporting-Endpoints', `default="${endpointUrl}"`);
   }
 

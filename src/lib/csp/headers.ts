@@ -1,5 +1,6 @@
 import { scriptHashes, styleHashes } from '@/lib/csp/hashes';
-import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
+import { envServer } from '@/lib/env/server.env';
+import { cspPath } from '@/lib/helpers/paths';
 
 const joinTokens = (...tokens: string[]) => tokens.filter(Boolean).join(' ');
 
@@ -15,7 +16,7 @@ const buildCsp = (scriptSources: string[], styleDirectives: string[]) =>
     "form-action 'self'",
     joinTokens("script-src 'self'", ...scriptSources, "'report-sample'"),
     ...styleDirectives,
-    `report-uri ${openApiBasePath + cspPath}`,
+    `report-uri ${envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath}`,
     'report-to default',
   ].join('; ');
 

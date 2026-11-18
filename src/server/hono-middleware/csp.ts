@@ -4,7 +4,7 @@ import { createMiddleware } from 'hono/factory';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
-import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
+import { cspPath } from '@/lib/helpers/paths';
 
 type CspVariables = {
   cspNonce: string;
@@ -18,7 +18,7 @@ const HTML_ONLY_HEADERS: Record<string, string> = {
   'X-Frame-Options': 'DENY',
 };
 
-const API_CSP = `default-src 'none'; frame-ancestors 'none'; sandbox; report-uri ${openApiBasePath + cspPath}; report-to ${REPORT_GROUP}`;
+const API_CSP = `default-src 'none'; frame-ancestors 'none'; sandbox; report-uri ${envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath}; report-to ${REPORT_GROUP}`;
 
 function buildHtmlCsp(nonce: string) {
   return [
@@ -33,7 +33,7 @@ function buildHtmlCsp(nonce: string) {
     `script-src 'self' 'nonce-${nonce}' 'report-sample' 'report-sha256'`,
     `style-src-elem 'self' 'nonce-${nonce}' 'report-sample'`,
     "style-src-attr 'unsafe-inline'",
-    `report-uri ${openApiBasePath + cspPath}`,
+    `report-uri ${envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath}`,
     `report-to ${REPORT_GROUP}`,
   ].join('; ');
 }
@@ -48,7 +48,7 @@ export const csp = createMiddleware<{ Variables: CspVariables }>(async (c, next)
 
   if (envServer.PRODUCTION !== 'true') return;
 
-  const reportUrl = new URL(envServer.PUBLIC_URL).origin + openApiBasePath + cspPath;
+  const reportUrl = new URL(envServer.PUBLIC_URL).origin + envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath;
   c.res.headers.set('Reporting-Endpoints', `${REPORT_GROUP}="${reportUrl}"`);
 
   const contentType = c.res.headers.get('content-type') ?? '';

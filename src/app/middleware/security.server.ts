@@ -1,6 +1,6 @@
 // @app/middleware/security.server.ts
 import { envServer } from '@/lib/env/server.env';
-import { cspPath, openApiBasePath } from '@/lib/helpers/paths';
+import { cspPath } from '@/lib/helpers/paths';
 
 export const cspEnabled = envServer.PRODUCTION === 'true';
 
@@ -9,7 +9,7 @@ export const createNonce = () => {
   return btoa(String.fromCharCode(...bytes));
 };
 
-export const getReportEndpoint = () => openApiBasePath + cspPath;
+export const getReportEndpoint = () => envServer.PUBLIC_OPEN_API_BASE_PATH + cspPath;
 
 const REPORT_GROUP = 'default';
 
