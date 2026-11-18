@@ -5,7 +5,7 @@ import { generateOgParamsId, generateOgToken } from '@/lib/crypto/og.image.id.ur
 import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import { ogImages } from '@/lib/drizzle/neon/schemas';
 import { envServer } from '@/lib/env/server.env';
-import { ogPath } from '@/lib/helpers/paths';
+import { ogPath } from '@/lib/helpers/api.paths';
 import { baseSeo, seoSchema } from '@/lib/shared/schemas/seo/seo.schema';
 
 export async function resolveSeo(props: Record<string, unknown>, pathname: string) {

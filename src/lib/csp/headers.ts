@@ -1,6 +1,6 @@
 import { scriptHashes, styleHashes } from '@/lib/csp/hashes';
 import { envServer } from '@/lib/env/server.env';
-import { cspPath } from '@/lib/helpers/paths';
+import { cspPath } from '@/lib/helpers/api.paths';
 
 const joinTokens = (...tokens: string[]) => tokens.filter(Boolean).join(' ');
 

@@ -1,7 +1,3 @@
-import { join } from 'node:path';
-
-import { appContract } from '@/server/contracts/all.contracts';
-
 // Files/folders to ignore globally when scanning routes
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
 
@@ -253,10 +249,3 @@ export async function discoverRoutes(
   allRoutes.sort((a, b) => a.route.localeCompare(b.route));
   return { ssrRoutes, staticRoutes, allRoutes };
 }
-
-export const ogPath = appContract.seo.og['~orpc'].route.path; // derived from router definition
-export const cspPath = appContract.csp.cspReport['~orpc'].route.path; // derived from router definition
-export const scalarDocsPath = appContract.vendor.scalarBundle['~orpc'].route.path; // derived from router definition
-
-export const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
-export const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');
