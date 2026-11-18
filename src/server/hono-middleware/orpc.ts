@@ -5,8 +5,6 @@ import openApiHandler from '@/server/handlers/openapi.handler';
 
 const rawPrefix = envServer.PUBLIC_OPEN_API_BASE_PATH;
 const prefix: `/${string}` = rawPrefix.startsWith('/') ? (rawPrefix as `/${string}`) : `/${rawPrefix}`;
-console.log(prefix);
-
 // ─── RPC + OpenAPI + HEAD handler
 const orpcMiddleware = createMiddleware(async (c, next) => {
   const context = {
