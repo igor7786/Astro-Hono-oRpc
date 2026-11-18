@@ -13,13 +13,13 @@ import { themeScriptPath } from '@/lib/helpers/file.paths';
  * ============================================================
  */
 
-// Inline scripts/styles the crawler doesn't see. Copy the hash from the browser console:
-//   "Consider using a hash ('sha256-...')"
-const EXTRA_SCRIPT_HASHES: string[] = [];
-const EXTRA_STYLE_HASHES: string[] = [
-  'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
-  'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=',
-];
+// // Inline scripts/styles the crawler doesn't see. Copy the hash from the browser console:
+// //   "Consider using a hash ('sha256-...')"
+// const EXTRA_SCRIPT_HASHES: string[] = [];
+// const EXTRA_STYLE_HASHES: string[] = [
+//   'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
+//   'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=',
+// ];
 
 const quote = (hash: string) => `'${hash}'`;
 
@@ -59,7 +59,10 @@ const toDirective = (list: (string | null)[]) => [...new Set(list.filter(Boolean
 export const scriptHashes = toDirective([
   themeScriptHash ? quote(themeScriptHash) : null,
   ...crawledScripts,
-  ...EXTRA_SCRIPT_HASHES.map(quote),
+  // ...EXTRA_SCRIPT_HASHES.map(quote),
 ]);
 
-export const styleHashes = toDirective([...crawledStyles, ...EXTRA_STYLE_HASHES.map(quote)]);
+export const styleHashes = toDirective([
+  ...crawledStyles,
+  // ...EXTRA_STYLE_HASHES.map(quote)
+]);
