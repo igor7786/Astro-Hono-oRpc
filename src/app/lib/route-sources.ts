@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 
-import { discoverRoutes } from '@/lib/helpers/paths';
+import { discoverRoutes } from '@/lib/helpers/pages.paths';
 
 export const getPlaygroundRoutes = createServerFn({
   method: 'GET',
