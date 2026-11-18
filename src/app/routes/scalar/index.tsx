@@ -6,6 +6,7 @@ import '@scalar/api-reference-react/style.css';
 
 import { Button } from '@rcomp/ui/button';
 
+import { envClient } from '@/lib/env/client.env';
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
 
@@ -14,7 +15,8 @@ const scalarConfig = {
   withDefaultFonts: false,
   urlRouting: false, // Scalar no longer reads or writes the URL hash
   sources: [
-    { title: 'App API V1', slug: 'v1', url: '/api/rpc/openapi/v1/generate-schema' },
+    { title: 'App API V1', slug: 'v1', url: `${envClient.PUBLIC_OPEN_API_BASE_PATH}/generate-schema` },
+    // this endpoint doesnt exsist, just demo !!! change later for better auth !
     { title: 'API v2', slug: 'v2', url: '/api/rpc/openapi/v2/generate-schema' },
   ],
 };
