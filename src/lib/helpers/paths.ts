@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { allRouters } from '@/server/routers/all.routers';
+import { appContract } from '@/server/contracts/all.contracts';
 
 // Files/folders to ignore globally when scanning routes
 export const IGNORED_FILES = ['og', '_', 'api', 'robots'];
@@ -255,9 +255,9 @@ export async function discoverRoutes(
 }
 
 export const openApiBasePath = '/api/rpc/openapi/v1';
-export const ogPath = allRouters.seo.og['~orpc'].route.path; // derived from router definition
-export const cspPath = allRouters.csp.cspReport['~orpc'].route.path; // derived from router definition
-export const scalarDocsPath = allRouters.vendor.scalarBundle['~orpc'].route.path; // derived from router definition
+export const ogPath = appContract.seo.og['~orpc'].route.path; // derived from router definition
+export const cspPath = appContract.csp.cspReport['~orpc'].route.path; // derived from router definition
+export const scalarDocsPath = appContract.vendor.scalarBundle['~orpc'].route.path; // derived from router definition
 
 export const themeScriptPath = join(process.cwd(), 'src/lib/helpers/theme-checker.js');
 export const manifestPath = join(process.cwd(), 'src/plugins/csp-manifest.json');

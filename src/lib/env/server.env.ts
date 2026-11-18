@@ -41,7 +41,9 @@ const EnvSchema = z.object({
   BETTER_AUTH_URL: z.string().min(1, 'ENV: BETTER_AUTH_URL is required and must be a non-empty string'),
   // Public
   PUBLIC_URL: z.string().min(1, 'ENV: PUBLIC_URL is required and must be a non-empty string'),
-  PUBLIC_API_URL: z.string().min(1, 'ENV: PUBLIC_API_URL is required and must be a non-empty string'),
+  PUBLIC_OPEN_API_BASE_PATH: z
+    .string()
+    .min(1, 'ENV: PUBLIC_OPEN_API_BASE_PATH is required and must be a non-empty string'),
   // Social Auth
   GOOGLE_CLIENT_ID: z
     .string()
