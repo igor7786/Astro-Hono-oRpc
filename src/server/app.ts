@@ -18,11 +18,13 @@ export const app = new Hono<Env>({ strict: false }).basePath('/api');
 
 // CSP Headers (must come first, so every route below gets them)
 app.use('*', csp);
-// Scalar docs
+
 // Trailing slash
 app.use('*', trailingSlash);
+
 // Inject clients as Sqlite, Redis, PG and so on ...
 app.use('*', injectClients);
+
 // Handle HEAD requests globally to ensure they are processed correctly by all handlers
 app.use('*', head);
 
@@ -33,13 +35,17 @@ app.use('*', varyHardening);
 // ─── CORS ────────────────────────────────────────────────────────────────────
 app.use('*', corsMiddleware);
 
-// ─── CSRF ──────────────────────────────────────────────────────────
+// ─── CSRF ────────────────────────────────────────────────────────────────────
 app.use('*', csrfMiddleware);
 
-// ─── Pretty logger ──────────────────────────────────────────────────────────
+// ─── Pretty logger ───────────────────────────────────────────────────────────
 app.use('*', prettyLogger);
-// ─── ETag (HTTP caching / revalidation) ─────────────────────────────────────
+
+// ─── ETag (HTTP caching / revalidation) ──────────────────────────────────────
 app.use('*', etagMiddleware);
+
+// ─── 405 Method Not Allowed & Custom 404 JSON ────────────────────────────────
+app.use('*', allowedMethods(app));
 
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/rpc/*', orpcMiddleware);
@@ -47,9 +53,6 @@ app.use('/rpc/*', orpcMiddleware);
 // ─── Root and health check (after the middleware, so they get its headers) ───
 app.get('/', (c) => c.json({ status: 'ok' }));
 app.get('/health', async (c) => c.json({ status: 'ok' }));
-
-// ─── Allow all methods ───────────────────────────────────────────────────────
-app.all('*', allowedMethods);
 
 export default app;
 
@@ -62,4 +65,4 @@ export default app;
 // /api/auth/*                     → Better Auth (when added)
 // /api/llms.txt                   → Markdown (for Ai)
 // /api/html.llms                  → HTML (for browsers)
-// /api/og                        → Open Graph image
+// /api/og                         → Open Graph image

@@ -9,7 +9,18 @@ import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
+  const rawPathname = new URL(context.request.url).pathname;
 
+  const isApi =
+    pathname === '/api' ||
+    pathname.startsWith('/api/') ||
+    rawPathname === '/api' ||
+    rawPathname.startsWith('/api/');
+
+  // Let Hono handle all /api responses (including 404 and 405 JSON) untouched
+  if (isApi) {
+    return next();
+  }
   // Generate per-request nonce BEFORE rendering so Astro.locals.cspNonce is available in layouts
   const nonce = randomBytes(16).toString('base64');
   context.locals.cspNonce = nonce;
@@ -18,15 +29,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   /**
    * ============================================================
+   * PATH MATCHERS
+   * ============================================================
+   */
+  const isApp = pathname === '/app' || pathname.startsWith('/app/');
+  const isErrorPage = pathname === '/error-page';
+  const playgroundPath = pathname === '/playground' || pathname.startsWith('/playground/');
+
+  /**
+   * ============================================================
    * REDIRECT TO ERROR PAGE
    * ============================================================
    */
   const status = String(response.status);
   const parsed = ErrorCodeSchema.safeParse(status);
-
-  const isApi = pathname.startsWith('/api/');
-  const isErrorPage = pathname === '/error-page';
-  const playgroundPath = pathname.startsWith('/playground/') || pathname.startsWith('/playground');
 
   if (parsed.success && !isApi && !isErrorPage) {
     return context.redirect(`/error-page?code=${status}`, 302);
@@ -58,11 +74,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set('X-Content-Type-Options', 'nosniff');
   }
 
-  const isStaticOrApiOrApp =
-    context.isPrerendered ||
-    pathname.startsWith('/_astro/') ||
-    pathname.startsWith('/api/') ||
-    pathname.startsWith('/app/');
+  const isStaticOrApiOrApp = context.isPrerendered || pathname.startsWith('/_astro/') || isApi || isApp;
 
   const isHtml = response.headers.get('content-type')?.includes('text/html') ?? false;
 
@@ -81,13 +93,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * CSP — All Astro-rendered HTML pages, never /api/* or /app/*
    * ============================================================
    */
-  if (
-    envServer.PRODUCTION === 'true' &&
-    !pathname.startsWith('/api/') &&
-    !pathname.startsWith('/app/') &&
-    isHtml &&
-    playgroundPath
-  ) {
+  if (envServer.PRODUCTION === 'true' && !isApi && !isApp && isHtml && playgroundPath) {
     // Prerendered static pages don't have a runtime nonce in their HTML, so use hash-only cspStrict
     const cspHeader = context.isPrerendered ? cspStrict : buildCspWithNonce(nonce);
     response.headers.set('Content-Security-Policy', cspHeader);
