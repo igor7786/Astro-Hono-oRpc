@@ -49,7 +49,8 @@ app.use('/rpc/*', orpcMiddleware);
 
 // ─── Root and health check (after the middleware, so they get its headers) ───
 app.get('/', (c) => c.json({ status: 'ok' }));
-app.get('/health', async (c) => c.json({ status: 'ok' }));
+// app.get('/health', async (c) => c.json({ status: 'ok' }));
+app.post('/health', async (c) => c.json({ status: 'ok' }));
 
 // ─── 405 / custom 404 (keep LAST: only runs if nothing above handled it) ─────
 app.all('*', allowedMethods(app));
