@@ -44,15 +44,15 @@ app.use('*', prettyLogger);
 // ─── ETag (HTTP caching / revalidation) ──────────────────────────────────────
 app.use('*', etagMiddleware);
 
-// ─── 405 Method Not Allowed & Custom 404 JSON ────────────────────────────────
-app.use('*', allowedMethods(app));
-
 // ─── RPC + OpenAPI + HEAD handler ────────────────────────────────────────────
 app.use('/rpc/*', orpcMiddleware);
 
 // ─── Root and health check (after the middleware, so they get its headers) ───
 app.get('/', (c) => c.json({ status: 'ok' }));
 app.get('/health', async (c) => c.json({ status: 'ok' }));
+
+// ─── 405 / custom 404 (keep LAST: only runs if nothing above handled it) ─────
+app.all('*', allowedMethods(app));
 
 export default app;
 
