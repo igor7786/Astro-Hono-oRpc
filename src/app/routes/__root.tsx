@@ -24,6 +24,10 @@ interface MyRouterContext {
 
 const NONCE_SHIM = `(()=>{const n=document.currentScript?.nonce||document.currentScript?.getAttribute('nonce');if(!n)return;const o=document.createElement.bind(document);Object.defineProperty(document,'createElement',{value:(t,p)=>{const e=o(t,p);if(typeof t==='string'&&t.toLowerCase()==='style')e.setAttribute('nonce',n);return e;}});})();`;
 
+// Dev: force Vite to return real CSS for this <link>, so it can't collide
+// with the module-script request to the same path from the Astro pages.
+const cssHref = import.meta.env.DEV ? `${appCss}${appCss.includes('?') ? '&' : '?'}direct` : appCss;
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   notFoundComponent: () => <RedirectToErrorPage code={404} />,
   head: () => ({
@@ -37,7 +41,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { name: 'twitter:creator', content: '@IGrimuta' },
     ],
     links: [
-      { rel: 'stylesheet', href: appCss },
+      { rel: 'stylesheet', href: cssHref },
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'sitemap', href: '/sitemap-index.xml' },
     ],

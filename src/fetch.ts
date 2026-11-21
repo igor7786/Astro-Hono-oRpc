@@ -8,19 +8,23 @@ import { app as apiApp } from '@/server/app';
 
 const root = new Hono();
 
-// 1. Mount Hono API FIRST so Astro's middleware/pages never intercept /api 404s
-root.route('/', apiApp);
+// API first: its terminal catch-all means nothing below runs for /api/*
 
-// 2. Astro middlewares & pages (only for non-/api routes)
 root.use(sessions());
 root.use(actions());
 root.use(middleware());
 
-// Astro owns these prefixes; TanStack Start owns everything else
 const astroPrefixes = ['/playground', '/_astro', '/_image', '/_server-islands'];
+root.route('/', apiApp);
 
 root.all('/*', (c, next) => {
   const { pathname } = new URL(c.req.url);
+
+  // Belt and braces: TanStack must never answer /api
+  if (pathname === '/api' || pathname.startsWith('/api/')) {
+    return c.json({ error: 'Not Found', path: pathname }, 404);
+  }
+
   const isAstro = astroPrefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   if (isAstro) return next();
   return startHandler.fetch(c.req.raw);
