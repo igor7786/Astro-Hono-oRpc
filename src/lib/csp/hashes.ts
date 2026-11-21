@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 
 import { hashes } from '@/lib/drizzle/neon/schemas';
-import { themeScriptPath } from '@/lib/helpers/file.paths';
+import { themeScriptPath } from '@/lib/helpers/paths/file.paths';
 
 /**
  * ============================================================

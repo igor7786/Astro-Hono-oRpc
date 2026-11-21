@@ -1,6 +1,6 @@
 // @app/middleware/security.server.ts
 import { envServer } from '@/lib/env/server.env';
-import { cspPath } from '@/lib/helpers/api.paths';
+import { cspPath } from '@/lib/helpers/paths/api.paths';
 
 export const cspEnabled = envServer.PRODUCTION === 'true';
 

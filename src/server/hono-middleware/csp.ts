@@ -4,7 +4,7 @@ import { createMiddleware } from 'hono/factory';
 
 import { permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
-import { cspPath } from '@/lib/helpers/api.paths';
+import { cspPath } from '@/lib/helpers/paths/api.paths';
 
 type CspVariables = {
   cspNonce: string;
