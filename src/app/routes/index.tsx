@@ -67,14 +67,12 @@ function Playground() {
               title="Server and Client Pages"
               items={routes.ssrRoutes}
             />
-
             <RouteListCard
               accent="static"
               badgeLabel="Static"
               title="Static Pages"
               items={routes.staticRoutes}
             />
-
             <RouteListCard
               accent="admin"
               badgeLabel="Admin"
@@ -82,13 +80,13 @@ function Playground() {
               items={adminRoutes}
               masked
               showIcon
-            />
-
-            <ClientOnly>
+            />{' '}
+            {/* Needs skeleton */}
+            <ClientOnly fallback={<div>loading</div>}>
               <TestClients />
             </ClientOnly>
-
-            <ClientOnly>
+            {/* Needs skeleton */}
+            <ClientOnly fallback={<div>loading</div>}>
               <GeoDebugCard />
             </ClientOnly>
           </div>
