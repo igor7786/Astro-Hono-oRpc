@@ -25,7 +25,7 @@ import {
   InputGroupInput,
 } from '@/components/reactcomp/ui/input-group';
 import { Separator } from '@/components/reactcomp/ui/separator';
-import { loginSchema } from '@/lib/shared/schemas/auth/auth.schema';
+import { loginSchema } from '@/lib/schemas/auth/auth.schema';
 interface LoginPageProps {
   astro: boolean;
 }

@@ -5,7 +5,7 @@ import { verifyOgIdToken } from '@/lib/crypto/og.image.id.url';
 import { neonDb } from '@/lib/drizzle/neon/client.neon.db';
 import { ogImages } from '@/lib/drizzle/neon/schemas';
 import type { OgImage } from '@/lib/drizzle/neon/schemas';
-import { formatDate } from '@/lib/shared/schemas/seo/seo.schema';
+import { formatDate } from '@/lib/schemas/seo/seo.schema';
 import { isUnKeysErrors } from '@/server/middlewares/un-keys-error';
 import { base } from '@/server/procedures/base';
 import { buildCacheKey, getOrGenerate } from '@/server/seo/og/cache.redis';

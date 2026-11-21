@@ -5,7 +5,7 @@ import { defineMiddleware } from 'astro:middleware';
 import { buildCspWithNonce, cspStrict, permissionsPolicy } from '@/lib/csp/headers';
 import { envServer } from '@/lib/env/server.env';
 import { cspPath } from '@/lib/helpers/paths/api.paths';
-import { ErrorCodeSchema } from '@/lib/shared/schemas/errors/page.errors';
+import { ErrorCodeSchema } from '@/lib/schemas/errors/page.errors';
 
 const hasPrefix = (path: string, prefix: string) => path === prefix || path.startsWith(`${prefix}/`);
 

@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { getRequestHeader, setResponseStatus } from '@tanstack/react-start/server';
 
-import { ErrorCodeSchema, errorContent } from '@/lib/shared/schemas/errors/page.errors';
+import { ErrorCodeSchema, errorContent } from '@/lib/schemas/errors/page.errors';
 
 // The route passes the code as a string. Anything not in ErrorCodeSchema becomes '404'.
 export const getErrorPage = createServerFn({ method: 'GET' })

@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@rcomp/ui/card';
 import { Separator } from '@rcomp/ui/separator';
 
 import { useHttpProtocol } from '@/app/lib/hooks/use-http-protocol';
-import type { ErrorCardProps } from '@/lib/shared/schemas/errors/page.errors';
+import type { ErrorCardProps } from '@/lib/schemas/errors/page.errors';
 
 export function ErrorCard({ code, title, message, requestId, isServerError }: ErrorCardProps) {
   const protocol = useHttpProtocol();

@@ -31,7 +31,7 @@ import {
   InputGroupInput,
 } from '@/components/reactcomp/ui/input-group';
 import { Separator } from '@/components/reactcomp/ui/separator';
-import { getPasswordStrength, registerSchema } from '@/lib/shared/schemas/auth/auth.schema';
+import { getPasswordStrength, registerSchema } from '@/lib/schemas/auth/auth.schema';
 interface RegisterPageProps {
   astro: boolean;
 }

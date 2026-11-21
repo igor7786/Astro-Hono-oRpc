@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import BlogCard from '@acomp/playground/blog/BlogCard.astro';
 import { getReadingTime } from '@/lib/helpers/reading-time';
-import { createSeo } from '@/lib/shared/schemas/seo/seo.schema';
+import { createSeo } from '@/lib/schemas/seo/seo.schema';
 
 export const prerender = true;
 export async function getStaticPaths() {
