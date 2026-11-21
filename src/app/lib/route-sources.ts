@@ -5,10 +5,7 @@ import { discoverRoutes } from '@/lib/helpers/paths/pages.paths';
 export const getPlaygroundRoutes = createServerFn({
   method: 'GET',
 }).handler(async () => {
-  const raw = import.meta.glob(
-    ['/src/pages/**/*.{astro,ts,tsx,js,jsx}', '!/src/pages/playground/routes.json.ts'],
-    { eager: true }
-  );
+  const raw = import.meta.glob(['/src/pages/**/*.{astro,ts,tsx,js,jsx}'], { eager: true });
 
   const allFiles = Object.fromEntries(
     Object.entries(raw).map(([key, mod]) => [key.replace('/src/pages/', './'), mod])

@@ -1,14 +1,12 @@
 import { createMiddleware } from 'hono/factory';
 
-import { envServer } from '@/lib/env/server.env';
+import { openApiPrefix } from '@/lib/helpers/paths/api.paths';
 import { generateOpenApiSchema } from '@/server/schemas/openapi.schema.generator';
 
 import type { Hono } from 'hono';
 
-const raw = envServer.PUBLIC_OPEN_API_BASE_PATH;
-
 // Single source of truth: used by the oRPC handler AND the 405 middleware.
-export const OPENAPI_PREFIX: `/${string}` = raw.startsWith('/') ? (raw as `/${string}`) : `/${raw}`;
+
 const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
 
 const normalise = (p: string) => p.replace(/\/+$/, '') || '/';
@@ -63,7 +61,7 @@ async function getEntries(app: Hono<any>): Promise<Entry[]> {
       const methods = HTTP_METHODS.filter((m) => m in item).map((m) => m.toUpperCase());
       if (!methods.length) continue;
 
-      add(`${OPENAPI_PREFIX}${path.startsWith('/') ? path : `/${path}`}`, methods);
+      add(`${openApiPrefix}${path.startsWith('/') ? path : `/${path}`}`, methods);
     }
   } catch (err) {
     // Don't let spec generation break error handling; Hono routes still work.
