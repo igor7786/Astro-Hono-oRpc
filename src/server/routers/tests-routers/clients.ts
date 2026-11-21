@@ -4,9 +4,9 @@ import { eq } from 'drizzle-orm';
 import { test as neonTest } from '@/lib/drizzle/neon/schemas';
 import { test as pgTest } from '@/lib/drizzle/pg/pg.schema';
 import { test as sqliteTest } from '@/lib/drizzle/sqlite/schemas';
+import type { ClientStatus, TestClientSchema } from '@/lib/schemas/orpc/tests-schema/clients.schema';
 import type { AppContext } from '@/server/procedures/base';
 import { base } from '@/server/procedures/base';
-import type { ClientStatus, TestClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
 async function timed(name: string, fn: () => Promise<boolean>): Promise<ClientStatus> {
   const start = performance.now();

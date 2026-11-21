@@ -1,6 +1,6 @@
 import { generateLLMsMarkdown } from '@/lib/helpers/llms';
+import { generateOpenApiSchema } from '@/lib/schemas/orpc/openapi.schema.generator';
 import { base } from '@/server/procedures/base';
-import { generateOpenApiSchema } from '@/server/schemas/openapi.schema.generator';
 
 export const llmsRoute = base.seo.llmsHtml.handler(async ({ errors }) => {
   const html = await htmlLlmsHandler().catch((_err) => {

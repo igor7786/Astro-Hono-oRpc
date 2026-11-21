@@ -1,10 +1,10 @@
-import { baseOc } from '@/server/contracts/oc.base';
 import {
   llmsHtmlOutputSchema,
   llmsTxtOutputSchema,
   ogIdTokenSchema,
   outputOgSchema,
-} from '@/server/schemas/seo.og.html.txt';
+} from '@/lib/schemas/orpc/seo.og.html.txt';
+import { baseOc } from '@/server/contracts/oc.base';
 
 const pathPrefix = '/seo';
 export const og = baseOc

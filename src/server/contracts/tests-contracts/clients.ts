@@ -1,7 +1,7 @@
 import { eventIterator } from '@orpc/server';
 
+import { testClientSchema } from '@/lib/schemas/orpc/tests-schema/clients.schema';
 import { baseOc } from '@/server/contracts/oc.base';
-import { testClientSchema } from '@/server/schemas/tests-schema/clients.schema';
 
 export const testClients = baseOc
   .route({

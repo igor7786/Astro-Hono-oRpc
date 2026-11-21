@@ -7,9 +7,9 @@ import { Skeleton } from 'boneyard-js/react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@rcomp/ui/card';
 
 import { Button } from '@/components/reactcomp/ui/button';
+import { type TestInput } from '@/lib/schemas/orpc/tests-schema/test.schema';
 import { getQueryClient } from '@/lib/tanstack-query/mainQuery';
 import { clientOrpc } from '@/server/clients/client';
-import { type TestInput } from '@/server/schemas/tests-schema/test.schema';
 
 type CardInnerProps = {
   initialData: TestInput['name'] | null;

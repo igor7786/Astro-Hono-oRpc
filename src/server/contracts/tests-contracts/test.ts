@@ -1,5 +1,5 @@
+import { testSchema } from '@/lib/schemas/orpc/tests-schema/test.schema';
 import { baseOc } from '@/server/contracts/oc.base';
-import { testSchema } from '@/server/schemas/tests-schema/test.schema';
 
 const pathPrefix = '/tests';
 export const test = baseOc

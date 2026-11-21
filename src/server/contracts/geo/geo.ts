@@ -1,7 +1,7 @@
 import z from 'zod';
 
+import { geoSchema } from '@/lib/schemas/orpc/geo';
 import { baseOc } from '@/server/contracts/oc.base';
-import { geoSchema } from '@/server/schemas/geo';
 
 export const geoContract = baseOc
   .route({

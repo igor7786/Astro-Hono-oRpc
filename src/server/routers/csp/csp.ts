@@ -1,5 +1,5 @@
+import { cspReportSchema } from '@/lib/schemas/orpc/csp.report';
 import { base } from '@/server/procedures/base';
-import { cspReportSchema } from '@/server/schemas/csp.report';
 
 export const cspRoute = base.csp.cspReport.handler(async ({ input, errors }) => {
   let json: unknown;

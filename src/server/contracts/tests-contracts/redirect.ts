@@ -1,8 +1,8 @@
-import { baseOc } from '@/server/contracts/oc.base';
 import {
   redirectInputSchema,
   redirectOutputSchema,
-} from '@/server/schemas/tests-schema/redirect.schema';
+} from '@/lib/schemas/orpc/tests-schema/redirect.schema';
+import { baseOc } from '@/server/contracts/oc.base';
 
 export const redirectTest = baseOc
   .route({

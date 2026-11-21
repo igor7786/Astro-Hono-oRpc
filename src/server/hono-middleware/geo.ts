@@ -1,4 +1,4 @@
-import { type Geo, geoSchema } from '@/server/schemas/geo';
+import { type Geo, geoSchema } from '@/lib/schemas/orpc/geo';
 
 import type { Context } from 'hono';
 

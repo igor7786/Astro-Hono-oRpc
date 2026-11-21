@@ -5,7 +5,7 @@ import { type EnvServer } from '@/lib/env/server.env';
 import { redisVps } from '@/lib/redis/client.redis.vps';
 import { producer } from '@/lib/redpanda-kafka/producer';
 import { rustfsClient } from '@/lib/s3/client.rustfs.vps';
-import type { Geo } from '@/server/schemas/geo';
+import type { Geo } from '@/lib/schemas/orpc/geo';
 
 export type Env = {
   Bindings: EnvServer;

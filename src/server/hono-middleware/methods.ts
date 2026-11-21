@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 
 import { openApiPrefix } from '@/lib/helpers/paths/api.paths';
-import { generateOpenApiSchema } from '@/server/schemas/openapi.schema.generator';
+import { generateOpenApiSchema } from '@/lib/schemas/orpc/openapi.schema.generator';
 
 import type { Hono } from 'hono';
 
