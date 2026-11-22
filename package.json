@@ -100,7 +100,7 @@
     "add": "^2.0.6",
     "astro": "^7.4.13",
     "astro-iconset": "^0.0.6",
-    "boneyard-js": "^1.7.7",
+    "boneyard-js": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",
     "drizzle-orm": "1.0.0-rc.4",

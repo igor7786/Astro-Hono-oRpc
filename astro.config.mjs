@@ -59,14 +59,6 @@ export default defineConfig({
     plugins: [
       astroStartBuildPatch(),
       tanstackStart({
-        // importProtection: {
-        // exclude: [
-        //   'src/pages/**',
-        //   'src/server/**',
-        //   'src/components/reactcomp/playground/**',
-        //   'src/components/reactcomp/**',
-        // ],
-        // },
         srcDirectory: './src/app',
         router: {
           basepath: '',

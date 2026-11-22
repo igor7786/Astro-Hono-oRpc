@@ -1,5 +1,7 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 
+import '@/bones/registry'; // path to your generated registry
+
 import '@app/lib/zod-config';
 import type { QueryClient } from '@tanstack/react-query';
 import {
