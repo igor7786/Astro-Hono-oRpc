@@ -11,7 +11,12 @@ import {
 } from '@rcomp/ui/dropdown-menu';
 
 export function ModeToggle({ className }: { className?: string }) {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const handleThemeChange = (next: 'light' | 'dark' | 'system') => {
+    if (theme === next) return;
+    setTheme(next);
+  };
 
   return (
     <DropdownMenu>
@@ -25,9 +30,9 @@ export function ModeToggle({ className }: { className?: string }) {
         }
       />
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleThemeChange('light')}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleThemeChange('dark')}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleThemeChange('system')}>System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

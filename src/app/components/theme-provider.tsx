@@ -1,8 +1,18 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  ViewTransition,
+  addTransitionType,
+  createContext,
+  startTransition,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 
 import { ScriptOnce } from '@tanstack/react-router';
 
 type Theme = 'dark' | 'light' | 'system';
+type ResolvedTheme = 'dark' | 'light';
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -27,17 +37,15 @@ const ThemeProviderContext = createContext<ThemeProviderState>({
   setTheme: () => {},
 });
 
-function applyTheme(theme: Theme) {
+function resolveTheme(theme: Theme): ResolvedTheme {
+  if (theme !== 'system') return theme;
+  if (typeof window === 'undefined') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(resolved: ResolvedTheme) {
   const root = document.documentElement;
   root.classList.remove('light', 'dark');
-
-  const resolved =
-    theme === 'system'
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-      : theme;
-
   root.classList.add(resolved);
   root.style.colorScheme = resolved;
 }
@@ -48,39 +56,58 @@ export function ThemeProvider({
   storageKey = 'theme',
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>('light');
   const [mounted, setMounted] = useState(false);
+
+  const resolvedTheme: ResolvedTheme = theme === 'system' ? systemTheme : theme;
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
     setThemeState(
       stored === 'light' || stored === 'dark' || stored === 'system' ? stored : defaultTheme
     );
+    setSystemTheme(resolveTheme('system'));
     setMounted(true);
   }, [defaultTheme, storageKey]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!mounted) return;
-    applyTheme(theme);
-  }, [theme, mounted]);
+    applyTheme(resolvedTheme);
+  }, [resolvedTheme, mounted]);
 
   useEffect(() => {
     if (!mounted || theme !== 'system') return;
 
     const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => applyTheme('system');
+    const onChange = () => {
+      startTransition(() => {
+        addTransitionType('theme-change');
+        setSystemTheme(media.matches ? 'dark' : 'light');
+      });
+    };
     media.addEventListener('change', onChange);
     return () => media.removeEventListener('change', onChange);
   }, [theme, mounted]);
 
   const setTheme = (next: Theme) => {
     localStorage.setItem(storageKey, next);
-    setThemeState(next);
+    startTransition(() => {
+      addTransitionType('theme-change');
+      setThemeState(next);
+    });
   };
 
   return (
     <ThemeProviderContext value={{ theme, setTheme }}>
       <ScriptOnce>{getThemeScript(storageKey, defaultTheme)}</ScriptOnce>
-      {children}
+      <ViewTransition update={{ 'theme-change': 'theme-transition', default: 'none' }}>
+        <div
+          data-theme={mounted ? resolvedTheme : undefined}
+          className="min-h-screen bg-background text-foreground"
+        >
+          <ViewTransition update="none">{children}</ViewTransition>
+        </div>
+      </ViewTransition>
     </ThemeProviderContext>
   );
 }
