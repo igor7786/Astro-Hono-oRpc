@@ -4,9 +4,9 @@ import { ModeToggle } from '@app/components/mode-toggle';
 
 import { Button } from '@rcomp/ui/button';
 
+import { openApiPrefix } from '@/lib/helpers/paths/api.paths';
 import { appContract } from '@/server/contracts/all.contracts';
-
-const clientsTestHref = `/api/rpc/openapi/v1${appContract.tests.testClients['~orpc'].route.path}`;
+const clientsTestHref = `${openApiPrefix}${appContract.tests.testClients['~orpc'].route.path}`;
 
 const navButtonClass =
   'h-14 rounded-lg border-amber-200 bg-transparent px-2.5 text-center text-xs font-medium whitespace-nowrap text-slate-500 hover:bg-amber-300/10 hover:text-foreground sm:px-4 sm:text-sm dark:text-slate-400 [&.active]:bg-amber-300/15 [&.active]:text-foreground';

@@ -1,4 +1,4 @@
-import { ClientOnly, createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { Header } from '@app/components/Header';
 import { RouteListCard } from '@app/components/RouteListCard';
@@ -81,14 +81,8 @@ function Playground() {
               masked
               showIcon
             />{' '}
-            {/* Needs skeleton */}
-            <ClientOnly fallback={<div>loading</div>}>
-              <TestClients />
-            </ClientOnly>
-            {/* Needs skeleton */}
-            <ClientOnly fallback={<div>loading</div>}>
-              <GeoDebugCard />
-            </ClientOnly>
+            <TestClients />
+            <GeoDebugCard />
           </div>
         </div>
       </main>
