@@ -2,7 +2,7 @@ import { base } from '@/server/procedures/base';
 
 export const geoRoute = base.geo.geoContract.handler(async ({ context, errors }) => {
   const isProd = context.env?.PRODUCTION === 'true';
-
+  await Bun.sleep(10_000);
   if (!isProd) {
     return {
       reqId: 'abc123',
