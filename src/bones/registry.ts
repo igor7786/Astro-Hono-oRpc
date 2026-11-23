@@ -3,6 +3,8 @@
 import { registerBones } from 'boneyard-js';
 import { configureBoneyard } from 'boneyard-js/react';
 
+import _Card from './Card.bones.json';
+
 configureBoneyard({
   darkColor: '#1a1a2e',
   animate: 'shimmer',
@@ -13,4 +15,6 @@ configureBoneyard({
   transition: 300,
 });
 
-registerBones({});
+registerBones({
+  Card: _Card,
+});
