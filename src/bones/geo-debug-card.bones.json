@@ -1,0 +1,143 @@
+{
+  "breakpoints": {
+    "375": {
+      "name": "geo-debug-card",
+      "viewportWidth": 341,
+      "width": 341,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          4.9853,
+          19,
+          76.0126,
+          316,
+          8
+        ]
+      ]
+    },
+    "640": {
+      "name": "geo-debug-card",
+      "viewportWidth": 606,
+      "width": 606,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          2.8053,
+          19,
+          42.7728,
+          316,
+          8
+        ]
+      ]
+    },
+    "768": {
+      "name": "geo-debug-card",
+      "viewportWidth": 734,
+      "width": 734,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          2.3161,
+          19,
+          35.3138,
+          316,
+          8
+        ]
+      ]
+    },
+    "1024": {
+      "name": "geo-debug-card",
+      "viewportWidth": 990,
+      "width": 990,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          1.7172,
+          19,
+          26.1821,
+          316,
+          8
+        ]
+      ]
+    },
+    "1280": {
+      "name": "geo-debug-card",
+      "viewportWidth": 1246,
+      "width": 1246,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          1.3644,
+          19,
+          20.8028,
+          316,
+          8
+        ]
+      ]
+    },
+    "1536": {
+      "name": "geo-debug-card",
+      "viewportWidth": 1502,
+      "width": 1502,
+      "height": 354,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          354,
+          10,
+          true
+        ],
+        [
+          1.1318,
+          19,
+          17.2572,
+          316,
+          8
+        ]
+      ]
+    }
+  },
+  "_hash": "935fbef886d4d6bc9286a24929382063"
+}

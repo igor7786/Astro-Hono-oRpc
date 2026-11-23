@@ -11,6 +11,8 @@ import { GeoDebugCard } from '@/app/components/GeoDebugCard';
 import { buildSeoHead } from '@/lib/seo/build.seo.head';
 import { getSeo } from '@/lib/seo/get.seo.fn';
 
+import { WhenVisible } from '../lib/WhenVisible';
+
 export const Route = createFileRoute('/')({
   loader: async ({ location }) => {
     const [seo, routes] = await Promise.all([
@@ -82,7 +84,9 @@ function Playground() {
               showIcon
             />{' '}
             <TestClients />
-            <GeoDebugCard />
+            <WhenVisible rootMargin="10px">
+              <GeoDebugCard />
+            </WhenVisible>
           </div>
         </div>
       </main>
