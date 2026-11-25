@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { GeoDebugCard } from '@/app/components/GeoDebugCard';
+import TestClients from '@/app/components/TestClients';
 
 export const Route = createFileRoute('/testo/')({
   component: RouteComponent,
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/testo/')({
 function RouteComponent() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <GeoDebugCard />
+      <TestClients />
     </div>
   );
 }

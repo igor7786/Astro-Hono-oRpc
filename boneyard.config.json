@@ -1,4 +1,5 @@
 {
+  "wait": 1000,
   "animate": "shimmer",
   "darkColor": "#1a1a2e",
   "darkShimmerColor": "#2d2d50",

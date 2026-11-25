@@ -5,6 +5,7 @@ import { configureBoneyard } from 'boneyard-js/react';
 
 import _Card from './Card.bones.json';
 import _geo_card from './geo-card.bones.json';
+import _test_clients from './test-clients.bones.json';
 
 configureBoneyard({
   darkColor: '#1a1a2e',
@@ -17,6 +18,7 @@ configureBoneyard({
 });
 
 registerBones({
-  'geo-card': _geo_card,
+  'test-clients': _test_clients,
   Card: _Card,
+  'geo-card': _geo_card,
 });

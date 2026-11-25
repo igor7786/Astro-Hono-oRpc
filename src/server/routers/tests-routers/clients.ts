@@ -60,6 +60,7 @@ async function checkClients(context: AppContext): Promise<TestClientSchema> {
 }
 
 export const ClientsRoute = base.tests.testClients.handler(async function* ({ context, signal }) {
+  await Bun.sleep(3_000);
   while (!signal?.aborted) {
     yield await checkClients(context);
     await Bun.sleep(3_000);
