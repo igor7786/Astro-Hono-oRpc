@@ -174,78 +174,47 @@
    Theme Switch View Transition (React 19.3 + TanStack Start)
    ========================================================================== */
 
-/* 1. Reset default cross-fade blending so layers stack cleanly */
+:root {
+  view-transition-name: root;
+  view-transition-class: theme-transition;
+}
+
+/* 1. Reset default cross-fade */
 ::view-transition-old(.theme-transition),
 ::view-transition-new(.theme-transition) {
   animation: none;
   mix-blend-mode: normal;
-  overflow: clip;
+  backface-visibility: hidden;
 }
 
-/* 2. Old theme: gently recedes into the background with subtle dimming */
+/* Perspective so the X rotation reads as 3D */
+::view-transition-group(.theme-transition) {
+  perspective: 1400px;
+}
+
+/* 2. Old theme stays put underneath */
 ::view-transition-old(.theme-transition) {
   z-index: 1;
-  transform-origin: center top;
-  animation: 650ms cubic-bezier(0.16, 1, 0.3, 1) both theme-recede;
 }
 
-/* 3. New theme: drops down with a tactile spring overshoot and edge shadow */
+/* 3. New theme rotates in around its top edge */
 ::view-transition-new(.theme-transition) {
   z-index: 2;
-  box-shadow: 0 20px 50px -12px rgb(0 0 0 / 0.35);
-  animation: 650ms both theme-slide-down;
-  animation-timing-function: linear(
-    0,
-    0.009,
-    0.035 2.1%,
-    0.141,
-    0.281 6.7%,
-    0.723 12.9%,
-    0.938 16.7%,
-    1.017,
-    1.077,
-    1.121,
-    1.149 24.3%,
-    1.159,
-    1.163,
-    1.161,
-    1.154 29.9%,
-    1.129 32.8%,
-    1.051 39.6%,
-    1.017 43.1%,
-    0.991,
-    0.977 51%,
-    0.974 53.8%,
-    0.975 57.1%,
-    0.997 69.8%,
-    1.003 76.9%,
-    1.004 83.8%,
-    1
-  );
+  transform-origin: center top;
+  animation: 750ms cubic-bezier(0.13, 0, 0.39, 0) both theme-rotate-x;
 }
 
 /* 4. Keyframes */
-@keyframes theme-slide-down {
+@keyframes theme-rotate-x {
   from {
-    transform: translateY(-100%);
+    transform: rotateX(-90deg);
   }
   to {
-    transform: translateY(0%);
+    transform: rotateX(0deg);
   }
 }
 
-@keyframes theme-recede {
-  from {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  to {
-    transform: scale(0.96);
-    filter: brightness(0.8);
-  }
-}
-
-/* 5. Accessibility: instant switch for users who prefer reduced motion */
+/* 5. Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(.theme-transition),
   ::view-transition-new(.theme-transition) {
