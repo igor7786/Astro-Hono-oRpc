@@ -2,6 +2,7 @@ import { base } from '@/server/procedures/base';
 
 export const geoRoute = base.geo.geoContract.handler(async ({ context, errors }) => {
   const isProd = context.env?.PRODUCTION === 'true';
+  await Bun.sleep(3_000);
   if (!isProd) {
     return {
       reqId: 'abc123',
@@ -20,7 +21,6 @@ export const geoRoute = base.geo.geoContract.handler(async ({ context, errors })
       flag: '🇺🇸',
     };
   }
-  await Bun.sleep(3_000);
 
   // In prod, "unavailable" means no country code came through — the one field
   // that should always be present if nginx's geoip2 headers reached us at all
